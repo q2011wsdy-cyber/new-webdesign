@@ -471,7 +471,9 @@ function AsciiTerminal() {
       </AsciiHeroSection>
 
       {/* Works — asymmetric editorial grid；第一项链到 work-harbor.html */}
-      <div id="works" style={s.sectionTitle}>
+      <div
+        id="works"
+        style={{ ...s.sectionTitle, marginBottom: 'clamp(32px, 4vw, 48px)' }}>
         <svg
           width="181"
           height="53"

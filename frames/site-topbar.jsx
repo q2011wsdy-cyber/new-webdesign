@@ -70,47 +70,111 @@ function SiteTopbar({
     zIndex: 100,
     background: C.bg,
   };
-  const navLinks = { display: 'flex', gap: 14, alignItems: 'center' };
+  const navLinks = {
+    display: 'flex',
+    gap: 4,
+    alignItems: 'center',
+    '--glass-bg': dark ? 'rgba(24, 24, 22, 0.72)' : 'rgba(244, 241, 232, 0.58)',
+    '--glass-button': dark ? 'rgba(255, 255, 255, 0.055)' : 'rgba(255, 255, 255, 0.34)',
+    '--glass-button-hover': dark ? 'rgba(255, 255, 255, 0.11)' : 'rgba(255, 255, 255, 0.68)',
+    '--glass-border': dark ? 'rgba(255, 255, 255, 0.14)' : 'rgba(127, 116, 92, 0.24)',
+    '--glass-shine': dark ? 'rgba(255, 255, 255, 0.14)' : 'rgba(255, 255, 255, 0.9)',
+    '--glass-shadow': dark
+      ? '0 10px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08)'
+      : '0 10px 30px rgba(85, 73, 48, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.82)',
+  };
 
   return (
     <div style={topbarStyle}>
+      <style>{`
+        .site-liquid-controls {
+          position: relative;
+          isolation: isolate;
+          padding: 4px;
+          border: 1px solid var(--glass-border);
+          border-radius: 16px;
+          background:
+            linear-gradient(145deg, var(--glass-shine), transparent 42%),
+            var(--glass-bg);
+          box-shadow: var(--glass-shadow);
+          -webkit-backdrop-filter: blur(18px) saturate(145%);
+          backdrop-filter: blur(18px) saturate(145%);
+          overflow: hidden;
+        }
+        .site-liquid-controls::before {
+          content: '';
+          position: absolute;
+          z-index: 0;
+          top: 1px;
+          left: 12px;
+          right: 12px;
+          height: 42%;
+          border-radius: 999px;
+          background: linear-gradient(180deg, var(--glass-shine), transparent);
+          opacity: .5;
+          pointer-events: none;
+        }
+        .site-liquid-button {
+          position: relative;
+          z-index: 1;
+          height: 34px;
+          min-width: 46px;
+          border: 0;
+          border-radius: 11px;
+          background: var(--glass-button);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.16);
+          transition:
+            transform 180ms cubic-bezier(.16,1,.3,1),
+            background 180ms ease,
+            box-shadow 180ms ease;
+        }
+        .site-liquid-button:hover {
+          background: var(--glass-button-hover);
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.32),
+            0 5px 14px rgba(50,42,28,.08);
+          transform: translateY(-1px);
+        }
+        .site-liquid-button:active {
+          transform: translateY(0) scale(.96);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .site-liquid-button { transition: none; }
+        }
+      `}</style>
       <a
         href={brandHref}
         {...linkProbe}
-        style={{ color: C.faint, textDecoration: 'none' }}
+        style={{ color: C.faint, textDecoration: 'none', fontSize: 14, lineHeight: 1 }}
         aria-label="回到首页">
         {brand}
       </a>
-      <div style={navLinks}>
+      <div className="site-liquid-controls" style={navLinks}>
         <button
+          className="site-liquid-button"
           {...linkProbe}
           type="button"
           onClick={() => setLang && setLang(lang === 'en' ? 'zh' : 'en')}
           style={{
-            background: 'transparent',
-            border: `1px solid ${C.line}`,
             color: C.mute,
-            padding: '5px 7px',
+            padding: '0 9px',
             cursor: 'none',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
             lineHeight: 1,
-            minWidth: 46,
           }}
           aria-label={lang === 'en' ? '切换为中文' : 'Switch to English'}>
           {lang === 'en' ? '中' : 'EN'}
         </button>
         <button
+          className="site-liquid-button"
           {...linkProbe}
           type="button"
           onClick={() => setTheme(dark ? 'light' : 'dark')}
           style={{
-            marginLeft: 6,
-            background: 'transparent',
-            border: `1px solid ${C.line}`,
             color: C.mute,
-            padding: '5px 7px',
+            padding: '0 9px',
             cursor: 'none',
             display: 'inline-flex',
             alignItems: 'center',
