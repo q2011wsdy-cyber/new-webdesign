@@ -341,32 +341,54 @@ function AsciiTerminal() {
         @keyframes cursor-blink { 0%,50%{opacity:1} 50.01%,100%{opacity:0} }
         @keyframes cur-pulse { 0%,50%{opacity:1} 50.01%,100%{opacity:0.25} }
         @keyframes ascii-caret-blink { 0%, 48% { opacity: 1; } 50%, 100% { opacity: 0.22; } }
-        @keyframes avatar-soft-pop {
-          0% { opacity: 0; transform: translate3d(-8px, 9px, 0) scale(.8) rotate(-2deg); }
-          58% { opacity: 1; transform: translate3d(1px, -3px, 0) scale(1.035) rotate(.6deg); }
-          78% { transform: translate3d(0, 1px, 0) scale(.99) rotate(-.2deg); }
-          100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1) rotate(0); }
+        @keyframes avatar-float-up {
+          0% {
+            opacity: 0;
+            filter: blur(2px) saturate(.9);
+            transform: translate3d(-18px, 58px, 0) scale(.52) rotate(-13deg);
+          }
+          42% {
+            opacity: .72;
+            filter: blur(.8px) saturate(.96);
+            transform: translate3d(-10px, 26px, 0) scale(.74) rotate(-6deg);
+          }
+          74% {
+            opacity: 1;
+            filter: blur(0) saturate(1);
+            transform: translate3d(2px, -3px, 0) scale(1.018) rotate(1.3deg);
+          }
+          90% { transform: translate3d(-.5px, 1px, 0) scale(.997) rotate(-.3deg); }
+          100% {
+            opacity: 1;
+            filter: blur(0) saturate(1);
+            transform: translate3d(0, 0, 0) scale(1) rotate(0);
+          }
         }
         .hero-avatar {
           position: absolute;
-          left: min(calc(100% + 16px), calc(100vw - 104px));
-          bottom: 10px;
+          left: min(calc(100% + 18px), calc(100vw - 132px));
+          bottom: 6px;
           z-index: 5;
-          width: clamp(68px, 6.6vw, 76px);
+          width: clamp(86px, 8.4vw, 104px);
           aspect-ratio: 1;
           border-radius: 50%;
           overflow: hidden;
           opacity: 0;
           pointer-events: none;
-          transform: translate3d(-8px, 9px, 0) scale(.8) rotate(-2deg);
-          transform-origin: 32% 78%;
-          transition: opacity .2s ease, transform .34s cubic-bezier(.16,1,.3,1);
-          will-change: transform, opacity;
+          filter: blur(2px) saturate(.9);
+          transform: translate3d(-18px, 58px, 0) scale(.52) rotate(-13deg);
+          transform-origin: 34% 82%;
+          transition:
+            opacity .36s ease,
+            filter .4s ease,
+            transform .68s cubic-bezier(.22,.58,.25,1);
+          will-change: transform, opacity, filter;
         }
         .hero-lead:hover .hero-avatar {
           opacity: 1;
+          filter: blur(0) saturate(1);
           transform: translate3d(0, 0, 0) scale(1) rotate(0);
-          animation: avatar-soft-pop .52s cubic-bezier(.2,.8,.2,1) both;
+          animation: avatar-float-up 1.08s cubic-bezier(.3,.1,.25,1) both;
         }
         .hero-avatar img {
           display: block;
