@@ -74,8 +74,15 @@ function SiteTopbar({
     display: 'flex',
     gap: 4,
     alignItems: 'center',
+    '--glass-x': '50%',
+    '--glass-y': '12%',
+    '--glass-shadow-x': '0px',
+    '--glass-shadow-y': '3px',
     '--glass-low': dark ? 'rgba(255,255,255,.025)' : 'rgba(255,255,255,.05)',
     '--glass-mid': dark ? 'rgba(255,255,255,.11)' : 'rgba(255,255,255,.22)',
+    '--glass-glow-core': dark ? 'rgba(255,255,255,.34)' : 'rgba(255,255,255,.96)',
+    '--glass-glow-soft': dark ? 'rgba(255,255,255,.09)' : 'rgba(255,255,255,.24)',
+    '--glass-cast': dark ? 'rgba(0,0,0,.48)' : 'rgba(76,61,36,.18)',
     '--glass-edge-dark': dark ? 'rgba(0,0,0,.72)' : 'rgba(0,0,0,.5)',
     '--glass-edge-light': dark ? 'rgba(255,255,255,.24)' : 'rgba(255,255,255,.5)',
     '--glass-depth': dark
@@ -84,6 +91,23 @@ function SiteTopbar({
     '--glass-button-depth': dark
       ? 'inset 0 1px 1.5px rgba(0,0,0,.3), inset 0 -1px 1.5px rgba(255,255,255,.18), 0 2px 1.5px -1px rgba(0,0,0,.4)'
       : 'inset 0 1px 1.5px rgba(0,0,0,.04), inset 0 -1px 1.5px rgba(255,255,255,.58), 0 2px 1.5px -1px rgba(0,0,0,.13)',
+  };
+  const moveGlassLight = (e) => {
+    const node = e.currentTarget;
+    const rect = node.getBoundingClientRect();
+    const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const y = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+    node.style.setProperty('--glass-x', `${(x * 100).toFixed(1)}%`);
+    node.style.setProperty('--glass-y', `${(y * 100).toFixed(1)}%`);
+    node.style.setProperty('--glass-shadow-x', `${((.5 - x) * 5).toFixed(2)}px`);
+    node.style.setProperty('--glass-shadow-y', `${(2 + (.5 - y) * 4).toFixed(2)}px`);
+  };
+  const resetGlassLight = (e) => {
+    const node = e.currentTarget;
+    node.style.setProperty('--glass-x', '50%');
+    node.style.setProperty('--glass-y', '12%');
+    node.style.setProperty('--glass-shadow-x', '0px');
+    node.style.setProperty('--glass-shadow-y', '3px');
   };
 
   return (
@@ -96,9 +120,34 @@ function SiteTopbar({
           border: 0;
           border-radius: 999px;
           background: linear-gradient(-75deg, var(--glass-low), var(--glass-mid), var(--glass-low));
-          box-shadow: var(--glass-depth);
+          box-shadow:
+            var(--glass-depth),
+            var(--glass-shadow-x) var(--glass-shadow-y) 9px -4px var(--glass-cast);
           -webkit-backdrop-filter: blur(4px);
           backdrop-filter: blur(4px);
+          transition:
+            --glass-x 140ms cubic-bezier(.16,1,.3,1),
+            --glass-y 140ms cubic-bezier(.16,1,.3,1),
+            box-shadow 180ms ease;
+        }
+        .site-liquid-controls::before {
+          content: '';
+          position: absolute;
+          z-index: 0;
+          inset: 1px;
+          border-radius: inherit;
+          background: radial-gradient(
+            circle 38px at var(--glass-x) var(--glass-y),
+            var(--glass-glow-core) 0%,
+            var(--glass-glow-soft) 38%,
+            transparent 72%
+          );
+          opacity: .16;
+          transition: opacity 280ms ease;
+          pointer-events: none;
+        }
+        .site-liquid-controls:hover::before {
+          opacity: .86;
         }
         .site-liquid-controls::after {
           content: '';
@@ -108,6 +157,11 @@ function SiteTopbar({
           padding: 1px;
           border-radius: inherit;
           background:
+            radial-gradient(
+              circle 28px at var(--glass-x) var(--glass-y),
+              var(--glass-edge-light),
+              transparent 72%
+            ),
             conic-gradient(
               from -75deg,
               var(--glass-edge-dark), transparent 5%, transparent 40%,
@@ -146,7 +200,11 @@ function SiteTopbar({
           transform: scale(.96);
         }
         @media (prefers-reduced-motion: reduce) {
+          .site-liquid-controls,
           .site-liquid-button { transition: none; }
+        }
+        @media (hover: none) {
+          .site-liquid-controls::before { opacity: .26; }
         }
       `}</style>
       <a
@@ -156,7 +214,11 @@ function SiteTopbar({
         aria-label="回到首页">
         {brand}
       </a>
-      <div className="site-liquid-controls" style={navLinks}>
+      <div
+        className="site-liquid-controls"
+        style={navLinks}
+        onPointerMove={moveGlassLight}
+        onPointerLeave={resetGlassLight}>
         <button
           className="site-liquid-button"
           {...linkProbe}
