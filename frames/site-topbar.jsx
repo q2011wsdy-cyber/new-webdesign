@@ -55,25 +55,31 @@ function SiteTopbar({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: -20,
-    marginLeft: -32,
-    marginRight: -32,
-    marginBottom: 24,
     paddingTop: 20,
-    paddingLeft: 32,
-    paddingRight: 32,
+    paddingLeft: 'clamp(20px, 3.5vw, 48px)',
+    paddingRight: 'clamp(20px, 3.5vw, 48px)',
     paddingBottom: 10,
     color: C.faint,
     fontSize: 11,
-    position: 'sticky',
+    position: 'fixed',
     top: 0,
+    left: 0,
+    right: 0,
     zIndex: 100,
-    background: C.bg,
+    background: 'transparent',
+    pointerEvents: 'none',
+  };
+  const topbarSpacerStyle = {
+    height: 72,
+    marginTop: -20,
+    marginBottom: 24,
+    pointerEvents: 'none',
   };
   const navLinks = {
     display: 'flex',
     gap: 4,
     alignItems: 'center',
+    pointerEvents: 'auto',
     '--glass-x': '50%',
     '--glass-y': '12%',
     '--glass-shadow-x': '0px',
@@ -111,7 +117,9 @@ function SiteTopbar({
   };
 
   return (
-    <div style={topbarStyle}>
+    <>
+      <div aria-hidden="true" style={topbarSpacerStyle} />
+      <div style={topbarStyle}>
       <style>{`
         .site-liquid-controls {
           position: relative;
@@ -210,7 +218,13 @@ function SiteTopbar({
       <a
         href={brandHref}
         {...linkProbe}
-        style={{ color: C.faint, textDecoration: 'none', fontSize: 14, lineHeight: 1 }}
+        style={{
+          color: C.faint,
+          textDecoration: 'none',
+          fontSize: 14,
+          lineHeight: 1,
+          pointerEvents: 'auto',
+        }}
         aria-label="回到首页">
         {brand}
       </a>
@@ -263,7 +277,8 @@ function SiteTopbar({
           )}
         </button>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
