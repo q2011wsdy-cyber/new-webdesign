@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <title>ASCII Terminal · 个人网站</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    html, body, #root { margin: 0; padding: 0; width: 100%; min-height: 100%; }
+    body { background: #0b0b0b; }
+    * { box-sizing: border-box; }
+  </style>
+  <script src="vendor/react.production.min.js"></script>
+  <script src="vendor/react-dom.production.min.js"></script>
+  <script src="vendor/babel.min.js"></script>
+  <script src="frames/site-cursor.js?v=2"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" src="frames/site-topbar.jsx?v=site-shell-9-light-bg"></script>
+  <script type="text/babel" src="frames/01-ascii-terminal.jsx?v=site-shell-24-work-svg-tight"></script>
+  <script type="text/babel" data-presets="react">
+    (function boot() {
+      if (!window.React || !window.ReactDOM || !window.AsciiTerminal || !window.SiteTopbar || !window.getAsciiThemePalette) {
+        if (typeof boot.tries === 'undefined') boot.tries = 0;
+        if (boot.tries++ < 200) { setTimeout(boot, 15); return; }
+        var el = document.getElementById('root');
+        if (el) el.innerHTML = '<p style="padding:24px;font-family:monospace">脚本未就绪，请硬刷新或检查 frames/ 下文件是否加载。</p>';
+        return;
+      }
+      if (window.__asciiTerminalBooted) return;
+      window.__asciiTerminalBooted = true;
+      var AsciiTerminal = window.AsciiTerminal;
+      ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(AsciiTerminal));
+    })();
+  </script>
+</body>
+</html>
