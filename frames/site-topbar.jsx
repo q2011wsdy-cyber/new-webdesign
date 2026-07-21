@@ -74,14 +74,16 @@ function SiteTopbar({
     display: 'flex',
     gap: 4,
     alignItems: 'center',
-    '--glass-bg': dark ? 'rgba(24, 24, 22, 0.72)' : 'rgba(244, 241, 232, 0.58)',
-    '--glass-button': dark ? 'rgba(255, 255, 255, 0.055)' : 'rgba(255, 255, 255, 0.34)',
-    '--glass-button-hover': dark ? 'rgba(255, 255, 255, 0.11)' : 'rgba(255, 255, 255, 0.68)',
-    '--glass-border': dark ? 'rgba(255, 255, 255, 0.14)' : 'rgba(127, 116, 92, 0.24)',
-    '--glass-shine': dark ? 'rgba(255, 255, 255, 0.14)' : 'rgba(255, 255, 255, 0.9)',
-    '--glass-shadow': dark
-      ? '0 10px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08)'
-      : '0 10px 30px rgba(85, 73, 48, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.82)',
+    '--glass-low': dark ? 'rgba(255,255,255,.025)' : 'rgba(255,255,255,.05)',
+    '--glass-mid': dark ? 'rgba(255,255,255,.11)' : 'rgba(255,255,255,.22)',
+    '--glass-edge-dark': dark ? 'rgba(0,0,0,.72)' : 'rgba(0,0,0,.5)',
+    '--glass-edge-light': dark ? 'rgba(255,255,255,.24)' : 'rgba(255,255,255,.5)',
+    '--glass-depth': dark
+      ? 'inset 0 1.75px 1.75px rgba(0,0,0,.34), inset 0 -1.75px 1.75px rgba(255,255,255,.16), 0 3.5px 1.75px -1.75px rgba(0,0,0,.52), inset 0 0 1.4px 3.5px rgba(255,255,255,.08)'
+      : 'inset 0 1.75px 1.75px rgba(0,0,0,.05), inset 0 -1.75px 1.75px rgba(255,255,255,.5), 0 3.5px 1.75px -1.75px rgba(0,0,0,.2), inset 0 0 1.4px 3.5px rgba(255,255,255,.2)',
+    '--glass-button-depth': dark
+      ? 'inset 0 1px 1.5px rgba(0,0,0,.3), inset 0 -1px 1.5px rgba(255,255,255,.18), 0 2px 1.5px -1px rgba(0,0,0,.4)'
+      : 'inset 0 1px 1.5px rgba(0,0,0,.04), inset 0 -1px 1.5px rgba(255,255,255,.58), 0 2px 1.5px -1px rgba(0,0,0,.13)',
   };
 
   return (
@@ -91,27 +93,34 @@ function SiteTopbar({
           position: relative;
           isolation: isolate;
           padding: 4px;
-          border: 1px solid var(--glass-border);
-          border-radius: 16px;
-          background:
-            linear-gradient(145deg, var(--glass-shine), transparent 42%),
-            var(--glass-bg);
-          box-shadow: var(--glass-shadow);
-          -webkit-backdrop-filter: blur(18px) saturate(145%);
-          backdrop-filter: blur(18px) saturate(145%);
-          overflow: hidden;
+          border: 0;
+          border-radius: 999px;
+          background: linear-gradient(-75deg, var(--glass-low), var(--glass-mid), var(--glass-low));
+          box-shadow: var(--glass-depth);
+          -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
         }
-        .site-liquid-controls::before {
+        .site-liquid-controls::after {
           content: '';
           position: absolute;
-          z-index: 0;
-          top: 1px;
-          left: 12px;
-          right: 12px;
-          height: 42%;
-          border-radius: 999px;
-          background: linear-gradient(180deg, var(--glass-shine), transparent);
-          opacity: .5;
+          z-index: 3;
+          inset: -.5px 0 0 -.5px;
+          padding: 1px;
+          border-radius: inherit;
+          background:
+            conic-gradient(
+              from -75deg,
+              var(--glass-edge-dark), transparent 5%, transparent 40%,
+              var(--glass-edge-dark) 50%, transparent 60%, transparent 95%,
+              var(--glass-edge-dark)
+            ),
+            linear-gradient(var(--glass-edge-light), var(--glass-edge-light));
+          box-shadow: inset 0 0 0 .5px var(--glass-edge-light);
+          -webkit-mask:
+            linear-gradient(#000 0 0) content-box,
+            linear-gradient(#000 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
           pointer-events: none;
         }
         .site-liquid-button {
@@ -120,23 +129,21 @@ function SiteTopbar({
           height: 34px;
           min-width: 46px;
           border: 0;
-          border-radius: 11px;
-          background: var(--glass-button);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.16);
+          border-radius: 999px;
+          background: transparent;
+          box-shadow: none;
           transition:
-            transform 180ms cubic-bezier(.16,1,.3,1),
-            background 180ms ease,
-            box-shadow 180ms ease;
+            transform 240ms cubic-bezier(.16,1,.3,1),
+            background 240ms ease,
+            box-shadow 240ms ease;
         }
         .site-liquid-button:hover {
-          background: var(--glass-button-hover);
-          box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.32),
-            0 5px 14px rgba(50,42,28,.08);
-          transform: translateY(-1px);
+          background: linear-gradient(-75deg, var(--glass-low), var(--glass-mid), var(--glass-low));
+          box-shadow: var(--glass-button-depth);
+          transform: scale(1.02);
         }
         .site-liquid-button:active {
-          transform: translateY(0) scale(.96);
+          transform: scale(.96);
         }
         @media (prefers-reduced-motion: reduce) {
           .site-liquid-button { transition: none; }
