@@ -18,14 +18,44 @@ function WorkHarborPage() {
   const [theme, setTheme] = React.useState(() => {
     try { return localStorage.getItem('ascii-theme') || 'dark'; } catch { return 'dark'; }
   });
+  const [lang, setLang] = React.useState(() => {
+    try { return localStorage.getItem('ascii-lang') || 'en'; } catch { return 'en'; }
+  });
+  const [enteredFromCase, setEnteredFromCase] = React.useState(() => {
+    try {
+      const entered = sessionStorage.getItem('ascii-case-transition') === '1';
+      sessionStorage.removeItem('ascii-case-transition');
+      return entered;
+    } catch (_) { return false; }
+  });
+  const [leavingCase, setLeavingCase] = React.useState(false);
   const dark = theme === 'dark';
   const C = window.getAsciiThemePalette(dark);
   const rootRef = React.useRef(null);
+  const [activeSection, setActiveSection] = React.useState('overview');
+  const navItems = [
+    { id: 'overview', label: 'overview' },
+    { id: 'context', label: 'context' },
+    { id: 'process', label: 'process' },
+    { id: 'gallery', label: 'gallery' },
+    { id: 'outcome', label: 'outcome' },
+    { id: 'credits', label: 'credits' },
+  ];
 
   React.useEffect(() => {
     try { localStorage.setItem('ascii-theme', theme); } catch {}
     document.body.style.background = C.bg;
   }, [theme, C.bg]);
+
+  React.useEffect(() => {
+    try { localStorage.setItem('ascii-lang', lang); } catch {}
+  }, [lang]);
+
+  React.useEffect(() => {
+    if (!enteredFromCase) return;
+    const timer = window.setTimeout(() => setEnteredFromCase(false), 560);
+    return () => window.clearTimeout(timer);
+  }, [enteredFromCase]);
 
   React.useEffect(() => {
     const el = rootRef.current;
@@ -43,9 +73,28 @@ function WorkHarborPage() {
     };
   }, []);
 
+  React.useEffect(() => {
+    const nodes = navItems.map(({ id }) => document.getElementById(id)).filter(Boolean);
+    const observer = new IntersectionObserver((entries) => {
+      const current = entries.filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (current) setActiveSection(current.target.id);
+    }, { rootMargin: '-18% 0px -66% 0px', threshold: [0.1, 0.5] });
+    nodes.forEach((node) => observer.observe(node));
+    return () => observer.disconnect();
+  }, []);
+
   const setMode = (m) => setCur((c) => ({ ...c, mode: m }));
   const textProbe = { onMouseEnter: () => setMode('text'), onMouseLeave: () => setMode('default') };
   const linkProbe = { onMouseEnter: () => setMode('link'), onMouseLeave: () => setMode('default') };
+  const onCloseCase = (e) => {
+    if (leavingCase || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    e.preventDefault();
+    setLeavingCase(true);
+    try { sessionStorage.setItem('ascii-case-return-transition', '1'); } catch (_) {}
+    window.setTimeout(() => { window.location.assign('ascii-terminal.html#works'); }, 400);
+  };
 
   const s = {
     wrap: {
@@ -60,7 +109,6 @@ function WorkHarborPage() {
       cursor: 'none',
       transition: 'background .3s, color .3s',
     },
-    crumbs: { color: C.faint, marginBottom: 20, fontSize: 11, letterSpacing: 1 },
     title: {
       fontSize: 44,
       lineHeight: 1.15,
@@ -144,6 +192,15 @@ function WorkHarborPage() {
       display: 'flex',
       justifyContent: 'space-between',
     },
+    caseGrid: {
+      width: 'min(100%, 1180px)', margin: '80px auto 0', display: 'grid',
+      gridTemplateColumns: '130px minmax(0, 1fr)', gap: 'clamp(40px, 8vw, 110px)',
+    },
+    // 与固定顶栏品牌文字共用左侧视觉基线。
+    index: { position: 'sticky', top: 108, alignSelf: 'start', display: 'grid', gap: 14, paddingTop: 4, marginLeft: -5 },
+    indexLink: { color: C.mute, textDecoration: 'none', fontSize: 11, letterSpacing: .2 },
+    indexLinkActive: { color: C.green },
+    main: { minWidth: 0 },
   };
 
   const cursorBlock = window.getSiteCursorStyle(cur, C, dark);
@@ -152,7 +209,40 @@ function WorkHarborPage() {
     <div ref={rootRef} style={s.wrap}>
       <style>{`
         @keyframes ascii-caret-blink { 0%, 48% { opacity: 1; } 50%, 100% { opacity: 0.22; } }
+        @keyframes case-detail-arrival {
+          from { opacity: 0; transform: translate3d(0, 18px, 0) scale(.988); filter: blur(3px); }
+          to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0); }
+        }
+        .case-detail-grid.case-detail-arrival {
+          animation: case-detail-arrival 560ms cubic-bezier(.16,1,.3,1) both;
+        }
+        @keyframes case-detail-departure {
+          from { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0); }
+          to { opacity: 0; transform: translate3d(0, -12px, 0) scale(.982); filter: blur(2px); }
+        }
+        .case-detail-grid.case-detail-leaving {
+          animation: case-detail-departure 340ms cubic-bezier(.4,0,.7,.2) both;
+        }
+        .case-return-veil {
+          position: fixed;
+          inset: 0;
+          z-index: 180;
+          pointer-events: none;
+          opacity: 0;
+          background: ${C.bg};
+          transition: opacity 260ms cubic-bezier(.22,.61,.36,1) 90ms;
+        }
+        .case-return-veil.is-visible { opacity: 1; }
         img, a, button { cursor: none !important; }
+        @media (max-width: 720px) {
+          .case-detail-grid { grid-template-columns: 1fr !important; margin-top: 58px !important; }
+          .case-detail-index { position: static !important; grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; padding: 4px 0 12px !important; border-bottom: 1px dashed ${C.line}; }
+          .case-detail-main > div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .case-detail-grid.case-detail-arrival, .case-detail-grid.case-detail-leaving { animation: none; }
+          .case-return-veil { transition: none; }
+        }
       `}</style>
       <SiteTopbar
         brand="Super lee"
@@ -160,21 +250,25 @@ function WorkHarborPage() {
         dark={dark}
         theme={theme}
         setTheme={setTheme}
+        lang={lang}
+        setLang={setLang}
         homeHrefPrefix="ascii-terminal.html"
+        closeHref="ascii-terminal.html#works"
+        closeOnClick={onCloseCase}
       />
 
-      <div style={s.crumbs}>
-        <a href="ascii-terminal.html" {...linkProbe} style={{ color: C.mute, textDecoration: 'none' }}>~/</a>
-        <span style={{ color: C.dim }}> / </span>
-        <a href="ascii-terminal.html#works" {...linkProbe} style={{ color: C.mute, textDecoration: 'none' }}>work</a>
-        <span style={{ color: C.dim }}> / </span>
-        <span style={{ color: C.accent }}>01-harbor</span>
-      </div>
-
+      <div className={`case-detail-grid${enteredFromCase ? ' case-detail-arrival' : ''}${leavingCase ? ' case-detail-leaving' : ''}`} style={s.caseGrid}>
+      <aside className="case-detail-index" aria-label="Case sections" style={s.index}>
+        {navItems.map((item) => (
+          <a key={item.id} href={`#${item.id}`} {...linkProbe}
+            style={{ ...s.indexLink, ...(activeSection === item.id ? s.indexLinkActive : {}) }}>
+            {item.label}
+          </a>
+        ))}
+      </aside>
+      <main className="case-detail-main" style={s.main}>
+      <div id="overview" style={{ scrollMarginTop: 110 }}>
       <div {...textProbe}>
-        <div style={{ color: C.green, fontSize: 11, letterSpacing: 1 }}>
-          [01] · identity · 2025
-        </div>
         <h1 style={s.title}>
           Harbor — a brand system for a <span style={{ color: C.accent }}>coastal tea co.</span>
         </h1>
@@ -197,8 +291,9 @@ function WorkHarborPage() {
         <img draggable={false} src="assets/works/01-harbor.jpg" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>
       <div style={s.caption}>fig.01 — primary visual, hero composition</div>
+      </div>
 
-      <div style={s.sectionTitle}>── 01 / context ──────────────────────────────────────</div>
+      <div id="context" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── context ─────────────────────────────────────────────</div>
       <div {...textProbe} style={s.prose}>
         Harbor approached us after a false start with a big agency — they
         wanted something that felt &quot;like a small shop, not a chain.&quot; We
@@ -207,7 +302,7 @@ function WorkHarborPage() {
         no photography of smiling farmers, no &quot;hand-crafted&quot; flourishes.
       </div>
 
-      <div style={s.sectionTitle}>── 02 / process ──────────────────────────────────────</div>
+      <div id="process" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── process ─────────────────────────────────────────────</div>
       <div style={s.twoCol}>
         <div {...textProbe} style={{ color: C.mute, fontSize: 13, lineHeight: 1.8 }}>
           Three rounds, eight weeks,<br />
@@ -229,7 +324,7 @@ function WorkHarborPage() {
         </div>
       </div>
 
-      <div style={s.sectionTitle}>── 03 / gallery ──────────────────────────────────────</div>
+      <div id="gallery" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── gallery ─────────────────────────────────────────────</div>
       <div style={s.gallery}>
         <div style={s.galleryTile}>
           <img draggable={false} src="assets/works/01-harbor.jpg" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.85) hue-rotate(-10deg)' }} />
@@ -245,7 +340,7 @@ function WorkHarborPage() {
         </div>
       </div>
 
-      <div style={s.sectionTitle}>── 04 / outcome ──────────────────────────────────────</div>
+      <div id="outcome" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── outcome ─────────────────────────────────────────────</div>
       <div {...textProbe} style={s.prose}>
         Launched in March. The system has since expanded to four
         sub-brands (breakfast, ceremony, gift, wholesale) — all living
@@ -254,8 +349,8 @@ function WorkHarborPage() {
         the shop I always wanted to walk into.&quot;
       </div>
 
-      <div style={{ ...s.sectionTitle, color: C.accent }}>
-        ── 05 / credits ──────────────────────────────────────
+      <div id="credits" style={{ ...s.sectionTitle, color: C.accent, scrollMarginTop: 110 }}>
+        ── credits ─────────────────────────────────────────────
       </div>
       <div style={{ color: C.mute, fontSize: 13, lineHeight: 2, marginBottom: 40 }}>
         Design — <a href="#" {...linkProbe} style={s.link}>Your Name</a>,{' '}
@@ -284,6 +379,10 @@ function WorkHarborPage() {
         <span>© 2025 · handmade, kept simple</span>
         <span>v1.0 · last updated 2025.03</span>
       </div>
+
+      </main>
+      </div>
+      <div className={`case-return-veil${leavingCase ? ' is-visible' : ''}`} aria-hidden="true" />
 
       <div style={cursorBlock} />
     </div>

@@ -34,9 +34,11 @@ const SITE_NAV_ROUTES = [
  * @param {boolean} props.dark
  * @param {string} props.theme
  * @param {function} props.setTheme
+ * @param {string} [props.closeHref] 详情页关闭入口；传入后显示在右侧控制组
  * @param {string} [props.homeHrefPrefix] 详情页填 'ascii-terminal.html'，首页留空
  * @param {string} [props.brandHref] 点击品牌回首页，默认 ascii-terminal.html
  * @param {function} [props.anchorClickFactory] 首页：(href) => (e) => void；详情页不传
+ * @param {function} [props.closeOnClick] 详情页关闭动画完成后跳转；不传时保持普通链接
  */
 function SiteTopbar({
   brand = 'Super lee',
@@ -49,6 +51,8 @@ function SiteTopbar({
   setLang,
   homeHrefPrefix = '',
   anchorClickFactory,
+  closeHref,
+  closeOnClick,
 }) {
   const C = getAsciiThemePalette(dark);
   const topbarStyle = {
@@ -276,6 +280,28 @@ function SiteTopbar({
             </svg>
           )}
         </button>
+        {closeHref && (
+          <a
+            className="site-liquid-button"
+            href={closeHref}
+            onClick={closeOnClick}
+            {...linkProbe}
+            style={{
+              color: C.mute,
+              padding: '0 9px',
+              cursor: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              lineHeight: 1,
+              textDecoration: 'none',
+              fontSize: 18,
+              fontWeight: 300,
+            }}
+            aria-label="关闭案例详情，回到作品列表">
+            ×
+          </a>
+        )}
       </div>
       </div>
     </>

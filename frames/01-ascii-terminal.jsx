@@ -136,6 +136,14 @@ function AsciiTerminal() {
   });
   const [chatOpen, setChatOpen] = React.useState(false);
   const [lang, setLang] = React.useState('zh');
+  const [leavingCase, setLeavingCase] = React.useState(null);
+  const [returnedFromCase, setReturnedFromCase] = React.useState(() => {
+    try {
+      const returned = sessionStorage.getItem('ascii-case-return-transition') === '1';
+      sessionStorage.removeItem('ascii-case-return-transition');
+      return returned;
+    } catch (_) { return false; }
+  });
   const dark = theme === 'dark';
   const C = window.getAsciiThemePalette(dark);
 
@@ -160,6 +168,12 @@ function AsciiTerminal() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [chatOpen]);
+
+  React.useEffect(() => {
+    if (!returnedFromCase) return;
+    const timer = window.setTimeout(() => setReturnedFromCase(false), 620);
+    return () => window.clearTimeout(timer);
+  }, [returnedFromCase]);
 
   const rootRef = React.useRef(null);
 
@@ -222,6 +236,7 @@ function AsciiTerminal() {
     heroBody: {
       display: 'block',
       fontSize: 'clamp(28px, 2.95vw, 34px)',
+      fontWeight: 400,
       lineHeight: 1.5,
       color: C.mute,
       maxWidth: '32ch',
@@ -335,6 +350,17 @@ function AsciiTerminal() {
     } catch (_) {}
   };
 
+  // 作品详情保留原生链接语义；点击时才接管，留出一小段“卡片进入页面”的过渡。
+  const onWorkClick = (href) => (e) => {
+    if (!href || href === '#' || leavingCase) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    e.preventDefault();
+    setLeavingCase(href);
+    try { sessionStorage.setItem('ascii-case-transition', '1'); } catch (_) {}
+    window.setTimeout(() => { window.location.assign(href); }, 430);
+  };
+
   return (
     <div ref={rootRef} style={s.wrap}>
       <style>{`
@@ -342,27 +368,8 @@ function AsciiTerminal() {
         @keyframes cur-pulse { 0%,50%{opacity:1} 50.01%,100%{opacity:0.25} }
         @keyframes ascii-caret-blink { 0%, 48% { opacity: 1; } 50%, 100% { opacity: 0.22; } }
         @keyframes avatar-float-up {
-          0% {
-            opacity: 0;
-            filter: blur(2px) saturate(.9);
-            transform: translate3d(-18px, 58px, 0) scale(.52) rotate(-13deg);
-          }
-          42% {
-            opacity: .72;
-            filter: blur(.8px) saturate(.96);
-            transform: translate3d(-10px, 26px, 0) scale(.74) rotate(-6deg);
-          }
-          74% {
-            opacity: 1;
-            filter: blur(0) saturate(1);
-            transform: translate3d(2px, -3px, 0) scale(1.018) rotate(1.3deg);
-          }
-          90% { transform: translate3d(-.5px, 1px, 0) scale(.997) rotate(-.3deg); }
-          100% {
-            opacity: 1;
-            filter: blur(0) saturate(1);
-            transform: translate3d(0, 0, 0) scale(1) rotate(0);
-          }
+          from { opacity: 0; transform: translate3d(-12px, 34px, 0) scale(.72); }
+          to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
         }
         .hero-avatar {
           position: absolute;
@@ -375,20 +382,15 @@ function AsciiTerminal() {
           overflow: hidden;
           opacity: 0;
           pointer-events: none;
-          filter: blur(2px) saturate(.9);
-          transform: translate3d(-18px, 58px, 0) scale(.52) rotate(-13deg);
+          transform: translate3d(-12px, 34px, 0) scale(.72);
           transform-origin: 34% 82%;
-          transition:
-            opacity .36s ease,
-            filter .4s ease,
-            transform .68s cubic-bezier(.22,.58,.25,1);
-          will-change: transform, opacity, filter;
+          will-change: transform, opacity;
+          backface-visibility: hidden;
         }
         .hero-lead:hover .hero-avatar {
           opacity: 1;
-          filter: blur(0) saturate(1);
-          transform: translate3d(0, 0, 0) scale(1) rotate(0);
-          animation: avatar-float-up 1.08s cubic-bezier(.3,.1,.25,1) both;
+          transform: translate3d(0, 0, 0) scale(1);
+          animation: avatar-float-up 620ms cubic-bezier(.16,1,.3,1) both;
         }
         .hero-avatar img {
           display: block;
@@ -417,6 +419,43 @@ function AsciiTerminal() {
           min-width: 0;
           min-height: 0;
           isolation: isolate;
+          transition: transform 430ms cubic-bezier(.2,.8,.2,1), opacity 260ms ease;
+        }
+        .work-card.is-leaving {
+          position: relative;
+          z-index: 3;
+          transform: scale(1.035);
+        }
+        .work-bento.is-transitioning .work-card:not(.is-leaving) {
+          opacity: .38;
+          transform: scale(.988);
+        }
+        @keyframes work-grid-return {
+          from { opacity: 0; transform: translate3d(0, 16px, 0) scale(.984); filter: blur(2px); }
+          to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0); }
+        }
+        .work-bento.is-returning .work-card {
+          animation: work-grid-return 540ms cubic-bezier(.16,1,.3,1) both;
+        }
+        .work-bento.is-returning .work-card:nth-child(2) { animation-delay: 45ms; }
+        .work-bento.is-returning .work-card:nth-child(3) { animation-delay: 80ms; }
+        .work-bento.is-returning .work-card:nth-child(4) { animation-delay: 115ms; }
+        .case-transition-veil {
+          position: fixed;
+          inset: 0;
+          z-index: 180;
+          pointer-events: none;
+          opacity: 0;
+          background: ${C.bg};
+          transition: opacity 300ms cubic-bezier(.22,.61,.36,1) 110ms;
+        }
+        .case-transition-veil.is-visible { opacity: 1; }
+        .case-transition-veil::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(circle at center, transparent 0 14%, ${C.bg} 68%);
+          opacity: .78;
         }
         .work-card:nth-child(1) { grid-column: 1 / span 7; grid-row: 1 / span 11; }
         .work-card:nth-child(2) { grid-column: 8 / span 5; grid-row: 1 / span 7; }
@@ -427,6 +466,10 @@ function AsciiTerminal() {
             transform: none !important;
             transition: box-shadow .2s ease !important;
           }
+          .work-card, .work-card.is-leaving,
+          .work-bento.is-transitioning .work-card:not(.is-leaving),
+          .case-transition-veil { transition: none !important; transform: none !important; }
+          .work-bento.is-returning .work-card { animation: none; }
           .hero-avatar,
           .hero-lead:hover .hero-avatar {
             animation: none;
@@ -512,18 +555,20 @@ function AsciiTerminal() {
           />
         </svg>
       </div>
-      <div className="work-bento">
+      <div className={`work-bento${leavingCase ? ' is-transitioning' : ''}${returnedFromCase ? ' is-returning' : ''}`}>
         {text.works.map(w => (
           <a
             key={w.n}
-            className="work-card"
+            className={`work-card${leavingCase === w.href ? ' is-leaving' : ''}`}
             href={w.href || '#'}
+            onClick={onWorkClick(w.href)}
             {...linkProbe}
             style={{ textDecoration: 'none', color: 'inherit', display: 'block', cursor: 'none' }}>
             <AsciiTile {...w} theme={theme} fillCell />
           </a>
         ))}
       </div>
+      <div className={`case-transition-veil${leavingCase ? ' is-visible' : ''}`} aria-hidden="true" />
 
       {/* Writing */}
       <div id="writing" style={s.sectionTitle}>{text.writingTitle}</div>
