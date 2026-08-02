@@ -103,11 +103,12 @@ function AsciiTile({ pat, t, k, img, theme, fillCell }) {
         draggable={false}
         style={{
         position: 'absolute', inset: 0, width: '100%', height: '100%',
-        objectFit: 'cover',
+        // 保持原始 4:3 素材完整显示；卡片比例变化时由底色承接余白，不裁切画面。
+        objectFit: 'contain',
         cursor: 'none',
         filter: hover ? 'brightness(1.1) contrast(1.05)' : 'brightness(0.92)',
         transition: 'filter .2s, transform .5s cubic-bezier(.16,1,.3,1)',
-        transform: hover ? 'scale(1.035)' : 'scale(1)',
+        transform: hover ? 'scale(1.018)' : 'scale(1)',
       }} />
       <div style={{
         position: 'absolute', inset: 0,
