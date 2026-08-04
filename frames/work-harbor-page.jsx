@@ -14,6 +14,20 @@ if (typeof window.getSiteCursorStyle !== 'function') {
 
 function WorkHarborPage() {
   const SiteTopbar = window.SiteTopbar;
+  const defaultWork = {
+    title: 'Harbor — a brand system for a',
+    accent: 'coastal tea co.',
+    lede: 'A quiet identity for a small tea company on the Fujian coast. The system draws on maritime signage, concentric wave forms, and a restrained palette — designed to feel steady on a paper bag or on a screen.',
+    client: 'Harbor Tea Co.', year: '2025', role: 'Design lead', team: '2 designers, 1 writer',
+    image: 'assets/works/01-harbor.jpg', caption: 'fig.01 — primary visual, hero composition',
+    context: 'Harbor approached us after a false start with a big agency — they wanted something that felt "like a small shop, not a chain." We took that brief literally: the system lives in a single weight of type, two colors, and a handful of wave motifs. No gradients, no photography of smiling farmers, no "hand-crafted" flourishes.',
+    outcome: 'Launched in March. The system has since expanded to four sub-brands (breakfast, ceremony, gift, wholesale) — all living comfortably inside the same two colors. First print run sold out in 11 days. More importantly, the founder said it "felt like the shop I always wanted to walk into."',
+    nextLabel: 'next · 02', nextTitle: 'Spatial Notes →',
+    processIntro: 'Three rounds, eight weeks,',
+    steps: ['research + audit', 'mark + wordmark', 'system (color, type, grid)', 'packaging + wayfinding', 'guidelines (PDF)'],
+    specs: [['Typeface', 'GT Flexa + custom wordmark'], ['Palette', '#d97757 / #1a1410 / off-white'], ['Paper', 'Munken Kristall 120gsm'], ['Print', '2-color lithography'], ['Tools', 'Figma, Glyphs, InDesign'], ['Delivery', '12-month rollout']],
+    showSpecs: true, showCredits: true,
+  };
   const [cur, setCur] = React.useState({ x: 0, y: 0, mode: 'default', visible: false });
   const [theme, setTheme] = React.useState(() => {
     try { return localStorage.getItem('ascii-theme') || 'dark'; } catch { return 'dark'; }
@@ -21,6 +35,10 @@ function WorkHarborPage() {
   const [lang, setLang] = React.useState(() => {
     try { return localStorage.getItem('ascii-lang') || 'en'; } catch { return 'en'; }
   });
+  const work = (window.__workCaseData && window.__workCaseData[lang]) || defaultWork;
+  const ui = lang === 'zh'
+    ? { nav: ['概览', '背景', '过程', '画廊', '成果', '鸣谢'], client: '客户', year: '年份', role: '角色', team: '团队', context: '背景', process: '过程', gallery: '画廊', outcome: '成果', credits: '鸣谢', back: '← 返回', allWork: '全部案例' }
+    : { nav: ['overview', 'context', 'process', 'gallery', 'outcome', 'credits'], client: 'Client', year: 'Year', role: 'Role', team: 'Team', context: 'context', process: 'process', gallery: 'gallery', outcome: 'outcome', credits: 'credits', back: '← back', allWork: 'all work' };
   const [enteredFromCase, setEnteredFromCase] = React.useState(() => {
     try {
       const entered = sessionStorage.getItem('ascii-case-transition') === '1';
@@ -33,14 +51,9 @@ function WorkHarborPage() {
   const C = window.getAsciiThemePalette(dark);
   const rootRef = React.useRef(null);
   const [activeSection, setActiveSection] = React.useState('overview');
-  const navItems = [
-    { id: 'overview', label: 'overview' },
-    { id: 'context', label: 'context' },
-    { id: 'process', label: 'process' },
-    { id: 'gallery', label: 'gallery' },
-    { id: 'outcome', label: 'outcome' },
-    { id: 'credits', label: 'credits' },
-  ];
+  const navItems = ['overview', 'context', 'process', 'gallery', 'outcome', 'credits']
+    .map((id, index) => ({ id, label: ui.nav[index] }))
+    .filter((item) => item.id !== 'credits' || work.showCredits !== false);
 
   React.useEffect(() => {
     try { localStorage.setItem('ascii-theme', theme); } catch {}
@@ -270,107 +283,89 @@ function WorkHarborPage() {
       <div id="overview" style={{ scrollMarginTop: 110 }}>
       <div {...textProbe}>
         <h1 style={s.title}>
-          Harbor — a brand system for a <span style={{ color: C.accent }}>coastal tea co.</span>
+          {work.title}{work.accent && <> <span style={{ color: C.accent }}>{work.accent}</span></>}
         </h1>
-        <p style={s.lede}>
-          A quiet identity for a small tea company on the Fujian coast.
-          The system draws on maritime signage, concentric wave forms, and
-          a restrained palette — designed to feel steady on a paper bag or
-          on a screen.
-        </p>
+        <p style={s.lede}>{work.lede}</p>
       </div>
 
       <div style={s.metaGrid}>
-        <div><div style={s.metaLabel}>Client</div><div style={s.metaVal}>Harbor Tea Co.</div></div>
-        <div><div style={s.metaLabel}>Year</div><div style={s.metaVal}>2025</div></div>
-        <div><div style={s.metaLabel}>Role</div><div style={s.metaVal}>Design lead</div></div>
-        <div><div style={s.metaLabel}>Team</div><div style={s.metaVal}>2 designers, 1 writer</div></div>
+        <div><div style={s.metaLabel}>{ui.client}</div><div style={s.metaVal}>{work.client}</div></div>
+        <div><div style={s.metaLabel}>{ui.year}</div><div style={s.metaVal}>{work.year}</div></div>
+        <div><div style={s.metaLabel}>{ui.role}</div><div style={s.metaVal}>{work.role}</div></div>
+        <div><div style={s.metaLabel}>{ui.team}</div><div style={s.metaVal}>{work.team}</div></div>
       </div>
 
       <div style={s.hero}>
-        <img draggable={false} src="assets/works/01-harbor.jpg" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <img draggable={false} src={work.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>
-      <div style={s.caption}>fig.01 — primary visual, hero composition</div>
-      </div>
-
-      <div id="context" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── context ─────────────────────────────────────────────</div>
-      <div {...textProbe} style={s.prose}>
-        Harbor approached us after a false start with a big agency — they
-        wanted something that felt &quot;like a small shop, not a chain.&quot; We
-        took that brief literally: the system lives in a single weight of
-        type, two colors, and a handful of wave motifs. No gradients,
-        no photography of smiling farmers, no &quot;hand-crafted&quot; flourishes.
+      <div style={s.caption}>{work.caption}</div>
       </div>
 
-      <div id="process" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── process ─────────────────────────────────────────────</div>
-      <div style={s.twoCol}>
+      <div id="context" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── {ui.context} ─────────────────────────────────────────────</div>
+      <div {...textProbe} style={{ ...s.prose, whiteSpace: 'pre-line' }}>
+        {work.context}
+      </div>
+
+      <div id="process" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── {ui.process} ─────────────────────────────────────────────</div>
+      <div style={{ ...s.twoCol, gridTemplateColumns: work.showSpecs === false ? '1fr' : s.twoCol.gridTemplateColumns }}>
         <div {...textProbe} style={{ color: C.mute, fontSize: 13, lineHeight: 1.8 }}>
-          Three rounds, eight weeks,<br />
-          200+ sketches, one final mark.<br /><br />
-          <span style={{ color: C.dim }}>$ history | tail</span><br />
-          <span style={{ color: C.green }}>01</span> research + audit<br />
-          <span style={{ color: C.green }}>02</span> mark + wordmark<br />
-          <span style={{ color: C.green }}>03</span> system (color, type, grid)<br />
-          <span style={{ color: C.green }}>04</span> packaging + wayfinding<br />
-          <span style={{ color: C.green }}>05</span> guidelines (PDF)
+          {work.processIntro}<br />
+          <br />
+          {work.showHistory !== false && <><span style={{ color: C.dim }}>$ history | tail</span><br /></>}
+          {work.steps.map((step, index) => <React.Fragment key={step}><span style={{ color: C.green }}>{String(index + 1).padStart(2, '0')}</span> {step}<br /></React.Fragment>)}
         </div>
-        <div>
-          <div style={s.kvRow}><span style={s.kvKey}>Typeface</span><span>GT Flexa + custom wordmark</span></div>
-          <div style={s.kvRow}><span style={s.kvKey}>Palette</span><span>#d97757 / #1a1410 / off-white</span></div>
-          <div style={s.kvRow}><span style={s.kvKey}>Paper</span><span>Munken Kristall 120gsm</span></div>
-          <div style={s.kvRow}><span style={s.kvKey}>Print</span><span>2-color lithography</span></div>
-          <div style={s.kvRow}><span style={s.kvKey}>Tools</span><span>Figma, Glyphs, InDesign</span></div>
-          <div style={s.kvRow}><span style={s.kvKey}>Delivery</span><span>12-month rollout</span></div>
-        </div>
+        {work.showSpecs !== false && <div>
+          {work.specs.map(([key, value]) => <div key={key} style={s.kvRow}><span style={s.kvKey}>{key}</span><span>{value}</span></div>)}
+        </div>}
       </div>
 
-      <div id="gallery" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── gallery ─────────────────────────────────────────────</div>
-      <div style={s.gallery}>
-        <div style={s.galleryTile}>
-          <img draggable={false} src="assets/works/01-harbor.jpg" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.85) hue-rotate(-10deg)' }} />
-        </div>
-        <div style={s.galleryTile}>
-          <img draggable={false} src="assets/works/04-quiet.jpg" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.9) hue-rotate(10deg)' }} />
-        </div>
-        <div style={s.galleryTile}>
-          <img draggable={false} src="assets/works/06-ink.jpg" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.85)' }} />
-        </div>
-        <div style={s.galleryTile}>
-          <img draggable={false} src="assets/works/01-harbor.jpg" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'grayscale(0.3) brightness(0.9)' }} />
-        </div>
+      <div id="gallery" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── {ui.gallery} ─────────────────────────────────────────────</div>
+      <div style={{ ...s.gallery, ...(work.gallery ? { gridTemplateColumns: '1fr', gap: 20 } : {}) }}>
+        {(work.gallery || [work.image, work.image, work.image, work.image]).map((entry, index) => {
+          const image = typeof entry === 'string' ? entry : entry.src;
+          return <div key={`${image}-${index}`}>
+            {typeof entry !== 'string' && <div style={{ marginBottom: 10 }}>
+              <div style={{ color: C.fg, fontSize: 14, lineHeight: 1.4 }}>{String(index + 1).padStart(2, '0')} · {entry.title}</div>
+              <div style={{ color: C.mute, fontSize: 12, lineHeight: 1.5, marginTop: 3 }}>{entry.subtitle}</div>
+            </div>}
+            <div style={{ ...s.galleryTile, ...(work.gallery ? { aspectRatio: 'auto', borderRadius: 16, overflow: 'hidden' } : {}) }}>
+              <img draggable={false} src={image} alt={typeof entry === 'string' ? '' : entry.title} style={work.gallery
+                ? { display: 'block', width: '100%', height: 'auto', borderRadius: 'inherit' }
+                : { width: '100%', height: '100%', objectFit: 'cover', filter: ['brightness(0.85) hue-rotate(-10deg)', 'brightness(0.9) hue-rotate(10deg)', 'brightness(0.85)', 'grayscale(0.3) brightness(0.9)'][index] }} />
+            </div>
+          </div>;
+        })}
       </div>
 
-      <div id="outcome" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── outcome ─────────────────────────────────────────────</div>
+      <div id="outcome" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── {ui.outcome} ─────────────────────────────────────────────</div>
       <div {...textProbe} style={s.prose}>
-        Launched in March. The system has since expanded to four
-        sub-brands (breakfast, ceremony, gift, wholesale) — all living
-        comfortably inside the same two colors. First print run sold
-        out in 11 days. More importantly, the founder said it &quot;felt like
-        the shop I always wanted to walk into.&quot;
+        {work.outcome}
       </div>
 
-      <div id="credits" style={{ ...s.sectionTitle, color: C.accent, scrollMarginTop: 110 }}>
-        ── credits ─────────────────────────────────────────────
-      </div>
-      <div style={{ color: C.mute, fontSize: 13, lineHeight: 2, marginBottom: 40 }}>
-        Design — <a href="#" {...linkProbe} style={s.link}>Your Name</a>,{' '}
-        <a href="#" {...linkProbe} style={s.link}>Collaborator</a><br />
-        Copy — <a href="#" {...linkProbe} style={s.link}>Writer</a><br />
-        Photography — <a href="#" {...linkProbe} style={s.link}>Studio Name</a><br />
-        Thanks — the Harbor team, and everyone at the teahouse in Xiamen
-      </div>
+      {work.showCredits !== false && <>
+        <div id="credits" style={{ ...s.sectionTitle, color: C.accent, scrollMarginTop: 110 }}>
+          ── {ui.credits} ─────────────────────────────────────────────
+        </div>
+        <div style={{ color: C.mute, fontSize: 13, lineHeight: 2, marginBottom: 40 }}>
+          Design — <a href="#" {...linkProbe} style={s.link}>Your Name</a>,{' '}
+          <a href="#" {...linkProbe} style={s.link}>Collaborator</a><br />
+          Copy — <a href="#" {...linkProbe} style={s.link}>Writer</a><br />
+          Photography — <a href="#" {...linkProbe} style={s.link}>Studio Name</a><br />
+          Thanks — the Harbor team, and everyone at the teahouse in Xiamen
+        </div>
+      </>}
 
       <div style={s.nextNav}>
         <a href="ascii-terminal.html" {...linkProbe} style={{ textDecoration: 'none', color: C.fg }}>
           <div style={s.nextBlock}>
-            <span style={s.nextSmall}>← back</span>
-            <span style={s.nextBig}>all work</span>
+            <span style={s.nextSmall}>{ui.back}</span>
+            <span style={s.nextBig}>{ui.allWork}</span>
           </div>
         </a>
         <a href="#" {...linkProbe} style={{ textDecoration: 'none', color: C.fg, textAlign: 'right' }}>
           <div style={s.nextBlock}>
-            <span style={{ ...s.nextSmall, color: C.accent }}>next · 02</span>
-            <span style={s.nextBig}>Spatial Notes →</span>
+            <span style={{ ...s.nextSmall, color: C.accent }}>{work.nextLabel}</span>
+            <span style={s.nextBig}>{work.nextTitle}</span>
           </div>
         </a>
       </div>

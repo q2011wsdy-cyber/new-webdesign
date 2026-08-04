@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <title>Pimax · Work Detail — ASCII Terminal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    html, body, #root { margin: 0; padding: 0; width: 100%; min-height: 100%; }
+    body { background: #0b0b0b; }
+    * { box-sizing: border-box; }
+  </style>
+  <script src="vendor/react.production.min.js"></script>
+  <script src="vendor/react-dom.production.min.js"></script>
+  <script src="vendor/babel.min.js"></script>
+  <script src="frames/site-cursor.js?v=2"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    window.__workCaseData = {
+      en: {
+        title: 'Pimax', accent: '',
+        lede: 'A smart light string project that brings hardware and software together in an easy-to-use, feature-rich, and playful experience.',
+        client: 'Pimax', year: '2024', role: 'Product design', team: '1 designer, 2 engineers', image: 'assets/works/02-spatial.jpg', caption: 'fig.01 — spatial interface study',
+        context: 'The Pimax smart light string project combines hardware and software into an easy-to-use, feature-rich and playful experience. As product designer, I worked closely with the client and development team, leading visual direction, UX and UI delivery from 0 to 1.',
+        processIntro: 'The core flow balances playful light-string possibilities with simple, easy-to-understand interaction.', steps: ['product audit', 'interaction model', 'spatial control system', 'prototype + testing', 'handoff specification'],
+        showSpecs: false, showCredits: false, showHistory: false,
+        gallery: [
+          { src: 'assets/works/pimax/01-onboarding.png', title: 'Device onboarding', subtitle: 'A guided path from nearby discovery to device setup.' },
+          { src: 'assets/works/pimax/02-colors.png', title: 'Color control', subtitle: 'One effect, many color possibilities.' },
+          { src: 'assets/works/pimax/03-camera.png', title: 'Camera recognition', subtitle: 'Capture a light-string layout and turn it into an editable canvas.' },
+          { src: 'assets/works/pimax/04-templates.png', title: 'Template library', subtitle: 'A broad set of ready-made visual effects.' },
+          { src: 'assets/works/pimax/05-create.png', title: 'Create mode', subtitle: 'Translate an idea into a custom light effect.' },
+          { src: 'assets/works/pimax/06-tools.png', title: 'Creative tools', subtitle: 'Brush, gradient, effects, eraser, and realistic light-string tools.' },
+          { src: 'assets/works/pimax/07-tools-detail.png', title: 'Editing controls', subtitle: 'A closer look at the controls behind each custom effect.' },
+          { src: 'assets/works/pimax/08-music.png', title: 'Music mode', subtitle: 'Lights respond to the rhythm and frequency of sound.' }
+        ],
+        outcome: 'The concept established a calmer starting point for device setup and daily controls. By reducing surface noise and treating depth as a navigation cue, the system made a dense capability set feel more immediate and more human.', nextLabel: 'next · 03', nextTitle: 'AI OS Concept →'
+      },
+      zh: {
+        title: 'Pimax', accent: '',
+        lede: 'Pimax 智能灯串项目通过软硬件的有机结合，为用户提供一个易于操作、功能丰富且具备可玩性的解决方案。',
+        client: 'Pimax', year: '2024', role: '产品设计', team: '1 位设计师，2 位工程师', image: 'assets/works/02-spatial.jpg', caption: 'fig.01 —— 空间界面研究',
+        context: 'Pimax智能灯串项目希望通过软硬件的有机结合，为用户提供一个易于操作且功能丰富、具备可玩性的解决方案。\n\n我在其中作为产品设计师的角色，与委托人、开发团队密切合作，从0到1主导了视觉方向的定义、UX与UI设计的完整交付。',
+        processIntro: '在核心流程中，结合产品的核心卖点，让产品具备可玩性的同时，兼具简单易懂的交互体验。', steps: ['产品体验审视', '交互模型构建', '空间控制系统', '原型与测试', '交付规范'],
+        showSpecs: false, showCredits: false, showHistory: false,
+        gallery: [
+          { src: 'assets/works/pimax/01-onboarding.png', title: '设备连接', subtitle: '从发现附近设备到完成添加的引导流程。' },
+          { src: 'assets/works/pimax/02-colors.png', title: '色彩控制', subtitle: '同一种效果，呈现不同的色彩表达。' },
+          { src: 'assets/works/pimax/03-camera.png', title: '相机识别', subtitle: '捕捉灯串布局，将真实场景转为可编辑画布。' },
+          { src: 'assets/works/pimax/04-templates.png', title: '模板库', subtitle: '丰富的预设效果，让体验即刻开始。' },
+          { src: 'assets/works/pimax/05-create.png', title: '创造模式', subtitle: '把脑海中的感觉变成可编辑的灯光效果。' },
+          { src: 'assets/works/pimax/06-tools.png', title: '创作工具', subtitle: '画笔、渐变、效果、橡皮擦与真实灯串工具。' },
+          { src: 'assets/works/pimax/07-tools-detail.png', title: '编辑控制', subtitle: '深入查看每一个自定义效果的精细控制。' },
+          { src: 'assets/works/pimax/08-music.png', title: '音乐模式', subtitle: '让灯光随音乐的频率和节奏闪烁。' }
+        ],
+        outcome: '这个概念为设备设置和日常控制建立了更平静的起点。通过减少界面噪声、让深度成为导航提示，密集的能力集合也能够被更直接、更有人情味地理解。', nextLabel: '下一个 · 03', nextTitle: 'AI OS 概念探索 →'
+      }
+    };
+  </script>
+  <script type="text/babel" src="frames/site-topbar.jsx?v=site-shell-14-fixed-clear"></script>
+  <script type="text/babel" src="frames/work-harbor-page.jsx?v=site-shell-16-pimax-rounded"></script>
+  <script type="text/babel" data-presets="react">
+    (function boot() {
+      if (!window.React || !window.ReactDOM || !window.WorkHarborPage || !window.SiteTopbar || !window.getAsciiThemePalette) {
+        if (typeof boot.tries === 'undefined') boot.tries = 0;
+        if (boot.tries++ < 200) { setTimeout(boot, 15); return; }
+        var el = document.getElementById('root');
+        if (el) el.innerHTML = '<p style="padding:24px;font-family:monospace">脚本未就绪，请硬刷新或检查 frames/ 下文件是否加载。</p>';
+        return;
+      }
+      if (window.__workPimaxBooted) return;
+      window.__workPimaxBooted = true;
+      ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(window.WorkHarborPage));
+    })();
+  </script>
+</body>
+</html>

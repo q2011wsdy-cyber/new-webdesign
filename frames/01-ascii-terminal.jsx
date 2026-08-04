@@ -297,7 +297,7 @@ function AsciiTerminal() {
       footerRight: 'v1.0 · updated 2026.07',
       works: [
         { n: '01', t: 'Huolala', y: '2025', k: 'product', pat: PATTERNS[0], img: 'assets/works/01-harbor.jpg', href: 'work-harbor.html' },
-        { n: '02', t: 'Pimax', y: '2025', k: 'product', pat: PATTERNS[1], img: 'assets/works/02-spatial.jpg' },
+        { n: '02', t: 'Pimax', y: '2025', k: 'product', pat: PATTERNS[1], img: 'assets/works/02-spatial.jpg', href: 'work-pimax.html' },
         { n: '03', t: 'AI OS Concept', y: '2024', k: 'concept', pat: PATTERNS[2], img: 'assets/works/03-zixiang.jpg' },
         { n: '04', t: 'OPPO', y: '2024', k: 'product', pat: PATTERNS[3], img: 'assets/works/04-quiet.jpg' },
       ],
@@ -313,7 +313,7 @@ function AsciiTerminal() {
       footerRight: 'v1.0 · 更新于 2026.07',
       works: [
         { n: '01', t: '货拉拉', y: '2025', k: 'product', pat: PATTERNS[0], img: 'assets/works/01-harbor.jpg', href: 'work-harbor.html' },
-        { n: '02', t: 'pimax', y: '2025', k: 'product', pat: PATTERNS[1], img: 'assets/works/02-spatial.jpg' },
+        { n: '02', t: 'pimax', y: '2025', k: 'product', pat: PATTERNS[1], img: 'assets/works/02-spatial.jpg', href: 'work-pimax.html' },
         { n: '03', t: 'ai os 概念探索', y: '2024', k: 'concept', pat: PATTERNS[2], img: 'assets/works/03-zixiang.jpg' },
         { n: '04', t: 'oppo', y: '2024', k: 'product', pat: PATTERNS[3], img: 'assets/works/04-quiet.jpg' },
       ],
@@ -570,42 +570,6 @@ function AsciiTerminal() {
         ))}
       </div>
       <div className={`case-transition-veil${leavingCase ? ' is-visible' : ''}`} aria-hidden="true" />
-
-      {/* Writing */}
-      <div id="writing" style={s.sectionTitle}>{text.writingTitle}</div>
-      {writings.map(([t, m, d]) => (
-        <div key={t} style={{ ...s.row, gridTemplateColumns: '1fr 80px 90px' }}>
-          <a href="#" {...linkProbe} style={s.link}>{t}</a>
-          <span style={s.dim}>{m}</span>
-          <span style={s.dim}>{d}</span>
-        </div>
-      ))}
-
-      {/* Lab */}
-      <div id="lab" style={s.sectionTitle}>{text.labTitle}</div>
-      <div {...textProbe} style={{ color: C.chipText, maxWidth: 520, marginBottom: 12 }}>
-        {text.labBody}
-      </div>
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        {['cursor.js', 'kern-lab', 'rgb-sort', 'ascii-clock', 'ink-bleed', '+ 12 more'].map(n => (
-          <a key={n} href="#" {...linkProbe} style={{
-            padding: '4px 10px', border: `1px solid ${C.chip}`, color: C.chipText,
-            fontSize: 11, textDecoration: 'none',
-          }}>{n}</a>
-        ))}
-      </div>
-
-      {/* Contact strip */}
-      <div id="contact" style={s.sectionTitle}>contact</div>
-      <div {...textProbe} style={{ fontSize: 18, color: C.fg }}>
-        <a href="#" {...linkProbe} style={s.link}>hello@yourname.xyz</a>
-        <span style={{ color: C.linkBorder, margin: '0 12px' }}>·</span>
-        <a href="#" {...linkProbe} style={s.link}>github</a>
-        <span style={{ color: C.linkBorder, margin: '0 12px' }}>·</span>
-        <a href="#" {...linkProbe} style={s.link}>read.cv</a>
-        <span style={{ color: C.linkBorder, margin: '0 12px' }}>·</span>
-        <a href="#" {...linkProbe} style={s.link}>rss</a>
-      </div>
 
       <div style={s.footer}>
         <span>{text.footerLeft}</span>
