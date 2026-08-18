@@ -12,21 +12,87 @@ if (typeof window.getSiteCursorStyle !== 'function') {
   };
 }
 
+function CaseLottie({ media, C }) {
+  const containerRef = React.useRef(null);
+  const [error, setError] = React.useState('');
+
+  React.useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !window.lottie) {
+      setError('Lottie player is unavailable.');
+      return undefined;
+    }
+    setError('');
+    let animation;
+    try {
+      animation = window.lottie.loadAnimation({
+        container,
+        renderer: media.renderer || 'svg',
+        loop: media.loop !== false,
+        autoplay: media.autoplay !== false,
+        path: media.src,
+        animationData: media.data,
+        rendererSettings: { preserveAspectRatio: media.preserveAspectRatio || 'xMidYMid meet' },
+      });
+    } catch (err) {
+      setError(err && err.message ? err.message : 'Unable to load Lottie animation.');
+    }
+    return () => { if (animation) animation.destroy(); };
+  }, [media.src, media.data, media.loop, media.autoplay, media.renderer, media.preserveAspectRatio]);
+
+  return (
+    <div style={{ minHeight: 220, aspectRatio: media.aspectRatio || '16/9', display: 'grid', placeItems: 'center', background: media.background || 'transparent' }}>
+      <div ref={containerRef} role="img" aria-label={media.alt || media.title || 'Lottie animation'} style={{ width: '100%', height: '100%' }} />
+      {error && <div style={{ color: C.mute, fontSize: 11, padding: 16 }}>{error}</div>}
+    </div>
+  );
+}
+
 function WorkHarborPage() {
   const SiteTopbar = window.SiteTopbar;
   const defaultWork = {
     title: 'Harbor — a brand system for a',
     accent: 'coastal tea co.',
-    lede: 'A quiet identity for a small tea company on the Fujian coast. The system draws on maritime signage, concentric wave forms, and a restrained palette — designed to feel steady on a paper bag or on a screen.',
+    subtitle: 'A quiet identity for a small tea company on the Fujian coast. The system draws on maritime signage, concentric wave forms, and a restrained palette — designed to feel steady on a paper bag or on a screen.',
+    cover: { src: 'assets/works/01-harbor.jpg', alt: 'Harbor primary visual', caption: 'fig.01 — primary visual, hero composition', fit: 'cover' },
     client: 'Harbor Tea Co.', year: '2025', role: 'Design lead', team: '2 designers, 1 writer',
-    image: 'assets/works/01-harbor.jpg', caption: 'fig.01 — primary visual, hero composition',
-    context: 'Harbor approached us after a false start with a big agency — they wanted something that felt "like a small shop, not a chain." We took that brief literally: the system lives in a single weight of type, two colors, and a handful of wave motifs. No gradients, no photography of smiling farmers, no "hand-crafted" flourishes.',
-    outcome: 'Launched in March. The system has since expanded to four sub-brands (breakfast, ceremony, gift, wholesale) — all living comfortably inside the same two colors. First print run sold out in 11 days. More importantly, the founder said it "felt like the shop I always wanted to walk into."',
     nextLabel: 'next · 02', nextTitle: 'Spatial Notes →',
-    processIntro: 'Three rounds, eight weeks,',
-    steps: ['research + audit', 'mark + wordmark', 'system (color, type, grid)', 'packaging + wayfinding', 'guidelines (PDF)'],
-    specs: [['Typeface', 'GT Flexa + custom wordmark'], ['Palette', '#d97757 / #1a1410 / off-white'], ['Paper', 'Munken Kristall 120gsm'], ['Print', '2-color lithography'], ['Tools', 'Figma, Glyphs, InDesign'], ['Delivery', '12-month rollout']],
-    showSpecs: true, showCredits: true,
+    sections: [
+      {
+        id: 'context', title: 'context', blocks: [
+          { type: 'text', body: 'Harbor approached us after a false start with a big agency — they wanted something that felt "like a small shop, not a chain." We took that brief literally: the system lives in a single weight of type, two colors, and a handful of wave motifs. No gradients, no photography of smiling farmers, no "hand-crafted" flourishes.' },
+        ],
+      },
+      {
+        id: 'process', title: 'process', blocks: [
+          {
+            type: 'steps', intro: 'Three rounds, eight weeks,', command: '$ history | tail',
+            items: ['research + audit', 'mark + wordmark', 'system (color, type, grid)', 'packaging + wayfinding', 'guidelines (PDF)'],
+            specs: [['Typeface', 'GT Flexa + custom wordmark'], ['Palette', '#d97757 / #1a1410 / off-white'], ['Paper', 'Munken Kristall 120gsm'], ['Print', '2-color lithography'], ['Tools', 'Figma, Glyphs, InDesign'], ['Delivery', '12-month rollout']],
+          },
+        ],
+      },
+      {
+        id: 'gallery', title: 'gallery', blocks: [
+          { type: 'gallery', columns: 2, aspectRatio: '4/3', fit: 'cover', items: [
+            { src: 'assets/works/01-harbor.jpg', alt: 'Harbor visual study 1' },
+            { src: 'assets/works/01-harbor.jpg', alt: 'Harbor visual study 2' },
+            { src: 'assets/works/01-harbor.jpg', alt: 'Harbor visual study 3' },
+            { src: 'assets/works/01-harbor.jpg', alt: 'Harbor visual study 4' },
+          ] },
+        ],
+      },
+      {
+        id: 'outcome', title: 'outcome', blocks: [
+          { type: 'text', body: 'Launched in March. The system has since expanded to four sub-brands (breakfast, ceremony, gift, wholesale) — all living comfortably inside the same two colors. First print run sold out in 11 days. More importantly, the founder said it "felt like the shop I always wanted to walk into."' },
+        ],
+      },
+      {
+        id: 'credits', title: 'credits', accent: true, blocks: [
+          { type: 'text', body: 'Design — Your Name, Collaborator\nCopy — Writer\nPhotography — Studio Name\nThanks — the Harbor team, and everyone at the teahouse in Xiamen' },
+        ],
+      },
+    ],
   };
   const [cur, setCur] = React.useState({ x: 0, y: 0, mode: 'default', visible: false });
   const [theme, setTheme] = React.useState(() => {
@@ -35,10 +101,33 @@ function WorkHarborPage() {
   const [lang, setLang] = React.useState(() => {
     try { return localStorage.getItem('ascii-lang') || 'en'; } catch { return 'en'; }
   });
-  const work = (window.__workCaseData && window.__workCaseData[lang]) || defaultWork;
+  const rawWork = (window.__workCaseData && window.__workCaseData[lang]) || defaultWork;
   const ui = lang === 'zh'
-    ? { nav: ['概览', '背景', '过程', '画廊', '成果', '鸣谢'], client: '客户', year: '年份', role: '角色', team: '团队', context: '背景', process: '过程', gallery: '画廊', outcome: '成果', credits: '鸣谢', back: '← 返回', allWork: '全部案例' }
-    : { nav: ['overview', 'context', 'process', 'gallery', 'outcome', 'credits'], client: 'Client', year: 'Year', role: 'Role', team: 'Team', context: 'context', process: 'process', gallery: 'gallery', outcome: 'outcome', credits: 'credits', back: '← back', allWork: 'all work' };
+    ? { overview: '概览', client: '客户', year: '年份', role: '角色', team: '团队', context: '背景', process: '过程', gallery: '画廊', outcome: '成果', credits: '鸣谢', back: '← 返回', allWork: '全部案例' }
+    : { overview: 'overview', client: 'Client', year: 'Year', role: 'Role', team: 'Team', context: 'context', process: 'process', gallery: 'gallery', outcome: 'outcome', credits: 'credits', back: '← back', allWork: 'all work' };
+  const legacySections = [
+    rawWork.context && { id: 'context', title: ui.context, blocks: [{ type: 'text', body: rawWork.context }] },
+    (rawWork.processIntro || rawWork.steps) && { id: 'process', title: ui.process, blocks: [{ type: 'steps', intro: rawWork.processIntro, command: rawWork.showHistory === false ? '' : '$ history | tail', items: rawWork.steps || [], specs: rawWork.showSpecs === false ? [] : (rawWork.specs || []) }] },
+    rawWork.gallery && { id: 'gallery', title: ui.gallery, blocks: [{ type: 'gallery', columns: 1, radius: 16, items: rawWork.gallery }] },
+    rawWork.outcome && { id: 'outcome', title: ui.outcome, blocks: [{ type: 'text', body: rawWork.outcome }] },
+  ].filter(Boolean);
+  const work = {
+    ...rawWork,
+    subtitle: rawWork.subtitle || rawWork.lede,
+    cover: rawWork.cover || (rawWork.image ? { src: rawWork.image, alt: rawWork.title, caption: rawWork.caption, fit: 'cover' } : null),
+    sections: Array.isArray(rawWork.sections) ? rawWork.sections : legacySections,
+  };
+  const missingRequired = [
+    !work.title && 'title',
+    !work.subtitle && 'subtitle',
+    !(work.cover && work.cover.src) && 'cover.src',
+  ].filter(Boolean);
+  const metadata = Array.isArray(work.meta) ? work.meta : [
+    work.client && { label: ui.client, value: work.client },
+    work.year && { label: ui.year, value: work.year },
+    work.role && { label: ui.role, value: work.role },
+    work.team && { label: ui.team, value: work.team },
+  ].filter(Boolean);
   const [enteredFromCase, setEnteredFromCase] = React.useState(() => {
     try {
       const entered = sessionStorage.getItem('ascii-case-transition') === '1';
@@ -51,9 +140,14 @@ function WorkHarborPage() {
   const C = window.getAsciiThemePalette(dark);
   const rootRef = React.useRef(null);
   const [activeSection, setActiveSection] = React.useState('overview');
-  const navItems = ['overview', 'context', 'process', 'gallery', 'outcome', 'credits']
-    .map((id, index) => ({ id, label: ui.nav[index] }))
-    .filter((item) => item.id !== 'credits' || work.showCredits !== false);
+  const navItems = [
+    { id: 'overview', label: ui.overview },
+    ...work.sections.map((section, index) => ({
+      id: section.id || `section-${index + 1}`,
+      label: section.title || ui[section.id] || section.id || `section ${index + 1}`,
+    })),
+  ];
+  const navSectionKey = navItems.map(({ id }) => id).join('|');
 
   React.useEffect(() => {
     try { localStorage.setItem('ascii-theme', theme); } catch {}
@@ -95,7 +189,7 @@ function WorkHarborPage() {
     }, { rootMargin: '-18% 0px -66% 0px', threshold: [0.1, 0.5] });
     nodes.forEach((node) => observer.observe(node));
     return () => observer.disconnect();
-  }, []);
+  }, [navSectionKey]);
 
   const setMode = (m) => setCur((c) => ({ ...c, mode: m }));
   const textProbe = { onMouseEnter: () => setMode('text'), onMouseLeave: () => setMode('default') };
@@ -176,6 +270,10 @@ function WorkHarborPage() {
       position: 'relative',
       overflow: 'hidden',
     },
+    blockStack: { display: 'grid', gap: 24, marginBottom: 40 },
+    blockTitle: { color: C.fg, fontSize: 16, lineHeight: 1.4, marginBottom: 5 },
+    blockSubtitle: { color: C.mute, fontSize: 12, lineHeight: 1.6, marginBottom: 10 },
+    mediaFrame: { background: dark ? '#111' : C.chatBg, border: `1px solid ${C.line}`, overflow: 'hidden' },
     twoCol: { display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 40, marginBottom: 40 },
     kvRow: {
       display: 'grid',
@@ -216,7 +314,111 @@ function WorkHarborPage() {
     main: { minWidth: 0 },
   };
 
+  const renderMedia = (rawMedia, key) => {
+    const media = typeof rawMedia === 'string' ? { type: 'image', src: rawMedia } : (rawMedia || {});
+    const type = media.type || 'image';
+    const radius = media.radius == null ? 12 : media.radius;
+    let content;
+
+    if (type === 'video') {
+      content = (
+        <video
+          src={media.src}
+          poster={media.poster}
+          controls={media.controls !== false}
+          autoPlay={Boolean(media.autoplay)}
+          loop={Boolean(media.loop)}
+          muted={media.muted !== false}
+          playsInline
+          preload={media.preload || 'metadata'}
+          aria-label={media.alt || media.title || 'Case study video'}
+          style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: media.aspectRatio, objectFit: media.fit || 'contain' }}
+        />
+      );
+    } else if (type === 'lottie' || type === 'json') {
+      content = <CaseLottie media={media} C={C} />;
+    } else {
+      content = (
+        <img
+          draggable={false}
+          src={media.src}
+          alt={media.alt || media.title || ''}
+          loading={media.loading || 'lazy'}
+          style={{ display: 'block', width: '100%', height: media.height || 'auto', aspectRatio: media.aspectRatio, objectFit: media.fit || 'contain' }}
+        />
+      );
+    }
+
+    return (
+      <figure key={key} style={{ margin: 0 }}>
+        {(media.title || media.subtitle) && <figcaption style={{ marginBottom: 10 }}>
+          {media.title && <div style={s.blockTitle}>{media.title}</div>}
+          {media.subtitle && <div style={s.blockSubtitle}>{media.subtitle}</div>}
+        </figcaption>}
+        <div style={{ ...s.mediaFrame, borderRadius: radius }}>{content}</div>
+        {media.caption && <div style={{ ...s.caption, margin: '8px 0 0' }}>{media.caption}</div>}
+      </figure>
+    );
+  };
+
+  const renderText = (block, key) => (
+    <div key={key} {...textProbe} style={{ ...s.prose, maxWidth: block.maxWidth || s.prose.maxWidth, marginBottom: 0, whiteSpace: 'pre-line', ...(block.style || {}) }}>
+      {block.title && <div style={s.blockTitle}>{block.title}</div>}
+      {block.subtitle && <div style={s.blockSubtitle}>{block.subtitle}</div>}
+      {block.body}
+    </div>
+  );
+
+  const renderBlock = (block, key) => {
+    if (!block) return null;
+    const type = block.type || 'text';
+
+    if (type === 'text') return renderText(block, key);
+    if (type === 'image' || type === 'video' || type === 'lottie' || type === 'json') return renderMedia(block, key);
+
+    if (type === 'text-media' || type === 'media-text') {
+      const textNode = renderText(block.text || { title: block.title, subtitle: block.subtitle, body: block.body }, `${key}-text`);
+      const mediaNode = renderMedia(block.media, `${key}-media`);
+      const nodes = type === 'media-text' ? [mediaNode, textNode] : [textNode, mediaNode];
+      return <div key={key} className="case-content-split" style={{ display: 'grid', gridTemplateColumns: block.columns || 'minmax(0,.85fr) minmax(0,1.15fr)', gap: block.gap || 32, alignItems: block.align || 'center' }}>{nodes}</div>;
+    }
+
+    if (type === 'gallery') {
+      const columns = Math.max(1, Number(block.columns) || 1);
+      return <div key={key} className="case-content-gallery" style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`, gap: block.gap || 20 }}>
+        {(block.items || []).map((item, index) => renderMedia({ type: 'image', radius: block.radius, fit: block.fit, aspectRatio: block.aspectRatio, ...(typeof item === 'string' ? { src: item } : item) }, `${key}-${index}`))}
+      </div>;
+    }
+
+    if (type === 'steps') {
+      const specs = block.specs || [];
+      return <div key={key} className="case-content-split" style={{ ...s.twoCol, gridTemplateColumns: specs.length ? s.twoCol.gridTemplateColumns : '1fr', marginBottom: 0 }}>
+        <div {...textProbe} style={{ color: C.mute, fontSize: 13, lineHeight: 1.8 }}>
+          {block.intro && <><span>{block.intro}</span><br /><br /></>}
+          {block.command && <><span style={{ color: C.dim }}>{block.command}</span><br /></>}
+          {(block.items || []).map((item, index) => <React.Fragment key={`${item}-${index}`}><span style={{ color: C.green }}>{String(index + 1).padStart(2, '0')}</span> {item}<br /></React.Fragment>)}
+        </div>
+        {specs.length > 0 && <div>{specs.map(([label, value]) => <div key={label} style={s.kvRow}><span style={s.kvKey}>{label}</span><span>{value}</span></div>)}</div>}
+      </div>;
+    }
+
+    if (type === 'stack') {
+      return <div key={key} style={{ display: 'grid', gap: block.gap || 24 }}>{(block.blocks || []).map((child, index) => renderBlock(child, `${key}-${index}`))}</div>;
+    }
+
+    return <div key={key} role="note" style={{ color: C.accent, fontSize: 11 }}>Unsupported block type: {type}</div>;
+  };
+
   const cursorBlock = window.getSiteCursorStyle(cur, C, dark);
+
+  if (missingRequired.length) {
+    return (
+      <div role="alert" style={{ minHeight: '100vh', padding: 40, background: C.bg, color: C.fg, fontFamily: '"JetBrains Mono", monospace' }}>
+        <h1 style={{ fontSize: 20 }}>Case configuration is incomplete.</h1>
+        <p style={{ color: C.mute }}>Missing required fields: {missingRequired.join(', ')}</p>
+      </div>
+    );
+  }
 
   return (
     <div ref={rootRef} style={s.wrap}>
@@ -251,6 +453,7 @@ function WorkHarborPage() {
           .case-detail-grid { grid-template-columns: 1fr !important; margin-top: 58px !important; }
           .case-detail-index { position: static !important; grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; padding: 4px 0 12px !important; border-bottom: 1px dashed ${C.line}; }
           .case-detail-main > div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+          .case-content-split, .case-content-gallery { grid-template-columns: 1fr !important; }
         }
         @media (prefers-reduced-motion: reduce) {
           .case-detail-grid.case-detail-arrival, .case-detail-grid.case-detail-leaving { animation: none; }
@@ -285,75 +488,27 @@ function WorkHarborPage() {
         <h1 style={s.title}>
           {work.title}{work.accent && <> <span style={{ color: C.accent }}>{work.accent}</span></>}
         </h1>
-        <p style={s.lede}>{work.lede}</p>
+        <p style={s.lede}>{work.subtitle}</p>
       </div>
 
-      <div style={s.metaGrid}>
-        <div><div style={s.metaLabel}>{ui.client}</div><div style={s.metaVal}>{work.client}</div></div>
-        <div><div style={s.metaLabel}>{ui.year}</div><div style={s.metaVal}>{work.year}</div></div>
-        <div><div style={s.metaLabel}>{ui.role}</div><div style={s.metaVal}>{work.role}</div></div>
-        <div><div style={s.metaLabel}>{ui.team}</div><div style={s.metaVal}>{work.team}</div></div>
-      </div>
+      {metadata.length > 0 && <div style={{ ...s.metaGrid, gridTemplateColumns: `repeat(${Math.min(metadata.length, 4)}, minmax(0, 1fr))` }}>
+        {metadata.map((item, index) => <div key={`${item.label}-${index}`}><div style={s.metaLabel}>{item.label}</div><div style={s.metaVal}>{item.value}</div></div>)}
+      </div>}
 
       <div style={s.hero}>
-        <img draggable={false} src={work.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <img draggable={false} src={work.cover.src} alt={work.cover.alt || work.title} style={{ width: '100%', height: '100%', objectFit: work.cover.fit || 'cover', objectPosition: work.cover.position || 'center' }} />
       </div>
-      <div style={s.caption}>{work.caption}</div>
-      </div>
-
-      <div id="context" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── {ui.context} ─────────────────────────────────────────────</div>
-      <div {...textProbe} style={{ ...s.prose, whiteSpace: 'pre-line' }}>
-        {work.context}
+      {work.cover.caption && <div style={s.caption}>{work.cover.caption}</div>}
       </div>
 
-      <div id="process" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── {ui.process} ─────────────────────────────────────────────</div>
-      <div style={{ ...s.twoCol, gridTemplateColumns: work.showSpecs === false ? '1fr' : s.twoCol.gridTemplateColumns }}>
-        <div {...textProbe} style={{ color: C.mute, fontSize: 13, lineHeight: 1.8 }}>
-          {work.processIntro}<br />
-          <br />
-          {work.showHistory !== false && <><span style={{ color: C.dim }}>$ history | tail</span><br /></>}
-          {work.steps.map((step, index) => <React.Fragment key={step}><span style={{ color: C.green }}>{String(index + 1).padStart(2, '0')}</span> {step}<br /></React.Fragment>)}
-        </div>
-        {work.showSpecs !== false && <div>
-          {work.specs.map(([key, value]) => <div key={key} style={s.kvRow}><span style={s.kvKey}>{key}</span><span>{value}</span></div>)}
-        </div>}
-      </div>
-
-      <div id="gallery" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── {ui.gallery} ─────────────────────────────────────────────</div>
-      <div style={{ ...s.gallery, ...(work.gallery ? { gridTemplateColumns: '1fr', gap: 20 } : {}) }}>
-        {(work.gallery || [work.image, work.image, work.image, work.image]).map((entry, index) => {
-          const image = typeof entry === 'string' ? entry : entry.src;
-          return <div key={`${image}-${index}`}>
-            {typeof entry !== 'string' && <div style={{ marginBottom: 10 }}>
-              <div style={{ color: C.fg, fontSize: 14, lineHeight: 1.4 }}>{String(index + 1).padStart(2, '0')} · {entry.title}</div>
-              <div style={{ color: C.mute, fontSize: 12, lineHeight: 1.5, marginTop: 3 }}>{entry.subtitle}</div>
-            </div>}
-            <div style={{ ...s.galleryTile, ...(work.gallery ? { aspectRatio: 'auto', borderRadius: 16, overflow: 'hidden' } : {}) }}>
-              <img draggable={false} src={image} alt={typeof entry === 'string' ? '' : entry.title} style={work.gallery
-                ? { display: 'block', width: '100%', height: 'auto', borderRadius: 'inherit' }
-                : { width: '100%', height: '100%', objectFit: 'cover', filter: ['brightness(0.85) hue-rotate(-10deg)', 'brightness(0.9) hue-rotate(10deg)', 'brightness(0.85)', 'grayscale(0.3) brightness(0.9)'][index] }} />
-            </div>
-          </div>;
-        })}
-      </div>
-
-      <div id="outcome" style={{ ...s.sectionTitle, scrollMarginTop: 110 }}>── {ui.outcome} ─────────────────────────────────────────────</div>
-      <div {...textProbe} style={s.prose}>
-        {work.outcome}
-      </div>
-
-      {work.showCredits !== false && <>
-        <div id="credits" style={{ ...s.sectionTitle, color: C.accent, scrollMarginTop: 110 }}>
-          ── {ui.credits} ─────────────────────────────────────────────
-        </div>
-        <div style={{ color: C.mute, fontSize: 13, lineHeight: 2, marginBottom: 40 }}>
-          Design — <a href="#" {...linkProbe} style={s.link}>Your Name</a>,{' '}
-          <a href="#" {...linkProbe} style={s.link}>Collaborator</a><br />
-          Copy — <a href="#" {...linkProbe} style={s.link}>Writer</a><br />
-          Photography — <a href="#" {...linkProbe} style={s.link}>Studio Name</a><br />
-          Thanks — the Harbor team, and everyone at the teahouse in Xiamen
-        </div>
-      </>}
+      {work.sections.map((section, sectionIndex) => {
+        const sectionId = section.id || `section-${sectionIndex + 1}`;
+        const sectionTitle = section.title || ui[section.id] || section.id || `section ${sectionIndex + 1}`;
+        return <section key={sectionId} id={sectionId} style={{ scrollMarginTop: 110 }}>
+          <div style={{ ...s.sectionTitle, ...(section.accent ? { color: C.accent } : {}) }}>── {sectionTitle} ─────────────────────────────────────────────</div>
+          <div style={s.blockStack}>{(section.blocks || []).map((block, blockIndex) => renderBlock(block, `${sectionId}-${blockIndex}`))}</div>
+        </section>;
+      })}
 
       <div style={s.nextNav}>
         <a href="ascii-terminal.html" {...linkProbe} style={{ textDecoration: 'none', color: C.fg }}>
