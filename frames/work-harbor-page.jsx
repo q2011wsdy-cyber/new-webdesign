@@ -197,22 +197,33 @@ function WorkHarborPage() {
     const root = rootRef.current;
     if (!root || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
     let frame = 0;
-    const updateScrollMotion = () => {
+    const motion = new Map();
+    const animateScrollMotion = () => {
       frame = 0;
       const viewport = window.innerHeight || 1;
+      let needsAnotherFrame = false;
       root.querySelectorAll('.case-scroll-item').forEach((node, index) => {
         const rect = node.getBoundingClientRect();
+        const state = motion.get(node) || { y: 0, opacity: .7 };
+        const unshiftedTop = rect.top - state.y;
         const range = (viewport + rect.height) / 2;
-        const distance = Math.max(-1, Math.min(1, (rect.top + rect.height / 2 - viewport / 2) / range));
+        const distance = Math.max(-1, Math.min(1, (unshiftedTop + rect.height / 2 - viewport / 2) / range));
         const direction = index % 2 === 0 ? -1 : 1;
-        node.style.setProperty('--case-scroll-y', `${(distance * direction * 28).toFixed(2)}px`);
-        node.style.setProperty('--case-scroll-opacity', `${Math.max(.42, 1 - Math.abs(distance) * .55).toFixed(3)}`);
+        const targetY = distance * direction * 46;
+        const targetOpacity = Math.max(.7, 1 - Math.abs(distance) * .3);
+        state.y += (targetY - state.y) * .09;
+        state.opacity += (targetOpacity - state.opacity) * .1;
+        motion.set(node, state);
+        node.style.setProperty('--case-scroll-y', `${state.y.toFixed(2)}px`);
+        node.style.setProperty('--case-scroll-opacity', `${state.opacity.toFixed(3)}`);
+        if (Math.abs(targetY - state.y) > .08 || Math.abs(targetOpacity - state.opacity) > .004) needsAnotherFrame = true;
       });
+      if (needsAnotherFrame) frame = window.requestAnimationFrame(animateScrollMotion);
     };
     const requestUpdate = () => {
-      if (!frame) frame = window.requestAnimationFrame(updateScrollMotion);
+      if (!frame) frame = window.requestAnimationFrame(animateScrollMotion);
     };
-    updateScrollMotion();
+    requestUpdate();
     window.addEventListener('scroll', requestUpdate, { passive: true });
     window.addEventListener('resize', requestUpdate);
     return () => {
@@ -494,7 +505,7 @@ function WorkHarborPage() {
           opacity: var(--case-scroll-opacity, 1);
           transform: translate3d(0, var(--case-scroll-y, 0px), 0);
           will-change: transform, opacity;
-          transition: transform 180ms cubic-bezier(.16,1,.3,1), opacity 360ms cubic-bezier(.16,1,.3,1);
+          transition: none;
         }
         img, a, button { cursor: none !important; }
         @media (max-width: 720px) {
