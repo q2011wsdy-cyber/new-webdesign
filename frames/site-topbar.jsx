@@ -55,6 +55,25 @@ function SiteTopbar({
   closeOnClick,
 }) {
   const C = getAsciiThemePalette(dark);
+  const liquidControlsRef = React.useRef(null);
+
+  React.useEffect(() => {
+    let frame = 0;
+    const updateLiquidRefraction = () => {
+      frame = 0;
+      const shift = -((window.scrollY || window.pageYOffset || 0) % 96) * 0.28;
+      if (liquidControlsRef.current) liquidControlsRef.current.style.setProperty('--liquid-scroll-shift', `${shift.toFixed(2)}px`);
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateLiquidRefraction);
+    };
+    updateLiquidRefraction();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
   const topbarStyle = {
     display: 'flex',
     justifyContent: 'space-between',
@@ -81,142 +100,105 @@ function SiteTopbar({
   };
   const navLinks = {
     display: 'flex',
-    gap: 4,
+    gap: 0,
     alignItems: 'center',
     pointerEvents: 'auto',
-    '--glass-x': '50%',
-    '--glass-y': '12%',
-    '--glass-shadow-x': '0px',
-    '--glass-shadow-y': '3px',
-    '--glass-low': dark ? 'rgba(255,255,255,.025)' : 'rgba(255,255,255,.05)',
-    '--glass-mid': dark ? 'rgba(255,255,255,.11)' : 'rgba(255,255,255,.22)',
-    '--glass-glow-core': dark ? 'rgba(255,255,255,.34)' : 'rgba(255,255,255,.96)',
-    '--glass-glow-soft': dark ? 'rgba(255,255,255,.09)' : 'rgba(255,255,255,.24)',
-    '--glass-cast': dark ? 'rgba(0,0,0,.48)' : 'rgba(76,61,36,.18)',
-    '--glass-edge-dark': dark ? 'rgba(0,0,0,.72)' : 'rgba(0,0,0,.5)',
-    '--glass-edge-light': dark ? 'rgba(255,255,255,.24)' : 'rgba(255,255,255,.5)',
-    '--glass-depth': dark
-      ? 'inset 0 1.75px 1.75px rgba(0,0,0,.34), inset 0 -1.75px 1.75px rgba(255,255,255,.16), 0 3.5px 1.75px -1.75px rgba(0,0,0,.52), inset 0 0 1.4px 3.5px rgba(255,255,255,.08)'
-      : 'inset 0 1.75px 1.75px rgba(0,0,0,.05), inset 0 -1.75px 1.75px rgba(255,255,255,.5), 0 3.5px 1.75px -1.75px rgba(0,0,0,.2), inset 0 0 1.4px 3.5px rgba(255,255,255,.2)',
-    '--glass-button-depth': dark
-      ? 'inset 0 1px 1.5px rgba(0,0,0,.3), inset 0 -1px 1.5px rgba(255,255,255,.18), 0 2px 1.5px -1px rgba(0,0,0,.4)'
-      : 'inset 0 1px 1.5px rgba(0,0,0,.04), inset 0 -1px 1.5px rgba(255,255,255,.58), 0 2px 1.5px -1px rgba(0,0,0,.13)',
-  };
-  const moveGlassLight = (e) => {
-    const node = e.currentTarget;
-    const rect = node.getBoundingClientRect();
-    const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    const y = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
-    node.style.setProperty('--glass-x', `${(x * 100).toFixed(1)}%`);
-    node.style.setProperty('--glass-y', `${(y * 100).toFixed(1)}%`);
-    node.style.setProperty('--glass-shadow-x', `${((.5 - x) * 5).toFixed(2)}px`);
-    node.style.setProperty('--glass-shadow-y', `${(2 + (.5 - y) * 4).toFixed(2)}px`);
-  };
-  const resetGlassLight = (e) => {
-    const node = e.currentTarget;
-    node.style.setProperty('--glass-x', '50%');
-    node.style.setProperty('--glass-y', '12%');
-    node.style.setProperty('--glass-shadow-x', '0px');
-    node.style.setProperty('--glass-shadow-y', '3px');
+    width: 154,
+    height: 42,
+    '--liquid-scroll-shift': '0px',
+    '--glass-fill': dark ? 'rgba(8,8,8,.24)' : 'rgba(255,255,255,.68)',
+    '--glass-edge': dark
+      ? 'inset 1.75px 1.75px 1px -1px #fff, inset -1.75px -1.75px 2px -1px #fff, inset 0 0 1px .25px rgba(255,255,255,.1)'
+      : 'inset 0 1px 0 rgba(255,255,255,.96), inset 0 -1px 0 rgba(255,255,255,.44)',
+    '--glass-sheen': dark
+      ? 'radial-gradient(120% 140% at 18% -38%, rgba(255,255,255,.13) 0%, rgba(255,255,255,.03) 36%, rgba(0,0,0,.12) 100%)'
+      : 'radial-gradient(120% 140% at 18% -38%, rgba(255,255,255,.96) 0%, rgba(255,255,255,.34) 42%, rgba(222,218,206,.18) 100%)',
+    '--glass-outer-shadow': '0 0 1px rgba(0,0,0,.05), 0 0 4px rgba(0,0,0,.05), 0 0 44px rgba(0,0,0,.1)',
+    '--glass-surface-background': 'linear-gradient(-75deg, #ffffff0d, #ffffff38, #ffffff0d)',
+    '--glass-surface-shadow-hover': 'inset 0 .125em .125em #0000000d, inset 0 -.125em .125em #ffffff80, 0 .15em .05em -.1em #00000040, 0 0 .05em .1em inset #ffffff80, 0 0 0 0 #fff',
+    '--glass-surface-shadow-active': 'inset 0 .125em .125em #0000000d, inset 0 -.125em .125em #ffffff80, 0 .125em .125em -.125em #0003, 0 0 .1em .25em inset #fff3, 0 .225em .05em 0 #0000000d, 0 .25em 0 0 #ffffffbf, inset 0 .25em .05em 0 #00000026',
   };
 
   return (
     <>
+      <svg aria-hidden="true" width="0" height="0" focusable="false" style={{ position: 'absolute', overflow: 'hidden' }}>
+        <defs>
+          <filter id="site-liquid-lens" x="-20%" y="-35%" width="140%" height="170%" colorInterpolationFilters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency="0.012 0.055" numOctaves="1" seed="9" result="liquid-noise" />
+            <feDisplacementMap in="SourceGraphic" in2="liquid-noise" scale="7" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+      </svg>
       <div aria-hidden="true" style={topbarSpacerStyle} />
       <div style={topbarStyle}>
       <style>{`
         .site-liquid-controls {
           position: relative;
           isolation: isolate;
+          box-sizing: border-box;
+          width: 154px;
+          height: 42px;
           padding: 4px;
           border: 0;
           border-radius: 999px;
-          background: linear-gradient(-75deg, var(--glass-low), var(--glass-mid), var(--glass-low));
-          box-shadow:
-            var(--glass-depth),
-            var(--glass-shadow-x) var(--glass-shadow-y) 9px -4px var(--glass-cast);
-          -webkit-backdrop-filter: blur(4px);
-          backdrop-filter: blur(4px);
-          transition:
-            --glass-x 140ms cubic-bezier(.16,1,.3,1),
-            --glass-y 140ms cubic-bezier(.16,1,.3,1),
-            box-shadow 180ms ease;
+          background: var(--glass-fill);
+          box-shadow: var(--glass-outer-shadow);
+          -webkit-backdrop-filter: blur(8px) saturate(1.65) contrast(1.08);
+          backdrop-filter: blur(8px) saturate(1.65) contrast(1.08);
+        }
+        @supports (backdrop-filter: url("#site-liquid-lens")) {
+          .site-liquid-controls {
+            backdrop-filter: url("#site-liquid-lens") blur(8px) saturate(1.65) contrast(1.08);
+          }
         }
         .site-liquid-controls::before {
           content: '';
           position: absolute;
           z-index: 0;
-          inset: 1px;
+          inset: 0;
           border-radius: inherit;
-          background: radial-gradient(
-            circle 38px at var(--glass-x) var(--glass-y),
-            var(--glass-glow-core) 0%,
-            var(--glass-glow-soft) 38%,
-            transparent 72%
-          );
-          opacity: .16;
-          transition: opacity 280ms ease;
+          background: var(--glass-sheen);
+          background-position: center var(--liquid-scroll-shift);
+          background-size: 125% 175%;
+          transition: background-position 180ms cubic-bezier(.16,1,.3,1);
           pointer-events: none;
-        }
-        .site-liquid-controls:hover::before {
-          opacity: .86;
         }
         .site-liquid-controls::after {
           content: '';
           position: absolute;
           z-index: 3;
-          inset: -.5px 0 0 -.5px;
-          padding: 1px;
+          inset: 0;
           border-radius: inherit;
-          background:
-            radial-gradient(
-              circle 28px at var(--glass-x) var(--glass-y),
-              var(--glass-edge-light),
-              transparent 72%
-            ),
-            conic-gradient(
-              from -75deg,
-              var(--glass-edge-dark), transparent 5%, transparent 40%,
-              var(--glass-edge-dark) 50%, transparent 60%, transparent 95%,
-              var(--glass-edge-dark)
-            ),
-            linear-gradient(var(--glass-edge-light), var(--glass-edge-light));
-          box-shadow: inset 0 0 0 .5px var(--glass-edge-light);
-          -webkit-mask:
-            linear-gradient(#000 0 0) content-box,
-            linear-gradient(#000 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
+          box-shadow: var(--glass-edge);
           pointer-events: none;
         }
         .site-liquid-button {
           position: relative;
           z-index: 1;
+          flex: 1 1 0;
           height: 34px;
-          min-width: 46px;
+          min-width: 0;
           border: 0;
           border-radius: 999px;
           background: transparent;
           box-shadow: none;
           transition:
-            transform 240ms cubic-bezier(.16,1,.3,1),
-            background 240ms ease,
-            box-shadow 240ms ease;
+            transform .3s cubic-bezier(.16,1,.3,1),
+            background .3s cubic-bezier(.16,1,.3,1),
+            box-shadow .3s cubic-bezier(.16,1,.3,1);
         }
         .site-liquid-button:hover {
-          background: linear-gradient(-75deg, var(--glass-low), var(--glass-mid), var(--glass-low));
-          box-shadow: var(--glass-button-depth);
-          transform: scale(1.02);
+          background: var(--glass-surface-background);
+          box-shadow: var(--glass-surface-shadow-hover);
         }
         .site-liquid-button:active {
-          transform: scale(.96);
+          background: var(--glass-surface-background);
+          box-shadow: var(--glass-surface-shadow-active);
+          transform: translateY(1px) scale(.98);
         }
         @media (prefers-reduced-motion: reduce) {
           .site-liquid-controls,
           .site-liquid-button { transition: none; }
-        }
-        @media (hover: none) {
-          .site-liquid-controls::before { opacity: .26; }
         }
       `}</style>
       <a
@@ -235,8 +217,7 @@ function SiteTopbar({
       <div
         className="site-liquid-controls"
         style={navLinks}
-        onPointerMove={moveGlassLight}
-        onPointerLeave={resetGlassLight}>
+        ref={liquidControlsRef}>
         <button
           className="site-liquid-button"
           {...linkProbe}

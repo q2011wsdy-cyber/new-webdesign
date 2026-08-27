@@ -96,6 +96,8 @@ function WorkHarborPage() {
   };
   const [cur, setCur] = React.useState({ x: 0, y: 0, mode: 'default', visible: false });
   const [theme, setTheme] = React.useState(() => {
+    const forcedTheme = window.__workCaseData && window.__workCaseData.en && window.__workCaseData.en.forceInitialTheme;
+    if (forcedTheme) return forcedTheme;
     try { return localStorage.getItem('ascii-theme') || 'dark'; } catch { return 'dark'; }
   });
   const [lang, setLang] = React.useState(() => {
@@ -190,6 +192,35 @@ function WorkHarborPage() {
     nodes.forEach((node) => observer.observe(node));
     return () => observer.disconnect();
   }, [navSectionKey]);
+
+  React.useEffect(() => {
+    const root = rootRef.current;
+    if (!root || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    let frame = 0;
+    const updateScrollMotion = () => {
+      frame = 0;
+      const viewport = window.innerHeight || 1;
+      root.querySelectorAll('.case-scroll-item').forEach((node, index) => {
+        const rect = node.getBoundingClientRect();
+        const range = (viewport + rect.height) / 2;
+        const distance = Math.max(-1, Math.min(1, (rect.top + rect.height / 2 - viewport / 2) / range));
+        const direction = index % 2 === 0 ? -1 : 1;
+        node.style.setProperty('--case-scroll-y', `${(distance * direction * 28).toFixed(2)}px`);
+        node.style.setProperty('--case-scroll-opacity', `${Math.max(.42, 1 - Math.abs(distance) * .55).toFixed(3)}`);
+      });
+    };
+    const requestUpdate = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateScrollMotion);
+    };
+    updateScrollMotion();
+    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('resize', requestUpdate);
+    return () => {
+      window.removeEventListener('scroll', requestUpdate);
+      window.removeEventListener('resize', requestUpdate);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
 
   const setMode = (m) => setCur((c) => ({ ...c, mode: m }));
   const textProbe = { onMouseEnter: () => setMode('text'), onMouseLeave: () => setMode('default') };
@@ -304,8 +335,8 @@ function WorkHarborPage() {
       justifyContent: 'space-between',
     },
     caseGrid: {
-      width: 'min(100%, 1180px)', margin: '80px auto 0', display: 'grid',
-      gridTemplateColumns: '130px minmax(0, 1fr)', gap: 'clamp(40px, 8vw, 110px)',
+      width: work.compactCaseLayout ? 'min(100%, 940px)' : 'min(100%, 1180px)', margin: '80px auto 0', display: 'grid',
+      gridTemplateColumns: work.hideIndex ? 'minmax(0, 1fr)' : '130px minmax(0, 1fr)', gap: work.hideIndex ? 0 : 'clamp(40px, 8vw, 110px)',
     },
     // 与固定顶栏品牌文字共用左侧视觉基线。
     index: { position: 'sticky', top: 108, alignSelf: 'start', display: 'grid', gap: 14, paddingTop: 4, marginLeft: -5 },
@@ -350,19 +381,23 @@ function WorkHarborPage() {
     }
 
     return (
-      <figure key={key} style={{ margin: 0 }}>
+      <figure key={key} className="case-scroll-item" style={{ margin: 0 }}>
         {(media.title || media.subtitle) && <figcaption style={{ marginBottom: 10 }}>
           {media.title && <div style={s.blockTitle}>{media.title}</div>}
           {media.subtitle && <div style={s.blockSubtitle}>{media.subtitle}</div>}
         </figcaption>}
-        <div style={{ ...s.mediaFrame, borderRadius: radius }}>{content}</div>
+        <div style={media.frame === false
+          ? { overflow: 'hidden', background: 'transparent', border: 'none', borderRadius: radius }
+          : { ...s.mediaFrame, borderRadius: radius }}>
+          {content}
+        </div>
         {media.caption && <div style={{ ...s.caption, margin: '8px 0 0' }}>{media.caption}</div>}
       </figure>
     );
   };
 
   const renderText = (block, key) => (
-    <div key={key} {...textProbe} style={{ ...s.prose, maxWidth: block.maxWidth || s.prose.maxWidth, marginBottom: 0, whiteSpace: 'pre-line', ...(block.style || {}) }}>
+    <div key={key} className="case-scroll-item" {...textProbe} style={{ ...s.prose, maxWidth: block.maxWidth || s.prose.maxWidth, marginBottom: 0, whiteSpace: 'pre-line', ...(block.style || {}) }}>
       {block.title && <div style={s.blockTitle}>{block.title}</div>}
       {block.subtitle && <div style={s.blockSubtitle}>{block.subtitle}</div>}
       {block.body}
@@ -386,7 +421,7 @@ function WorkHarborPage() {
     if (type === 'gallery') {
       const columns = Math.max(1, Number(block.columns) || 1);
       return <div key={key} className="case-content-gallery" style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`, gap: block.gap || 20 }}>
-        {(block.items || []).map((item, index) => renderMedia({ type: 'image', radius: block.radius, fit: block.fit, aspectRatio: block.aspectRatio, ...(typeof item === 'string' ? { src: item } : item) }, `${key}-${index}`))}
+        {(block.items || []).map((item, index) => renderMedia({ type: 'image', radius: block.radius, frame: block.frame, fit: block.fit, aspectRatio: block.aspectRatio, ...(typeof item === 'string' ? { src: item } : item) }, `${key}-${index}`))}
       </div>;
     }
 
@@ -408,6 +443,13 @@ function WorkHarborPage() {
 
     return <div key={key} role="note" style={{ color: C.accent, fontSize: 11 }}>Unsupported block type: {type}</div>;
   };
+
+  const renderCover = () => <>
+    <div style={{ ...s.hero, marginBottom: work.cover.caption ? 12 : 20, borderRadius: work.compactCaseLayout ? 12 : 0, border: work.compactCaseLayout ? 0 : s.hero.border, height: work.compactCaseLayout ? 'auto' : undefined, aspectRatio: work.compactCaseLayout ? 'auto' : s.hero.aspectRatio }}>
+      <img draggable={false} src={work.cover.src} alt={work.cover.alt || work.title} style={{ display: 'block', width: '100%', height: work.compactCaseLayout ? 'auto' : '100%', objectFit: work.cover.fit || 'cover', objectPosition: work.cover.position || 'center' }} />
+    </div>
+    {work.cover.caption && <div style={s.caption}>{work.cover.caption}</div>}
+  </>;
 
   const cursorBlock = window.getSiteCursorStyle(cur, C, dark);
 
@@ -448,6 +490,12 @@ function WorkHarborPage() {
           transition: opacity 260ms cubic-bezier(.22,.61,.36,1) 90ms;
         }
         .case-return-veil.is-visible { opacity: 1; }
+        .case-scroll-item {
+          opacity: var(--case-scroll-opacity, 1);
+          transform: translate3d(0, var(--case-scroll-y, 0px), 0);
+          will-change: transform, opacity;
+          transition: transform 180ms cubic-bezier(.16,1,.3,1), opacity 360ms cubic-bezier(.16,1,.3,1);
+        }
         img, a, button { cursor: none !important; }
         @media (max-width: 720px) {
           .case-detail-grid { grid-template-columns: 1fr !important; margin-top: 58px !important; }
@@ -458,6 +506,7 @@ function WorkHarborPage() {
         @media (prefers-reduced-motion: reduce) {
           .case-detail-grid.case-detail-arrival, .case-detail-grid.case-detail-leaving { animation: none; }
           .case-return-veil { transition: none; }
+          .case-scroll-item { opacity: 1 !important; transform: none !important; transition: none !important; }
         }
       `}</style>
       <SiteTopbar
@@ -474,16 +523,17 @@ function WorkHarborPage() {
       />
 
       <div className={`case-detail-grid${enteredFromCase ? ' case-detail-arrival' : ''}${leavingCase ? ' case-detail-leaving' : ''}`} style={s.caseGrid}>
-      <aside className="case-detail-index" aria-label="Case sections" style={s.index}>
+      {!work.hideIndex && <aside className="case-detail-index" aria-label="Case sections" style={s.index}>
         {navItems.map((item) => (
           <a key={item.id} href={`#${item.id}`} {...linkProbe}
             style={{ ...s.indexLink, ...(activeSection === item.id ? s.indexLinkActive : {}) }}>
             {item.label}
           </a>
         ))}
-      </aside>
+      </aside>}
       <main className="case-detail-main" style={s.main}>
-      <div id="overview" style={{ scrollMarginTop: 110 }}>
+      <div id="overview" className="case-scroll-item" style={{ scrollMarginTop: 110 }}>
+      {work.showCover !== false && work.coverPlacement === 'before-title' && renderCover()}
       <div {...textProbe}>
         <h1 style={s.title}>
           {work.title}{work.accent && <> <span style={{ color: C.accent }}>{work.accent}</span></>}
@@ -491,26 +541,23 @@ function WorkHarborPage() {
         <p style={s.lede}>{work.subtitle}</p>
       </div>
 
-      {metadata.length > 0 && <div style={{ ...s.metaGrid, gridTemplateColumns: `repeat(${Math.min(metadata.length, 4)}, minmax(0, 1fr))` }}>
+      {work.showMeta !== false && metadata.length > 0 && <div className="case-scroll-item" style={{ ...s.metaGrid, gridTemplateColumns: `repeat(${Math.min(metadata.length, 4)}, minmax(0, 1fr))` }}>
         {metadata.map((item, index) => <div key={`${item.label}-${index}`}><div style={s.metaLabel}>{item.label}</div><div style={s.metaVal}>{item.value}</div></div>)}
       </div>}
 
-      <div style={s.hero}>
-        <img draggable={false} src={work.cover.src} alt={work.cover.alt || work.title} style={{ width: '100%', height: '100%', objectFit: work.cover.fit || 'cover', objectPosition: work.cover.position || 'center' }} />
-      </div>
-      {work.cover.caption && <div style={s.caption}>{work.cover.caption}</div>}
+      {work.showCover !== false && work.coverPlacement !== 'before-title' && renderCover()}
       </div>
 
       {work.sections.map((section, sectionIndex) => {
         const sectionId = section.id || `section-${sectionIndex + 1}`;
         const sectionTitle = section.title || ui[section.id] || section.id || `section ${sectionIndex + 1}`;
         return <section key={sectionId} id={sectionId} style={{ scrollMarginTop: 110 }}>
-          <div style={{ ...s.sectionTitle, ...(section.accent ? { color: C.accent } : {}) }}>── {sectionTitle} ─────────────────────────────────────────────</div>
+          {section.hideTitle !== true && <div style={{ ...s.sectionTitle, ...(section.accent ? { color: C.accent } : {}) }}>── {sectionTitle} ─────────────────────────────────────────────</div>}
           <div style={s.blockStack}>{(section.blocks || []).map((block, blockIndex) => renderBlock(block, `${sectionId}-${blockIndex}`))}</div>
         </section>;
       })}
 
-      <div style={s.nextNav}>
+      <div className="case-scroll-item" style={s.nextNav}>
         <a href="ascii-terminal.html" {...linkProbe} style={{ textDecoration: 'none', color: C.fg }}>
           <div style={s.nextBlock}>
             <span style={s.nextSmall}>{ui.back}</span>
@@ -525,7 +572,7 @@ function WorkHarborPage() {
         </a>
       </div>
 
-      <div style={s.footer}>
+      <div className="case-scroll-item" style={s.footer}>
         <span>© 2025 · handmade, kept simple</span>
         <span>v1.0 · last updated 2025.03</span>
       </div>
