@@ -200,34 +200,37 @@ function WorkHarborPage() {
     const motion = new Map();
     const animateScrollMotion = () => {
       frame = 0;
-      const viewport = window.innerHeight || 1;
       let needsAnotherFrame = false;
-      root.querySelectorAll('.case-scroll-item').forEach((node, index) => {
+      const viewport = Math.max(window.innerHeight || 0, 1);
+      root.querySelectorAll('.case-scroll-item').forEach((node) => {
+        const state = motion.get(node) || { y: 18, scale: .96, opacity: .42 };
         const rect = node.getBoundingClientRect();
-        const state = motion.get(node) || { y: 0, opacity: .7 };
-        const unshiftedTop = rect.top - state.y;
-        const range = (viewport + rect.height) / 2;
-        const distance = Math.max(-1, Math.min(1, (unshiftedTop + rect.height / 2 - viewport / 2) / range));
-        const direction = index % 2 === 0 ? -1 : 1;
-        const targetY = distance * direction * 46;
-        const targetOpacity = Math.max(.7, 1 - Math.abs(distance) * .3);
-        state.y += (targetY - state.y) * .09;
-        state.opacity += (targetOpacity - state.opacity) * .1;
+        // A row resolves as it travels through the lower half of the viewport.
+        // The transform is visual only, so the document's grid and gaps never move.
+        const progress = Math.max(0, Math.min(1, (viewport * .93 - rect.top) / (viewport * .62)));
+        const targetY = (1 - progress) * 20;
+        const targetScale = .96 + progress * .04;
+        const targetOpacity = .42 + progress * .58;
+        state.y += (targetY - state.y) * .115;
+        state.scale += (targetScale - state.scale) * .115;
+        state.opacity += (targetOpacity - state.opacity) * .115;
         motion.set(node, state);
         node.style.setProperty('--case-scroll-y', `${state.y.toFixed(2)}px`);
+        node.style.setProperty('--case-scroll-scale', state.scale.toFixed(4));
         node.style.setProperty('--case-scroll-opacity', `${state.opacity.toFixed(3)}`);
-        if (Math.abs(targetY - state.y) > .08 || Math.abs(targetOpacity - state.opacity) > .004) needsAnotherFrame = true;
+        if (Math.abs(targetY - state.y) > .04 || Math.abs(targetScale - state.scale) > .0004 || Math.abs(targetOpacity - state.opacity) > .004) needsAnotherFrame = true;
       });
       if (needsAnotherFrame) frame = window.requestAnimationFrame(animateScrollMotion);
     };
     const requestUpdate = () => {
       if (!frame) frame = window.requestAnimationFrame(animateScrollMotion);
     };
+    const onScroll = () => requestUpdate();
     requestUpdate();
-    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', requestUpdate);
     return () => {
-      window.removeEventListener('scroll', requestUpdate);
+      window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', requestUpdate);
       if (frame) window.cancelAnimationFrame(frame);
     };
@@ -392,7 +395,7 @@ function WorkHarborPage() {
     }
 
     return (
-      <figure key={key} className="case-scroll-item" style={{ margin: 0 }}>
+      <figure key={key} className={media.scrollMotion === false ? undefined : 'case-scroll-item'} style={{ margin: 0 }}>
         {(media.title || media.subtitle) && <figcaption style={{ marginBottom: 10 }}>
           {media.title && <div style={s.blockTitle}>{media.title}</div>}
           {media.subtitle && <div style={s.blockSubtitle}>{media.subtitle}</div>}
@@ -431,8 +434,8 @@ function WorkHarborPage() {
 
     if (type === 'gallery') {
       const columns = Math.max(1, Number(block.columns) || 1);
-      return <div key={key} className="case-content-gallery" style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`, gap: block.gap || 20 }}>
-        {(block.items || []).map((item, index) => renderMedia({ type: 'image', radius: block.radius, frame: block.frame, fit: block.fit, aspectRatio: block.aspectRatio, ...(typeof item === 'string' ? { src: item } : item) }, `${key}-${index}`))}
+      return <div key={key} className="case-content-gallery case-scroll-item" style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`, gap: block.gap || 20 }}>
+        {(block.items || []).map((item, index) => renderMedia({ type: 'image', radius: block.radius, frame: block.frame, fit: block.fit, aspectRatio: block.aspectRatio, scrollMotion: false, ...(typeof item === 'string' ? { src: item } : item) }, `${key}-${index}`))}
       </div>;
     }
 
@@ -503,7 +506,8 @@ function WorkHarborPage() {
         .case-return-veil.is-visible { opacity: 1; }
         .case-scroll-item {
           opacity: var(--case-scroll-opacity, 1);
-          transform: translate3d(0, var(--case-scroll-y, 0px), 0);
+          transform: translate3d(0, var(--case-scroll-y, 0px), 0) scale(var(--case-scroll-scale, 1));
+          transform-origin: center center;
           will-change: transform, opacity;
           transition: none;
         }
