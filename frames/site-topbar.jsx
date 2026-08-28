@@ -103,7 +103,7 @@ function SiteTopbar({
     gap: 0,
     alignItems: 'center',
     pointerEvents: 'auto',
-    width: 154,
+    width: closeHref ? 154 : 'fit-content',
     height: 42,
     '--liquid-scroll-shift': '0px',
     '--glass-fill': dark ? 'rgba(8,8,8,.24)' : 'rgba(255,255,255,.68)',
@@ -136,7 +136,6 @@ function SiteTopbar({
           position: relative;
           isolation: isolate;
           box-sizing: border-box;
-          width: 154px;
           height: 42px;
           padding: 4px;
           border: 0;
@@ -187,6 +186,9 @@ function SiteTopbar({
             background .3s cubic-bezier(.16,1,.3,1),
             box-shadow .3s cubic-bezier(.16,1,.3,1);
         }
+        .site-liquid-controls[data-control-count="2"] .site-liquid-button {
+          flex: 0 0 auto;
+        }
         .site-liquid-button:hover {
           background: var(--glass-surface-background);
           box-shadow: var(--glass-surface-shadow-hover);
@@ -216,6 +218,7 @@ function SiteTopbar({
       </a>
       <div
         className="site-liquid-controls"
+        data-control-count={closeHref ? 3 : 2}
         style={navLinks}
         ref={liquidControlsRef}>
         <button
