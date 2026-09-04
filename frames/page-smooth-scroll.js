@@ -6,7 +6,8 @@
   var target = current;
   var frame = 0;
   var isAnimating = false;
-  var smoothing = 0.115;
+  var tokenSmoothing = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--scroll-smoothing'));
+  var smoothing = Number.isFinite(tokenSmoothing) ? tokenSmoothing : 0.115;
 
   function maxScroll() {
     return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);

@@ -4,18 +4,13 @@
  */
 
 function getAsciiThemePalette(dark) {
-  return dark ? {
-    bg: '#0b0b0b', fg: '#e6e6e6', dim: '#666', faint: '#777', mute: '#888',
-    bigFg: '#f0e8d8', heading: '#aaa', line: '#2a2a2a', dot: '#222',
-    green: '#6fb36f', accent: '#d97757', chatBg: '#0e0e0e',
-    linkBorder: '#555', chip: '#333', chipText: '#bbb',
-    curText: '#e6e6e6', curDefault: '#6fb36f',
-  } : {
-    bg: '#ffffff', fg: '#1a1714', dim: '#8a8578', faint: '#7a7568', mute: '#6f6a5d',
-    bigFg: '#1a1714', heading: '#5a5448', line: '#c8c2b3', dot: '#d8d2c3',
-    green: '#3d7a4a', accent: '#c15528', chatBg: '#ebe6d8',
-    linkBorder: '#a8a295', chip: '#c8c2b3', chipText: '#3a3630',
-    curText: '#1a1714', curDefault: '#3d7a4a',
+  return {
+    bg: 'var(--color-bg)', fg: 'var(--color-fg)', dim: 'var(--color-dim)',
+    faint: 'var(--color-faint)', mute: 'var(--color-muted)', bigFg: 'var(--color-display)',
+    heading: 'var(--color-heading)', line: 'var(--color-line)', dot: 'var(--color-dot)',
+    green: 'var(--color-success)', accent: 'var(--color-accent)', chatBg: 'var(--color-chat-bg)',
+    linkBorder: 'var(--color-link-border)', chip: 'var(--color-chip)', chipText: 'var(--color-chip-text)',
+    curText: 'var(--color-cursor-text)', curDefault: 'var(--color-cursor-default)',
   };
 }
 
@@ -26,6 +21,55 @@ const SITE_NAV_ROUTES = [
   { label: 'lab', hash: 'lab' },
   { label: 'about', hash: 'about' },
 ];
+
+function ScrambledBrand({ text, linkProbe = {} }) {
+  const [displayText, setDisplayText] = React.useState(text);
+  const [isScrambling, setIsScrambling] = React.useState(false);
+  const timerRef = React.useRef(0);
+  const runIdRef = React.useRef(0);
+
+  React.useEffect(() => {
+    setDisplayText(text);
+    return () => window.clearInterval(timerRef.current);
+  }, [text]);
+
+  const scramble = (event) => {
+    if (linkProbe.onMouseEnter) linkProbe.onMouseEnter(event);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    window.clearInterval(timerRef.current);
+    const runId = ++runIdRef.current;
+    const chars = 'x.x';
+    const revealFrames = text.split('').map((character) => character === ' ' ? 0 : 4 + Math.floor(Math.random() * 11));
+    let frame = 0;
+    setIsScrambling(true);
+    timerRef.current = window.setInterval(() => {
+      if (runId !== runIdRef.current) return;
+      setDisplayText(text.split('').map((character, index) => {
+        if (character === ' ' || frame >= revealFrames[index]) return character;
+        return chars[(index * 7 + frame * 3) % chars.length];
+      }).join(''));
+      frame += 1;
+      if (frame >= 15) {
+        window.clearInterval(timerRef.current);
+        setDisplayText(text);
+        setIsScrambling(false);
+      }
+    }, 30);
+  };
+
+  return (
+    <span
+      className={`site-scrambled-brand${isScrambling ? ' is-scrambling' : ''}`}
+      onMouseEnter={scramble}
+      onMouseLeave={linkProbe.onMouseLeave}
+      onMouseMove={linkProbe.onMouseMove}
+      style={{ display: 'inline-block', minWidth: `${text.length}ch`, whiteSpace: 'pre' }}
+      aria-hidden="true">
+      {displayText}
+    </span>
+  );
+}
 
 /**
  * @param {object} props
@@ -79,8 +123,8 @@ function SiteTopbar({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingTop: 20,
-    paddingLeft: 'clamp(20px, 3.5vw, 48px)',
-    paddingRight: 'clamp(20px, 3.5vw, 48px)',
+    paddingLeft: 'var(--page-gutter)',
+    paddingRight: 'var(--page-gutter)',
     paddingBottom: 10,
     color: C.faint,
     fontSize: 11,
@@ -104,7 +148,7 @@ function SiteTopbar({
     alignItems: 'center',
     pointerEvents: 'auto',
     width: closeHref ? 154 : 'fit-content',
-    height: 42,
+    height: 'var(--control-height)',
     '--liquid-scroll-shift': '0px',
     '--glass-fill': dark ? 'rgba(8,8,8,.24)' : 'rgba(255,255,255,.68)',
     '--glass-edge': dark
@@ -113,7 +157,7 @@ function SiteTopbar({
     '--glass-sheen': dark
       ? 'radial-gradient(120% 140% at 18% -38%, rgba(255,255,255,.13) 0%, rgba(255,255,255,.03) 36%, rgba(0,0,0,.12) 100%)'
       : 'radial-gradient(120% 140% at 18% -38%, rgba(255,255,255,.96) 0%, rgba(255,255,255,.34) 42%, rgba(222,218,206,.18) 100%)',
-    '--glass-outer-shadow': '0 0 1px rgba(0,0,0,.05), 0 0 4px rgba(0,0,0,.05), 0 0 44px rgba(0,0,0,.1)',
+    '--glass-outer-shadow': 'var(--shadow-glass)',
     '--glass-surface-background': 'linear-gradient(-75deg, #ffffff0d, #ffffff38, #ffffff0d)',
     '--glass-surface-shadow-hover': 'inset 0 .125em .125em #0000000d, inset 0 -.125em .125em #ffffff80, 0 .15em .05em -.1em #00000040, 0 0 .05em .1em inset #ffffff80, 0 0 0 0 #fff',
     '--glass-surface-shadow-active': 'inset 0 .125em .125em #0000000d, inset 0 -.125em .125em #ffffff80, 0 .125em .125em -.125em #0003, 0 0 .1em .25em inset #fff3, 0 .225em .05em 0 #0000000d, 0 .25em 0 0 #ffffffbf, inset 0 .25em .05em 0 #00000026',
@@ -132,14 +176,21 @@ function SiteTopbar({
       <div aria-hidden="true" style={topbarSpacerStyle} />
       <div style={topbarStyle}>
       <style>{`
+        .site-scrambled-brand.is-scrambling {
+          animation: site-brand-flicker 150ms steps(2, end) 3;
+        }
+        @keyframes site-brand-flicker {
+          0%, 100% { opacity: 1; }
+          50% { opacity: .68; }
+        }
         .site-liquid-controls {
           position: relative;
           isolation: isolate;
           box-sizing: border-box;
-          height: 42px;
+          height: var(--control-height);
           padding: 4px;
           border: 0;
-          border-radius: 999px;
+          border-radius: var(--radius-pill);
           background: var(--glass-fill);
           box-shadow: var(--glass-outer-shadow);
           -webkit-backdrop-filter: blur(8px) saturate(1.65) contrast(1.08);
@@ -175,16 +226,16 @@ function SiteTopbar({
           position: relative;
           z-index: 1;
           flex: 1 1 0;
-          height: 34px;
+          height: var(--control-inner-height);
           min-width: 0;
           border: 0;
-          border-radius: 999px;
+          border-radius: var(--radius-pill);
           background: transparent;
           box-shadow: none;
           transition:
-            transform .3s cubic-bezier(.16,1,.3,1),
-            background .3s cubic-bezier(.16,1,.3,1),
-            box-shadow .3s cubic-bezier(.16,1,.3,1);
+            transform var(--duration-normal) var(--ease-out),
+            background var(--duration-normal) var(--ease-out),
+            box-shadow var(--duration-normal) var(--ease-out);
         }
         .site-liquid-controls[data-control-count="2"] .site-liquid-button {
           flex: 0 0 auto;
@@ -199,22 +250,22 @@ function SiteTopbar({
           transform: translateY(1px) scale(.98);
         }
         @media (prefers-reduced-motion: reduce) {
+          .site-scrambled-brand { animation: none !important; }
           .site-liquid-controls,
           .site-liquid-button { transition: none; }
         }
       `}</style>
       <a
         href={brandHref}
-        {...linkProbe}
         style={{
           color: C.faint,
           textDecoration: 'none',
-          fontSize: 14,
+          fontSize: 'var(--font-size-brand)',
           lineHeight: 1,
           pointerEvents: 'auto',
         }}
         aria-label="回到首页">
-        {brand}
+        <ScrambledBrand text={brand} linkProbe={linkProbe} />
       </a>
       <div
         className="site-liquid-controls"

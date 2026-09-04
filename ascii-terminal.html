@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="styles/design-tokens.css?v=1" rel="stylesheet">
   <style>
     html, body, #root { margin: 0; padding: 0; width: 100%; min-height: 100%; }
     body { background: #0b0b0b; }
@@ -16,12 +17,12 @@
   <script src="vendor/react-dom.production.min.js"></script>
   <script src="vendor/babel.min.js"></script>
   <script src="frames/site-cursor.js?v=2"></script>
-  <script src="frames/page-smooth-scroll.js?v=1"></script>
+  <script src="frames/page-smooth-scroll.js?v=2"></script>
 </head>
 <body>
   <div id="root"></div>
-  <script type="text/babel" src="frames/site-topbar.jsx?v=site-shell-17-adaptive-controls"></script>
-  <script type="text/babel" src="frames/01-ascii-terminal.jsx?v=site-shell-37-random-dot-twinkle"></script>
+  <script type="text/babel" src="frames/site-topbar.jsx?v=site-shell-22-token-brand"></script>
+  <script type="text/babel" src="frames/01-ascii-terminal.jsx?v=site-shell-39-design-tokens"></script>
   <script type="text/babel" data-presets="react">
     (function boot() {
       if (!window.React || !window.ReactDOM || !window.AsciiTerminal || !window.SiteTopbar || !window.getAsciiThemePalette) {

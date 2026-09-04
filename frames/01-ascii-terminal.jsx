@@ -88,11 +88,9 @@ function AsciiTile({ pat, t, k, img, theme, fillCell }) {
         display: 'block', textDecoration: 'none',
         background: pat.bg,
         border: 'none',
-        borderRadius: 24,
+        borderRadius: 'var(--radius-card)',
         color: pat.fg,
-        boxShadow: hover
-          ? (dark ? '0 12px 40px rgba(0,0,0,0.5)' : '0 12px 36px rgba(0,0,0,0.1)')
-          : 'none',
+        boxShadow: hover ? 'var(--shadow-card-hover)' : 'none',
         transform: `perspective(1000px) translate3d(var(--card-x, 0px), var(--card-y, 0px), 0) rotateX(var(--card-rx, 0deg)) rotateY(var(--card-ry, 0deg)) scale(${hover ? 1.018 : 1})`,
         transformStyle: 'preserve-3d',
         transformOrigin: 'center center',
@@ -159,6 +157,7 @@ function AsciiTerminal() {
 
   React.useEffect(() => {
     try { localStorage.setItem('ascii-theme', theme); } catch {}
+    document.documentElement.dataset.theme = theme;
   }, [theme]);
 
   React.useEffect(() => {
@@ -209,17 +208,17 @@ function AsciiTerminal() {
     wrap: {
       background: C.bg,
       color: C.fg,
-      fontFamily: '"JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace',
-      fontSize: 13,
+      fontFamily: 'var(--font-family-mono)',
+      fontSize: 'var(--font-size-body)',
       lineHeight: 1.7,
       width: '100%',
-      maxWidth: 1280,
+      maxWidth: 'calc(var(--content-max-width) + 64px)',
       margin: '0 auto',
       minHeight: '100%',
-      padding: '20px 32px 80px',
+      padding: 'var(--page-padding)',
       position: 'relative',
       cursor: 'none',
-      transition: 'background .3s, color .3s',
+      transition: 'background var(--duration-normal), color var(--duration-normal)',
     },
     intro: {
       display: 'block',
@@ -415,12 +414,11 @@ function AsciiTerminal() {
           scroll-margin-top: 80px;
         }
         .selected-works-dots {
-          animation: selected-works-twinkle var(--dot-duration) steps(1, end) var(--dot-delay) infinite;
+          animation: selected-works-twinkle var(--dot-duration) ease-in-out var(--dot-delay) infinite alternate;
         }
         @keyframes selected-works-twinkle {
-          0%, 16%, 22%, 58%, 64%, 100% { opacity: 1; }
-          19% { opacity: var(--dot-min-opacity); }
-          61% { opacity: .78; }
+          from { opacity: var(--dot-min-opacity); }
+          to { opacity: 1; }
         }
         @media (prefers-reduced-motion: reduce) {
           .selected-works-dots { animation: none; }
@@ -594,9 +592,9 @@ function AsciiTerminal() {
               r="2.08"
               fill={C.bigFg}
               style={{
-                '--dot-duration': `${3.1 + ((index * 17) % 19) / 10}s`,
-                '--dot-delay': `${-((index * 23) % 47) / 10}s`,
-                '--dot-min-opacity': 0.28 + ((index * 11) % 5) * 0.1,
+                '--dot-duration': `${0.75 + ((index * 17) % 16) / 10}s`,
+                '--dot-delay': `${-((index * 23) % 31) / 10}s`,
+                '--dot-min-opacity': 0.16 + ((index * 11) % 6) * 0.08,
               }}
             />
           ))}

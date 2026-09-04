@@ -153,6 +153,7 @@ function WorkHarborPage() {
 
   React.useEffect(() => {
     try { localStorage.setItem('ascii-theme', theme); } catch {}
+    document.documentElement.dataset.theme = theme;
     document.body.style.background = C.bg;
   }, [theme, C.bg]);
 
@@ -252,17 +253,17 @@ function WorkHarborPage() {
     wrap: {
       background: C.bg,
       color: C.fg,
-      fontFamily: '"JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace',
-      fontSize: 13,
+      fontFamily: 'var(--font-family-mono)',
+      fontSize: 'var(--font-size-body)',
       lineHeight: 1.7,
       minHeight: '100vh',
-      padding: '20px 32px 80px',
+      padding: 'var(--page-padding)',
       position: 'relative',
       cursor: 'none',
-      transition: 'background .3s, color .3s',
+      transition: 'background var(--duration-normal), color var(--duration-normal)',
     },
     title: {
-      fontSize: 44,
+      fontSize: 'var(--font-size-title)',
       lineHeight: 1.15,
       color: C.bigFg,
       letterSpacing: -0.8,
@@ -274,7 +275,7 @@ function WorkHarborPage() {
     metaGrid: {
       display: 'grid',
       gridTemplateColumns: 'repeat(4, 1fr)',
-      gap: 24,
+      gap: 'var(--space-6)',
       padding: '16px 0',
       borderTop: `1px dashed ${C.line}`,
       borderBottom: `1px dashed ${C.line}`,
@@ -282,12 +283,12 @@ function WorkHarborPage() {
     },
     metaLabel: {
       color: C.dim,
-      fontSize: 10,
-      letterSpacing: 1.5,
+      fontSize: 'var(--font-size-label)',
+      letterSpacing: 'var(--letter-spacing-label)',
       textTransform: 'uppercase',
       marginBottom: 6,
     },
-    metaVal: { color: C.fg, fontSize: 13 },
+    metaVal: { color: C.fg, fontSize: 'var(--font-size-body)' },
     hero: {
       width: '100%',
       aspectRatio: '16/9',
@@ -297,16 +298,16 @@ function WorkHarborPage() {
       overflow: 'hidden',
       position: 'relative',
     },
-    caption: { fontSize: 11, color: C.dim, marginBottom: 48 },
+    caption: { fontSize: 'var(--font-size-caption)', color: C.dim, marginBottom: 'var(--space-12)' },
     sectionTitle: {
       color: C.faint,
-      fontSize: 11,
-      letterSpacing: 1.5,
+      fontSize: 'var(--font-size-caption)',
+      letterSpacing: 'var(--letter-spacing-label)',
       marginTop: 40,
       marginBottom: 16,
       textTransform: 'uppercase',
     },
-    prose: { maxWidth: 680, color: C.chipText, fontSize: 14, lineHeight: 1.8, marginBottom: 32 },
+    prose: { maxWidth: 680, color: C.chipText, fontSize: 14, lineHeight: 'var(--line-height-prose)', marginBottom: 'var(--space-8)' },
     gallery: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, marginBottom: 40 },
     galleryTile: {
       aspectRatio: '4/3',
