@@ -6,10 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="frames/theme-init.js?v=1"></script>
   <link href="styles/design-tokens.css?v=1" rel="stylesheet">
   <style>
     html, body, #root { margin: 0; padding: 0; width: 100%; min-height: 100%; }
-    body { background: #0b0b0b; }
+    body { background: var(--color-bg); }
     * { box-sizing: border-box; }
   </style>
   <script src="vendor/react.production.min.js"></script>
@@ -21,9 +22,9 @@
 <body>
   <div id="root"></div>
   <!-- 共用顶栏与主题色板，须先于页面组件加载 -->
-  <script type="text/babel" src="frames/site-topbar.jsx?v=site-shell-22-token-brand"></script>
+  <script type="text/babel" src="frames/site-topbar.jsx?v=site-shell-23-auto-theme"></script>
   <script src="vendor/lottie.min.js"></script>
-  <script type="text/babel" src="frames/work-harbor-page.jsx?v=case-blocks-3-design-tokens"></script>
+  <script type="text/babel" src="frames/work-harbor-page.jsx?v=case-blocks-4-auto-theme"></script>
   <script type="text/babel" data-presets="react">
     (function boot() {
       if (!window.React || !window.ReactDOM || !window.WorkHarborPage || !window.SiteTopbar || !window.getAsciiThemePalette) {

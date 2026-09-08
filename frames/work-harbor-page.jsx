@@ -96,9 +96,7 @@ function WorkHarborPage() {
   };
   const [cur, setCur] = React.useState({ x: 0, y: 0, mode: 'default', visible: false });
   const [theme, setTheme] = React.useState(() => {
-    const forcedTheme = window.__workCaseData && window.__workCaseData.en && window.__workCaseData.en.forceInitialTheme;
-    if (forcedTheme) return forcedTheme;
-    try { return localStorage.getItem('ascii-theme') || 'dark'; } catch { return 'dark'; }
+    return window.getAsciiInitialTheme ? window.getAsciiInitialTheme() : 'light';
   });
   const [lang, setLang] = React.useState(() => {
     try { return localStorage.getItem('ascii-lang') || 'en'; } catch { return 'en'; }
@@ -156,6 +154,11 @@ function WorkHarborPage() {
     document.documentElement.dataset.theme = theme;
     document.body.style.background = C.bg;
   }, [theme, C.bg]);
+
+  React.useEffect(() => {
+    if (!window.watchAsciiAutomaticTheme) return undefined;
+    return window.watchAsciiAutomaticTheme(setTheme);
+  }, []);
 
   React.useEffect(() => {
     try { localStorage.setItem('ascii-lang', lang); } catch {}

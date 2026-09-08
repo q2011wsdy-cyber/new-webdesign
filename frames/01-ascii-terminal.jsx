@@ -51,6 +51,57 @@ function AsciiHeroSection({ dark, children }) {
   );
 }
 
+function HeroDecodeText({ text, className, delay = 0, duration = 760 }) {
+  const [rendered, setRendered] = React.useState(text);
+
+  React.useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setRendered(text);
+      return undefined;
+    }
+    const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/\\[]{}*+~';
+    const characters = Array.from(text);
+    const codeTailLength = Math.max(4, Math.round(characters.length * .22));
+    let frame = 0;
+    let start = 0;
+    let lastPaint = -Infinity;
+
+    const tick = (now) => {
+      if (!start) start = now;
+      const elapsed = now - start;
+      const visibleProgress = Math.max(0, Math.min(1, (elapsed - delay) / duration));
+      if (elapsed - lastPaint >= 42 || visibleProgress === 1) {
+        // Resolve the actual copy while the line is still heavily blurred, so the
+        // final sharp frame never exposes a single scrambled glyph or tail.
+        const resolveLine = elapsed - delay >= duration * .42 || visibleProgress === 1;
+        const tailProgress = Math.max(0, Math.min(1, (elapsed - delay - duration * .04) / (duration * .34)));
+        const visibleTailLength = Math.ceil(codeTailLength * (1 - tailProgress));
+        const scrambled = characters.map((character) => {
+          if (/\s/.test(character)) return character;
+          if (resolveLine) return character;
+          return glyphs[Math.floor(Math.random() * glyphs.length)];
+        }).join('') + Array.from({ length: visibleTailLength }, () => glyphs[Math.floor(Math.random() * glyphs.length)]).join('');
+        setRendered(scrambled);
+        lastPaint = elapsed;
+      }
+      if (visibleProgress < 1) frame = window.requestAnimationFrame(tick);
+    };
+
+    frame = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(frame);
+  }, [text, delay, duration]);
+
+  return <span
+    className={`hero-decode ${className || ''}`}
+    aria-label={text}
+    style={{
+      '--hero-decode-duration': `${duration}ms`,
+      '--hero-decode-delay': `${delay}ms`,
+    }}>
+    {rendered}
+  </span>;
+}
+
 function AsciiTile({ pat, t, k, img, theme, fillCell }) {
   const [hover, setHover] = React.useState(false);
   const tileRef = React.useRef(null);
@@ -140,7 +191,7 @@ function AsciiTerminal() {
   const SiteTopbar = window.SiteTopbar;
   const [cur, setCur] = React.useState({ x: 0, y: 0, mode: 'default', visible: false });
   const [theme, setTheme] = React.useState(() => {
-    try { return localStorage.getItem('ascii-theme') || 'dark'; } catch { return 'dark'; }
+    return window.getAsciiInitialTheme ? window.getAsciiInitialTheme() : 'light';
   });
   const [chatOpen, setChatOpen] = React.useState(false);
   const [lang, setLang] = React.useState('zh');
@@ -159,6 +210,11 @@ function AsciiTerminal() {
     try { localStorage.setItem('ascii-theme', theme); } catch {}
     document.documentElement.dataset.theme = theme;
   }, [theme]);
+
+  React.useEffect(() => {
+    if (!window.watchAsciiAutomaticTheme) return undefined;
+    return window.watchAsciiAutomaticTheme(setTheme);
+  }, []);
 
   React.useEffect(() => {
     try { localStorage.setItem('ascii-lang', lang); } catch {}
@@ -297,6 +353,10 @@ function AsciiTerminal() {
     en: {
       heroLead: "HI, i'm Super Lee",
       heroBody: 'I focus on crafting thoughtful and human-centered digital experiences.',
+      heroBodyLines: [
+        'I focus on crafting thoughtful and',
+        'human-centered digital experiences.',
+      ],
       worksTitle: 'selected works',
       writingTitle: 'writing',
       labTitle: 'lab',
@@ -313,6 +373,10 @@ function AsciiTerminal() {
     zh: {
       heroLead: "HI, i'm Super Lee",
       heroBody: '一位UX设计师、创造者和构建者，正在探索 AI 如何放大人的想象力。',
+      heroBodyLines: [
+        '一位UX设计师、创造者和构建者，正在探索',
+        'AI 如何放大人的想象力。',
+      ],
       worksTitle: 'selected works',
       writingTitle: 'writing',
       labTitle: 'lab',
@@ -408,6 +472,20 @@ function AsciiTerminal() {
           object-fit: cover;
           object-position: center 34%;
         }
+        @keyframes hero-decode-reveal {
+          from { opacity: 0; filter: blur(8px); transform: translate3d(0, .82em, 0); }
+          58% { opacity: .96; filter: blur(8px); transform: translate3d(0, .12em, 0); }
+          to { opacity: 1; filter: blur(0); transform: translate3d(0, 0, 0); }
+        }
+        .hero-decode {
+          display: block;
+          width: fit-content;
+          opacity: 0;
+          white-space: nowrap;
+          will-change: transform, filter, opacity;
+          backface-visibility: hidden;
+          animation: hero-decode-reveal var(--hero-decode-duration, 780ms) cubic-bezier(.16,1,.3,1) var(--hero-decode-delay, 0ms) both;
+        }
         /* 自定义光标：图片与链接触发区不显系统手型/箭头 */
         img, a, button { cursor: none !important; }
         #about, #works, #writing, #lab, #contact {
@@ -490,9 +568,13 @@ function AsciiTerminal() {
           .case-transition-veil { transition: none !important; transform: none !important; }
           .work-bento.is-returning .work-card { animation: none; }
           .hero-avatar,
-          .hero-lead:hover .hero-avatar {
+          .hero-lead:hover .hero-avatar,
+          .hero-decode {
             animation: none;
             transform: none;
+            clip-path: none;
+            opacity: 1;
+            filter: none;
             transition: opacity .16s ease;
           }
         }
@@ -532,7 +614,7 @@ function AsciiTerminal() {
           <div {...textProbe}>
             <div style={s.bigLine}>
               <span className="hero-lead" style={s.heroLead}>
-                {text.heroLead}
+                <HeroDecodeText key={`lead-${lang}`} text={text.heroLead} className="hero-decode-lead" delay={0} duration={520} />
                 <span
                   className="hero-avatar"
                   aria-hidden="true"
@@ -547,7 +629,13 @@ function AsciiTerminal() {
                 </span>
               </span>
               <span style={s.heroBody}>
-                {text.heroBody}
+                {text.heroBodyLines.map((line, index) => <HeroDecodeText
+                  key={`body-${lang}-${index}`}
+                  text={line}
+                  className="hero-decode-body"
+                  delay={190 + index * 190}
+                  duration={520}
+                />)}
               </span>
             </div>
           </div>

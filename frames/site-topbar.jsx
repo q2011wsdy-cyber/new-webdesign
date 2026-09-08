@@ -293,7 +293,10 @@ function SiteTopbar({
           className="site-liquid-button"
           {...linkProbe}
           type="button"
-          onClick={() => setTheme(dark ? 'light' : 'dark')}
+          onClick={() => {
+            if (window.markAsciiThemeManual) window.markAsciiThemeManual();
+            setTheme(dark ? 'light' : 'dark');
+          }}
           style={{
             color: C.mute,
             padding: '0 9px',
