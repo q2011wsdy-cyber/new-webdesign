@@ -195,6 +195,11 @@ function SiteTopbar({
           box-shadow: var(--glass-outer-shadow);
           -webkit-backdrop-filter: blur(8px) saturate(1.65) contrast(1.08);
           backdrop-filter: blur(8px) saturate(1.65) contrast(1.08);
+          transition:
+            background-color var(--duration-normal) var(--ease-out),
+            box-shadow var(--duration-normal) var(--ease-out),
+            -webkit-backdrop-filter var(--duration-normal) var(--ease-out),
+            backdrop-filter var(--duration-normal) var(--ease-out);
         }
         @supports (backdrop-filter: url("#site-liquid-lens")) {
           .site-liquid-controls {
@@ -210,7 +215,9 @@ function SiteTopbar({
           background: var(--glass-sheen);
           background-position: center var(--liquid-scroll-shift);
           background-size: 125% 175%;
-          transition: background-position 180ms cubic-bezier(.16,1,.3,1);
+          transition:
+            background-position 180ms cubic-bezier(.16,1,.3,1),
+            background var(--duration-normal) var(--ease-out);
           pointer-events: none;
         }
         .site-liquid-controls::after {
@@ -234,6 +241,7 @@ function SiteTopbar({
           box-shadow: none;
           transition:
             transform var(--duration-normal) var(--ease-out),
+            color var(--duration-normal) var(--ease-out),
             background var(--duration-normal) var(--ease-out),
             box-shadow var(--duration-normal) var(--ease-out);
         }

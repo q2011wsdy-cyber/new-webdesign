@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="frames/theme-init.js?v=1"></script>
-  <link href="styles/design-tokens.css?v=1" rel="stylesheet">
+  <link href="styles/design-tokens.css?v=theme-transition-1" rel="stylesheet">
   <style>
     html, body, #root { margin: 0; padding: 0; width: 100%; min-height: 100%; }
     body { background: var(--color-bg); }
@@ -22,8 +22,8 @@
 </head>
 <body>
   <div id="root"></div>
-  <script type="text/babel" src="frames/site-topbar.jsx?v=site-shell-23-auto-theme"></script>
-  <script type="text/babel" src="frames/01-ascii-terminal.jsx?v=hero-line-resolve-1"></script>
+  <script type="text/babel" src="frames/site-topbar.jsx?v=theme-transition-1"></script>
+  <script type="text/babel" src="frames/01-ascii-terminal.jsx?v=theme-transition-1"></script>
   <script type="text/babel" data-presets="react">
     (function boot() {
       if (!window.React || !window.ReactDOM || !window.AsciiTerminal || !window.SiteTopbar || !window.getAsciiThemePalette) {

@@ -104,6 +104,9 @@ body {
   background: var(--color-bg);
   color: var(--color-fg);
   font-family: var(--font-family-mono);
+  transition:
+    background-color var(--duration-normal) var(--ease-out),
+    color var(--duration-normal) var(--ease-out);
 }
 
 @media (max-width: 720px) {

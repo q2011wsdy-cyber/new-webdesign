@@ -221,11 +221,6 @@ function AsciiTerminal() {
   }, [lang]);
 
   React.useEffect(() => {
-    document.body.style.background = C.bg;
-    document.documentElement.style.background = C.bg;
-  }, [C.bg]);
-
-  React.useEffect(() => {
     if (!chatOpen) return;
     const onKey = (e) => {
       if (e.key === 'Escape') setChatOpen(false);
@@ -274,7 +269,7 @@ function AsciiTerminal() {
       padding: 'var(--page-padding)',
       position: 'relative',
       cursor: 'none',
-      transition: 'background var(--duration-normal), color var(--duration-normal)',
+      transition: 'background-color var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out)',
     },
     intro: {
       display: 'block',
