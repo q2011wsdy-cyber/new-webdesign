@@ -102,6 +102,64 @@ function HeroDecodeText({ text, className, delay = 0, duration = 760 }) {
   </span>;
 }
 
+function HeroRollingWords({ words, reducedText, interval = 2000 }) {
+  const [reduceMotion, setReduceMotion] = React.useState(() => (
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ));
+  const [rotation, setRotation] = React.useState({ current: 0, previous: null, active: false });
+
+  React.useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const onChange = (event) => setReduceMotion(event.matches);
+    media.addEventListener?.('change', onChange);
+    return () => media.removeEventListener?.('change', onChange);
+  }, []);
+
+  React.useEffect(() => {
+    if (reduceMotion || words.length < 2) return undefined;
+    let frame = 0;
+    const timer = window.setInterval(() => {
+      setRotation((state) => ({
+        current: (state.current + 1) % words.length,
+        previous: state.current,
+        active: false,
+      }));
+      frame = window.requestAnimationFrame(() => {
+        frame = window.requestAnimationFrame(() => {
+          setRotation((state) => ({ ...state, active: true }));
+        });
+      });
+    }, interval);
+
+    return () => {
+      window.clearInterval(timer);
+      window.cancelAnimationFrame(frame);
+    };
+  }, [reduceMotion, words.length, interval]);
+
+  if (reduceMotion) {
+    return <span className="hero-rolling-static">{reducedText}</span>;
+  }
+
+  const longestWord = words.reduce((longest, word) => (
+    word.length > longest.length ? word : longest
+  ), words[0] || '');
+
+  return (
+    <span className="hero-rolling-words" aria-hidden="true">
+      <span className="hero-rolling-sizer">{longestWord}</span>
+      {rotation.previous !== null && (
+        <span className={`hero-rolling-word hero-rolling-word-out${rotation.active ? ' is-active' : ''}`}>
+          {words[rotation.previous]}
+        </span>
+      )}
+      <span className={`hero-rolling-word hero-rolling-word-in${rotation.previous !== null ? ' is-next' : ''}${rotation.active ? ' is-active' : ''}`}>
+        {words[rotation.current]}
+      </span>
+    </span>
+  );
+}
+
 function AsciiTile({ pat, t, k, img, theme, fillCell }) {
   const [hover, setHover] = React.useState(false);
   const tileRef = React.useRef(null);
@@ -346,12 +404,15 @@ function AsciiTerminal() {
 
   const copy = {
     en: {
-      heroLead: "HI, i'm Super Lee",
-      heroBody: 'I focus on crafting thoughtful and human-centered digital experiences.',
+      heroLead: "Hi, I’m Super Lee.",
       heroBodyLines: [
-        'I focus on crafting thoughtful and',
-        'human-centered digital experiences.',
+        'I’m Li Weichao, an AI-Native designer.',
+        'I explore the fusion of AI and taste, shaping a distinct aesthetic for digital products.',
       ],
+      creativePrefix: 'My creative drive comes from ',
+      creativeWords: ['curiosity', 'reading', 'travel', 'reflection'],
+      creativeReduced: 'curiosity, reading, travel, and reflection',
+      creativeSuffix: '.',
       worksTitle: 'selected works',
       writingTitle: 'writing',
       labTitle: 'lab',
@@ -366,12 +427,15 @@ function AsciiTerminal() {
       ],
     },
     zh: {
-      heroLead: "HI, i'm Super Lee",
-      heroBody: '一位UX设计师、创造者和构建者，正在探索 AI 如何放大人的想象力。',
+      heroLead: "Hi, I’m Super Lee.",
       heroBodyLines: [
-        '一位UX设计师、创造者和构建者，正在探索',
-        'AI 如何放大人的想象力。',
+        'AI-Native designer.',
+        '我正在探索 AI 与品味的融合，塑造独特的数字产品审美。',
       ],
+      creativePrefix: '我的创作动力，源于',
+      creativeWords: ['好奇', '阅读', '旅行', '思考'],
+      creativeReduced: '好奇、阅读、旅行、思考',
+      creativeSuffix: '。',
       worksTitle: 'selected works',
       writingTitle: 'writing',
       labTitle: 'lab',
@@ -481,6 +545,73 @@ function AsciiTerminal() {
           backface-visibility: hidden;
           animation: hero-decode-reveal var(--hero-decode-duration, 780ms) cubic-bezier(.16,1,.3,1) var(--hero-decode-delay, 0ms) both;
         }
+        .hero-decode-body {
+          max-width: 100%;
+          white-space: normal;
+          text-wrap: pretty;
+        }
+        .hero-creative-line {
+          display: flex;
+          align-items: baseline;
+          flex-wrap: wrap;
+          width: fit-content;
+          max-width: 100%;
+        }
+        .hero-creative-prefix {
+          display: inline-block;
+          white-space: pre-wrap;
+        }
+        .hero-rolling-words {
+          position: relative;
+          display: inline-grid;
+          overflow: hidden;
+          vertical-align: bottom;
+          color: ${C.bigFg};
+          white-space: nowrap;
+        }
+        .hero-rolling-sizer {
+          grid-area: 1 / 1;
+          visibility: hidden;
+          pointer-events: none;
+        }
+        .hero-rolling-word {
+          grid-area: 1 / 1;
+          transition-property: transform, opacity, filter;
+          transition-duration: 420ms;
+          transition-timing-function: cubic-bezier(.16,1,.3,1);
+          will-change: transform, opacity, filter;
+        }
+        .hero-rolling-word-in.is-next {
+          opacity: 0;
+          filter: blur(5px);
+          transform: translate3d(0, .72em, 0);
+        }
+        .hero-rolling-word-in.is-next.is-active {
+          opacity: 1;
+          filter: blur(0);
+          transform: translate3d(0, 0, 0);
+        }
+        .hero-rolling-word-out {
+          opacity: 1;
+          filter: blur(0);
+          transform: translate3d(0, 0, 0);
+        }
+        .hero-rolling-word-out.is-active {
+          opacity: 0;
+          filter: blur(4px);
+          transform: translate3d(0, -.55em, 0);
+        }
+        .hero-visually-hidden {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border: 0;
+        }
         /* 自定义光标：图片与链接触发区不显系统手型/箭头 */
         img, a, button { cursor: none !important; }
         #about, #works, #writing, #lab, #contact {
@@ -572,6 +703,7 @@ function AsciiTerminal() {
             filter: none;
             transition: opacity .16s ease;
           }
+          .hero-rolling-word { transition: none; }
         }
         @media (max-width: 1024px) and (min-width: 721px) {
           .work-bento {
@@ -631,6 +763,25 @@ function AsciiTerminal() {
                   delay={190 + index * 190}
                   duration={520}
                 />)}
+                <span className="hero-creative-line" aria-hidden="true">
+                  <HeroDecodeText
+                    key={`creative-${lang}`}
+                    text={text.creativePrefix}
+                    className="hero-decode-body hero-creative-prefix"
+                    delay={190 + text.heroBodyLines.length * 190}
+                    duration={520}
+                  />
+                  <HeroRollingWords
+                    key={`rolling-${lang}`}
+                    words={text.creativeWords}
+                    reducedText={text.creativeReduced}
+                    interval={2000}
+                  />
+                  <span>{text.creativeSuffix}</span>
+                </span>
+                <span className="hero-visually-hidden">
+                  {text.creativePrefix}{text.creativeReduced}{text.creativeSuffix}
+                </span>
               </span>
             </div>
           </div>
