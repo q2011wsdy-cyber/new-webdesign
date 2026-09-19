@@ -40,12 +40,37 @@
 .pimax-screen-bottom { position: absolute; left: 13.34%; top: 39.84%; width: 70.58%; height: 75.3%; overflow: hidden; }
 .pimax-screen-bottom img { position: absolute; width: 100.1%; height: 174.96%; left: -.08%; top: -74.94%; }
 .huolala-cover { position: absolute; width: 171.79%; height: 221.65%; left: -36.47%; top: -39.01%; object-fit: cover; }
-.work-upload-cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.work-tile {
+  overflow: hidden;
+  clip-path: inset(.01px round 30px);
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  backface-visibility: hidden;
+}
+.work-upload-cover {
+  position: absolute;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  max-width: none;
+  object-fit: cover;
+  border-radius: 31px;
+  transform: translateZ(0) scale(1.002);
+  backface-visibility: hidden;
+}
+.generic-work-cover { position:absolute; inset:0; display:grid; place-items:center; background:linear-gradient(145deg,#252525,#0c0c0c); color:#d8d8d8; }
+.generic-work-cover span { font:500 clamp(42px,7vw,88px)/1 'PP Editorial New',serif; letter-spacing:-.06em; }
+:root[data-theme='light'] .generic-work-cover { background:linear-gradient(145deg,#ededeb,#d6d6d2); color:#242424; }
 :root[data-theme='light'] .hero-flower { filter: invert(1); mix-blend-mode: multiply; }
 .hero-description { margin-top: 40px; }
 .hero-creative-line { margin-top: 24px; font-size: 12px; line-height: 1.7; color: var(--color-muted); }
 .home-section-heading { margin: 0 0 39px; line-height: 1; }
 .home-section-heading > svg { filter: grayscale(1); }
+.home-scroll-item {
+  opacity: var(--home-scroll-opacity, 1);
+  transform: translate3d(0, var(--home-scroll-y, 0px), 0) scale(var(--home-scroll-scale, 1));
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
 .work-caption { padding-top: 18px; }
 .work-caption h3 { margin: 0; font-weight: 400; font-size: 16px; line-height: 1.5; }
 .work-caption p { margin: 5px 0 0; font-size: 14px; line-height: 1.6; }
@@ -64,6 +89,7 @@
   background: #161616;
 }
 .play-column { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.play-media { min-width: 0; }
 .play-column img, .play-column video { display: block; width: 100%; height: auto; object-fit: cover; border-radius: 20px; }
 :root[data-theme='light'] .play-grid { background: #efefed; }
 @media (min-width: 721px) {
@@ -112,6 +138,9 @@
 }
 @media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
   .fluid-glass { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-scroll-item { opacity: 1 !important; transform: none !important; }
 }
 
 /* Refraction belongs to the cursor only; the case artwork stays clear. */

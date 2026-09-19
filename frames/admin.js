@@ -1,4 +1,5 @@
 const workEditor = document.getElementById('work-editor');
+const workCount = document.getElementById('work-count');
 const playEditor = document.getElementById('play-editor');
 const playCount = document.getElementById('play-count');
 const statusEl = document.getElementById('status');
@@ -30,6 +31,7 @@ function mediaMarkup(media, fallback = '') {
 }
 
 function renderWorks() {
+  workCount.textContent = `${content.works.length} 个案例`;
   workEditor.innerHTML = content.works.map((work, index) => `
     <article class="work-form" data-work-index="${index}">
       <div class="media-preview">${mediaMarkup(work._pending || work.cover)}</div>
@@ -40,6 +42,7 @@ function renderWorks() {
         <div class="cover-actions">
           <label class="upload-button">上传封面<input class="work-upload" type="file" accept=".webp,.png,.jpg,.jpeg,.gif,.mp4,image/webp,image/png,image/jpeg,image/gif,video/mp4"></label>
           <button class="remove-cover" type="button">恢复默认封面</button>
+          <button class="remove-work" type="button">删除案例</button>
         </div>
       </div>
     </article>`).join('');
@@ -74,11 +77,28 @@ workEditor.addEventListener('change', async event => {
 });
 
 workEditor.addEventListener('click', event => {
-  if (!event.target.classList.contains('remove-cover')) return;
-  const index = Number(event.target.closest('[data-work-index]').dataset.workIndex);
-  content.works[index].cover = null;
-  delete content.works[index]._pending;
+  const article = event.target.closest('[data-work-index]');
+  if (!article) return;
+  const index = Number(article.dataset.workIndex);
+  if (event.target.classList.contains('remove-cover')) {
+    content.works[index].cover = null;
+    delete content.works[index]._pending;
+  } else if (event.target.classList.contains('remove-work')) {
+    content.works.splice(index, 1);
+  } else return;
   renderWorks();
+});
+
+document.getElementById('add-work').addEventListener('click', () => {
+  content.works.push({
+    id: `work-${Date.now()}`,
+    title: 'New case',
+    description: 'Add a short project description.',
+    href: '#',
+    cover: null
+  });
+  renderWorks();
+  workEditor.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
 
 document.getElementById('play-upload').addEventListener('change', async event => {

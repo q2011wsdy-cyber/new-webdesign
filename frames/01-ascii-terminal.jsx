@@ -159,11 +159,15 @@ function WorkCover({ n, img, t, cover, decorative = false }) {
       ? <video className="work-upload-cover" src={cover.src} aria-label={decorative ? undefined : t} autoPlay muted loop playsInline preload="metadata" />
       : <img className="work-upload-cover" src={cover.src} alt={decorative ? '' : t} draggable={false} />;
   }
-  return n === '02' ? <div className="pimax-cover" role={decorative ? undefined : 'img'} aria-label={decorative ? undefined : t}>
+  if (n === '02') return <div className="pimax-cover" role={decorative ? undefined : 'img'} aria-label={decorative ? undefined : t}>
     <div className="pimax-phone"><img src="assets/home/phone.webp" alt="" draggable={false} /></div>
     <img className="pimax-screen" src="assets/home/pimax-screen.webp" alt="" draggable={false} />
     <div className="pimax-screen-bottom"><img src="assets/home/pimax-screen.webp" alt="" draggable={false} /></div>
-  </div> : <img className="huolala-cover" src={img} alt={decorative ? '' : t} draggable={false} />;
+  </div>;
+  if (n === '01') return <img className="huolala-cover" src={img} alt={decorative ? '' : t} draggable={false} />;
+  return <div className="generic-work-cover" role={decorative ? undefined : 'img'} aria-label={decorative ? undefined : t}>
+    <span>{String(t || 'New case').slice(0, 2)}</span>
+  </div>;
 }
 
 function AsciiTile({ pat, t, img, n, cover }) {
@@ -199,10 +203,11 @@ function AsciiTile({ pat, t, img, n, cover }) {
 }
 
 function PlayMedia({ item }) {
-  if (item.type === 'video') {
-    return <video src={item.src} aria-label={item.alt || 'Play media'} autoPlay muted loop playsInline preload="metadata" />;
-  }
-  return <img src={item.src} alt={item.alt || ''} loading="lazy" decoding="async" />;
+  return <div className="play-media home-scroll-item">
+    {item.type === 'video'
+      ? <video src={item.src} aria-label={item.alt || 'Play media'} autoPlay muted loop playsInline preload="metadata" />
+      : <img src={item.src} alt={item.alt || ''} loading="lazy" decoding="async" />}
+  </div>;
 }
 
 function AsciiTerminal() {
@@ -257,6 +262,44 @@ function AsciiTerminal() {
       active = false;
       window.clearInterval(timer);
       if (channel) channel.close();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    const root = rootRef.current;
+    if (!root || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    let frame = 0;
+    const motion = new Map();
+    const animateScrollMotion = () => {
+      frame = 0;
+      let needsAnotherFrame = false;
+      const viewport = Math.max(window.innerHeight || 0, 1);
+      root.querySelectorAll('.home-scroll-item').forEach((node) => {
+        const state = motion.get(node) || { y: 18, scale: .96, opacity: .42 };
+        const rect = node.getBoundingClientRect();
+        const progress = Math.max(0, Math.min(1, (viewport * .93 - rect.top) / (viewport * .62)));
+        const targetY = (1 - progress) * 20;
+        const targetScale = .96 + progress * .04;
+        const targetOpacity = .42 + progress * .58;
+        state.y += (targetY - state.y) * .115;
+        state.scale += (targetScale - state.scale) * .115;
+        state.opacity += (targetOpacity - state.opacity) * .115;
+        motion.set(node, state);
+        node.style.setProperty('--home-scroll-y', `${state.y.toFixed(2)}px`);
+        node.style.setProperty('--home-scroll-scale', state.scale.toFixed(4));
+        node.style.setProperty('--home-scroll-opacity', state.opacity.toFixed(3));
+        if (Math.abs(targetY - state.y) > .04 || Math.abs(targetScale - state.scale) > .0004 || Math.abs(targetOpacity - state.opacity) > .004) needsAnotherFrame = true;
+      });
+      if (needsAnotherFrame) frame = window.requestAnimationFrame(animateScrollMotion);
+    };
+    const requestUpdate = () => { if (!frame) frame = window.requestAnimationFrame(animateScrollMotion); };
+    requestUpdate();
+    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('resize', requestUpdate);
+    return () => {
+      window.removeEventListener('scroll', requestUpdate);
+      window.removeEventListener('resize', requestUpdate);
+      if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
 
@@ -434,19 +477,25 @@ function AsciiTerminal() {
     },
   };
   const text = copy[lang] || copy.en;
-  const selectedWorks = ['02', '01'].map(id => {
-    const work = text.works.find(item => item.n === id);
-    const managed = cmsContent && Array.isArray(cmsContent.works)
-      ? cmsContent.works.find(item => item.id === id)
-      : null;
-    return { ...work,
-      t: (managed && managed.title) || work.t,
-      href: (managed && managed.href) || work.href,
-      cover: managed && managed.cover ? managed.cover : null,
+  const managedWorks = cmsContent && Array.isArray(cmsContent.works)
+    ? cmsContent.works
+    : ['02', '01'].map(id => ({ id }));
+  const selectedWorks = managedWorks.map((managed, index) => {
+    const id = managed.id;
+    const work = text.works.find(item => item.n === id) || {};
+    return {
+      ...work,
+      n: id,
+      pat: work.pat || PATTERNS[index % PATTERNS.length],
+      t: managed.title || work.t || 'New case',
+      href: managed.href || work.href || '#',
+      cover: managed.cover || null,
       img: `assets/home/${id === '02' ? 'pimax-screen' : 'huolala'}.webp`,
-      description: (managed && managed.description) || (id === '02'
+      description: managed.description || (id === '02'
         ? (lang === 'zh' ? '智能灯串的数字体验设计' : 'A smart light string experience.')
-        : (lang === 'zh' ? '让货运出行更简单的产品设计' : 'A simpler way to move goods.')),
+        : id === '01'
+          ? (lang === 'zh' ? '让货运出行更简单的产品设计' : 'A simpler way to move goods.')
+          : ''),
     };
   });
   const defaultPlayItems = [
@@ -646,16 +695,18 @@ function AsciiTerminal() {
           min-width: 0;
           min-height: 0;
           isolation: isolate;
-          transition: transform 430ms cubic-bezier(.2,.8,.2,1), opacity 260ms ease;
+          transition: none;
         }
         .work-card.is-leaving {
           position: relative;
           z-index: 3;
           transform: scale(1.035);
+          transition: transform 430ms cubic-bezier(.2,.8,.2,1), opacity 260ms ease;
         }
         .work-bento.is-transitioning .work-card:not(.is-leaving) {
           opacity: .38;
           transform: scale(.988);
+          transition: transform 430ms cubic-bezier(.2,.8,.2,1), opacity 260ms ease;
         }
         @keyframes work-grid-return {
           from { opacity: 0; transform: translate3d(0, 16px, 0) scale(.984); filter: blur(2px); }
@@ -775,7 +826,7 @@ function AsciiTerminal() {
       {/* Works — published cases, Pimax followed by Huolala */}
       <div
         id="works"
-        className="home-section-heading">
+        className="home-section-heading home-scroll-item">
         <svg
           width="181"
           height="53"
@@ -822,7 +873,7 @@ function AsciiTerminal() {
         {selectedWorks.map(w => (
           <a
             key={w.n}
-            className={`work-card${leavingCase === w.href ? ' is-leaving' : ''}`}
+            className={`work-card home-scroll-item${leavingCase === w.href ? ' is-leaving' : ''}`}
             href={w.href || '#'}
             onClick={onWorkClick(w.href)}
             {...linkProbe}
@@ -833,7 +884,7 @@ function AsciiTerminal() {
         ))}
       </div>
       <section id="play" className="play-section" aria-labelledby="play-heading">
-        <h2 id="play-heading" className="home-section-heading">
+        <h2 id="play-heading" className="home-section-heading home-scroll-item">
           <img className="play-wordmark" src="assets/play/play.svg?v=monochrome-1" width="180" height="53" alt="Play" />
         </h2>
         <div className="play-grid">
