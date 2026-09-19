@@ -1,3 +1,54 @@
+/** GlassSurface backdrop pipeline adapted from React Bits (DavidHDev/react-bits).
+ * Keeps the existing global React/static-page setup and button semantics.
+ */
+function GlassSurface({ children, style, controlCount, className = '', borderRadius, distortionScale = -65, mapBlur = 7 }) {
+  const host = React.useRef(null);
+  const mapRef = React.useRef(null);
+  const id = `surface-${React.useId().replace(/:/g, '')}`;
+  const [supported, setSupported] = React.useState(false);
+  React.useEffect(() => {
+    const ua = navigator.userAgent;
+    setSupported(!(/Firefox/.test(ua) || (/Safari/.test(ua) && !/Chrome/.test(ua)))
+      && CSS.supports('backdrop-filter', `url(#${id})`));
+    const update = () => {
+      const {width: w, height: h} = host.current.getBoundingClientRect();
+      if (!w || !h) return;
+      const edge = Math.min(w, h) * .035;
+      const radius = borderRadius == null ? h / 2 : borderRadius;
+      const map = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <defs><linearGradient id="r" x1="100%" x2="0%"><stop stop-color="red" stop-opacity="0"/><stop offset="1" stop-color="red"/></linearGradient>
+        <linearGradient id="b" x1="0%" y1="0%" x2="0%" y2="100%"><stop stop-color="blue" stop-opacity="0"/><stop offset="1" stop-color="blue"/></linearGradient></defs>
+        <rect width="${w}" height="${h}" fill="black"/>
+        <rect width="${w}" height="${h}" rx="${radius}" fill="url(#r)"/>
+        <rect width="${w}" height="${h}" rx="${radius}" fill="url(#b)" style="mix-blend-mode:difference"/>
+        <rect x="${edge}" y="${edge}" width="${w-edge*2}" height="${h-edge*2}" rx="${radius}" fill="hsl(0 0% 50% / .93)" style="filter:blur(${mapBlur}px)"/></svg>`;
+      mapRef.current.setAttribute('href', `data:image/svg+xml,${encodeURIComponent(map)}`);
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(host.current);
+    return () => observer.disconnect();
+  }, [id, borderRadius, mapBlur]);
+  return <div ref={host} className={`site-liquid-controls ${className}`} data-control-count={controlCount}
+    data-svg-glass={supported} style={{...style, '--surface-filter': `url(#${id})`}}>
+    <svg className="site-glass-filter" aria-hidden="true" focusable="false">
+      <defs><filter id={id} x="0%" y="0%" width="100%" height="100%" colorInterpolationFilters="sRGB">
+        <feImage ref={mapRef} width="100%" height="100%" preserveAspectRatio="none" result="map"/>
+        <feDisplacementMap in="SourceGraphic" in2="map" scale={distortionScale} xChannelSelector="R" yChannelSelector="G" result="redShift"/>
+        <feColorMatrix in="redShift" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red"/>
+        <feDisplacementMap in="SourceGraphic" in2="map" scale={distortionScale + 5} xChannelSelector="R" yChannelSelector="G" result="greenShift"/>
+        <feColorMatrix in="greenShift" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green"/>
+        <feDisplacementMap in="SourceGraphic" in2="map" scale={distortionScale + 10} xChannelSelector="R" yChannelSelector="G" result="blueShift"/>
+        <feColorMatrix in="blueShift" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue"/>
+        <feBlend in="red" in2="green" mode="screen" result="rg"/>
+        <feBlend in="rg" in2="blue" mode="screen" result="combined"/>
+        <feGaussianBlur in="combined" stdDeviation=".35"/>
+      </filter></defs>
+    </svg>
+    {children}
+  </div>;
+}
+
 /**
  * 全站共用顶栏：品牌文案、导航、主题切换、吸附与实底背景。
  * 修改此处即可同步首页与各作品详情页。
@@ -99,25 +150,6 @@ function SiteTopbar({
   closeOnClick,
 }) {
   const C = getAsciiThemePalette(dark);
-  const liquidControlsRef = React.useRef(null);
-
-  React.useEffect(() => {
-    let frame = 0;
-    const updateLiquidRefraction = () => {
-      frame = 0;
-      const shift = -((window.scrollY || window.pageYOffset || 0) % 96) * 0.28;
-      if (liquidControlsRef.current) liquidControlsRef.current.style.setProperty('--liquid-scroll-shift', `${shift.toFixed(2)}px`);
-    };
-    const onScroll = () => {
-      if (!frame) frame = window.requestAnimationFrame(updateLiquidRefraction);
-    };
-    updateLiquidRefraction();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      if (frame) window.cancelAnimationFrame(frame);
-    };
-  }, []);
   const topbarStyle = {
     display: 'flex',
     justifyContent: 'space-between',
@@ -165,14 +197,6 @@ function SiteTopbar({
 
   return (
     <>
-      <svg aria-hidden="true" width="0" height="0" focusable="false" style={{ position: 'absolute', overflow: 'hidden' }}>
-        <defs>
-          <filter id="site-liquid-lens" x="-20%" y="-35%" width="140%" height="170%" colorInterpolationFilters="sRGB">
-            <feTurbulence type="fractalNoise" baseFrequency="0.012 0.055" numOctaves="1" seed="9" result="liquid-noise" />
-            <feDisplacementMap in="SourceGraphic" in2="liquid-noise" scale="7" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-      </svg>
       <div aria-hidden="true" style={topbarSpacerStyle} />
       <div style={topbarStyle}>
       <style>{`
@@ -185,50 +209,26 @@ function SiteTopbar({
         }
         .site-liquid-controls {
           position: relative;
-          isolation: isolate;
           box-sizing: border-box;
-          height: var(--control-height);
           padding: 4px;
           border: 0;
           border-radius: var(--radius-pill);
-          background: var(--glass-fill);
-          box-shadow: var(--glass-outer-shadow);
-          -webkit-backdrop-filter: blur(8px) saturate(1.65) contrast(1.08);
-          backdrop-filter: blur(8px) saturate(1.65) contrast(1.08);
-          transition:
-            background-color var(--duration-normal) var(--ease-out),
-            box-shadow var(--duration-normal) var(--ease-out),
-            -webkit-backdrop-filter var(--duration-normal) var(--ease-out),
-            backdrop-filter var(--duration-normal) var(--ease-out);
+          background: ${dark ? 'rgba(255,255,255,.035)' : 'rgba(255,255,255,.16)'};
+          -webkit-backdrop-filter: blur(12px) saturate(1.5);
+          backdrop-filter: blur(12px) saturate(1.5);
+          box-shadow: inset 0 0 2px 1px ${dark ? 'rgba(255,255,255,.35)' : 'rgba(255,255,255,.8)'},
+            inset 0 0 10px 4px ${dark ? 'rgba(255,255,255,.10)' : 'rgba(0,0,0,.06)'},
+            0 4px 16px rgba(17,17,26,.05), 0 8px 24px rgba(17,17,26,.05);
+          transition: background-color var(--duration-normal), box-shadow var(--duration-normal);
         }
-        @supports (backdrop-filter: url("#site-liquid-lens")) {
-          .site-liquid-controls {
-            backdrop-filter: url("#site-liquid-lens") blur(8px) saturate(1.65) contrast(1.08);
-          }
-        }
-        .site-liquid-controls::before {
-          content: '';
-          position: absolute;
-          z-index: 0;
-          inset: 0;
-          border-radius: inherit;
-          background: var(--glass-sheen);
-          background-position: center var(--liquid-scroll-shift);
-          background-size: 125% 175%;
-          transition:
-            background-position 180ms cubic-bezier(.16,1,.3,1),
-            background var(--duration-normal) var(--ease-out);
-          pointer-events: none;
+        .site-liquid-controls[data-svg-glass="true"] {
+          backdrop-filter: var(--surface-filter) saturate(1.5);
         }
         .site-liquid-controls::after {
-          content: '';
-          position: absolute;
-          z-index: 3;
-          inset: 0;
-          border-radius: inherit;
-          box-shadow: var(--glass-edge);
-          pointer-events: none;
+          content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.5), inset 0 -1px 0 rgba(255,255,255,.16);
         }
+        .site-glass-filter { position: absolute; width: 100%; height: 100%; inset: 0; opacity: 0; pointer-events: none; z-index: -1; }
         .site-liquid-button {
           position: relative;
           z-index: 1;
@@ -275,11 +275,7 @@ function SiteTopbar({
         aria-label="回到首页">
         <ScrambledBrand text={brand} linkProbe={linkProbe} />
       </a>
-      <div
-        className="site-liquid-controls"
-        data-control-count={closeHref ? 3 : 2}
-        style={navLinks}
-        ref={liquidControlsRef}>
+      <GlassSurface controlCount={closeHref ? 3 : 2} style={navLinks}>
         <button
           className="site-liquid-button"
           {...linkProbe}
@@ -348,7 +344,7 @@ function SiteTopbar({
             ×
           </a>
         )}
-      </div>
+      </GlassSurface>
       </div>
     </>
   );
@@ -357,3 +353,5 @@ function SiteTopbar({
 window.getAsciiThemePalette = getAsciiThemePalette;
 window.SITE_NAV_ROUTES = SITE_NAV_ROUTES;
 window.SiteTopbar = SiteTopbar;
+
+window.GlassSurface = GlassSurface;

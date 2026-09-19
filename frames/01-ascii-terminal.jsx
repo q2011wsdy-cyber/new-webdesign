@@ -35,16 +35,9 @@ function AsciiHeroSection({ dark, children }) {
     : { textShadow: '0 1px 14px rgba(255,255,255,0.98), 0 0 24px rgba(255,255,255,0.85)' };
 
   return (
-    <div id="about" style={{
-      position: 'relative',
-      minHeight: 'clamp(500px, 69vh, 560px)',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'flex-end',
-      paddingTop: '10vh',
-      paddingBottom: '2vh',
-    }}>
-      <div style={{ ...fg, width: '100%' }}>
+    <div id="about" className="home-hero">
+      <div className="hero-flower" aria-hidden="true"><img src="assets/home/flower.webp" alt="" /></div>
+      <div className="hero-copy" style={fg}>
         {children}
       </div>
     </div>
@@ -160,99 +153,58 @@ function HeroRollingWords({ words, reducedText, interval = 2000 }) {
   );
 }
 
-function AsciiTile({ pat, t, k, img, theme, fillCell }) {
+function WorkCover({ n, img, t, decorative = false }) {
+  return n === '02' ? <div className="pimax-cover" role={decorative ? undefined : 'img'} aria-label={decorative ? undefined : t}>
+    <div className="pimax-phone"><img src="assets/home/phone.webp" alt="" draggable={false} /></div>
+    <img className="pimax-screen" src="assets/home/pimax-screen.webp" alt="" draggable={false} />
+    <div className="pimax-screen-bottom"><img src="assets/home/pimax-screen.webp" alt="" draggable={false} /></div>
+  </div> : <img className="huolala-cover" src={img} alt={decorative ? '' : t} draggable={false} />;
+}
+
+function AsciiTile({ pat, t, img, n }) {
   const [hover, setHover] = React.useState(false);
-  const tileRef = React.useRef(null);
-  const dark = theme === 'dark';
-  const resetMotion = (node) => {
-    node.style.setProperty('--card-x', '0px');
-    node.style.setProperty('--card-y', '0px');
-    node.style.setProperty('--card-rx', '0deg');
-    node.style.setProperty('--card-ry', '0deg');
-  };
-  const onPointerMove = (e) => {
-    const node = tileRef.current;
-    if (!node || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const move = event => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || event.pointerType === 'touch') return;
+    const node = event.currentTarget;
     const rect = node.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    const x = (event.clientX - rect.left) / rect.width - .5;
+    const y = (event.clientY - rect.top) / rect.height - .5;
     node.style.setProperty('--card-x', `${x * 14}px`);
     node.style.setProperty('--card-y', `${y * 10}px`);
     node.style.setProperty('--card-rx', `${y * -2.4}deg`);
     node.style.setProperty('--card-ry', `${x * 3}deg`);
   };
-  // 外层 <a> 负责跳转；此处用 div 避免嵌套 <a>
-  // fillCell：不规则网格里拉满单元格，不用固定 4:3
-  return (
-    <div
-      ref={tileRef}
-      className="work-tile"
-      onMouseEnter={() => setHover(true)}
-      onMouseMove={onPointerMove}
-      onMouseLeave={(e) => {
-        setHover(false);
-        resetMotion(e.currentTarget);
-      }}
-      style={{
-        display: 'block', textDecoration: 'none',
-        background: pat.bg,
-        border: 'none',
-        borderRadius: 'var(--radius-card)',
-        color: pat.fg,
-        boxShadow: hover ? 'var(--shadow-card-hover)' : 'none',
-        transform: `perspective(1000px) translate3d(var(--card-x, 0px), var(--card-y, 0px), 0) rotateX(var(--card-rx, 0deg)) rotateY(var(--card-ry, 0deg)) scale(${hover ? 1.018 : 1})`,
-        transformStyle: 'preserve-3d',
-        transformOrigin: 'center center',
-        willChange: 'transform',
-        transition: hover
-          ? 'transform 120ms cubic-bezier(.2,.8,.2,1), box-shadow .25s ease'
-          : 'transform 420ms cubic-bezier(.16,1,.3,1), box-shadow .25s ease',
-        ...(fillCell
-          ? { height: '100%', minHeight: 140, aspectRatio: 'auto' }
-          : { aspectRatio: '4/3' }),
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-      <img
-        src={img}
-        alt={t}
-        draggable={false}
-        style={{
-        position: 'absolute', inset: 0, width: '100%', height: '100%',
-        // 保持原始 4:3 素材完整显示；卡片比例变化时由底色承接余白，不裁切画面。
-        objectFit: 'contain',
-        cursor: 'none',
-        filter: hover ? 'brightness(1.1) contrast(1.05)' : 'brightness(0.92)',
-        transition: 'filter .2s, transform .5s cubic-bezier(.16,1,.3,1)',
-        transform: hover ? 'scale(1.018)' : 'scale(1)',
-      }} />
-      <div style={{
-        position: 'absolute', inset: 0,
-        background: 'linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.75) 100%)',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute', bottom: 30, left: 14, right: 14,
-        fontSize: 13, color: '#f0f0f0', letterSpacing: -0.2,
-      }}>{t}</div>
-      <div style={{
-        position: 'absolute', bottom: 10, left: 14, right: 14,
-        fontSize: 10, letterSpacing: 1,
-      }}>
-        <span style={{ color: pat.fg }}>[{k}]</span>
-      </div>
-    </div>
-  );
+  return <div className={`work-tile${hover ? ' is-glass-hovered' : ''}`}
+    onPointerEnter={event => { if (event.pointerType !== 'touch') setHover(true); }}
+    onPointerMove={move}
+    onPointerLeave={event => {
+      setHover(false);
+      for (const prop of ['x', 'y', 'rx', 'ry']) event.currentTarget.style.removeProperty(`--card-${prop}`);
+    }}
+    style={{
+    boxShadow: hover ? 'var(--shadow-card-hover)' : 'none',
+    transform: `perspective(1000px) translate3d(var(--card-x, 0px), var(--card-y, 0px), 0) rotateX(var(--card-rx, 0deg)) rotateY(var(--card-ry, 0deg)) scale(${hover ? 1.018 : 1})`,
+    transition: hover ? 'transform 120ms cubic-bezier(.2,.8,.2,1), box-shadow .25s ease' : 'transform 420ms cubic-bezier(.16,1,.3,1), box-shadow .25s ease',
+
+    display: 'block', background: pat.bg, borderRadius: 30,
+    aspectRatio: '521/605', position: 'relative', overflow: 'hidden',
+  }}>
+    <WorkCover n={n} img={img} t={t} />
+  </div>;
 }
 
 function AsciiTerminal() {
   const SiteTopbar = window.SiteTopbar;
+  const GlassSurface = window.GlassSurface;
   const [cur, setCur] = React.useState({ x: 0, y: 0, mode: 'default', visible: false });
   const [theme, setTheme] = React.useState(() => {
     return window.getAsciiInitialTheme ? window.getAsciiInitialTheme() : 'light';
   });
+  const showChatEntry = false; // 暂时隐藏 AI 入口，恢复时设为 true。
   const [chatOpen, setChatOpen] = React.useState(false);
-  const [lang, setLang] = React.useState('zh');
+  const [lang, setLang] = React.useState(() => {
+    try { return localStorage.getItem('ascii-lang') === 'en' ? 'en' : 'zh'; } catch { return 'zh'; }
+  });
   const [leavingCase, setLeavingCase] = React.useState(null);
   const [returnedFromCase, setReturnedFromCase] = React.useState(() => {
     try {
@@ -300,7 +252,7 @@ function AsciiTerminal() {
     if (!el) return;
     const onMove = (e) => {
       const r = el.getBoundingClientRect();
-      setCur(c => ({ ...c, x: e.clientX - r.left, y: e.clientY - r.top, visible: true }));
+      setCur(c => ({ ...c, x: e.clientX - r.left, y: e.clientY - r.top, visible: true, mode: e.target.closest('.work-tile') ? 'case' : (c.mode === 'case' ? 'link' : c.mode) }));
     };
     const onLeave = () => setCur(c => ({ ...c, visible: false }));
     el.addEventListener('mousemove', onMove);
@@ -321,10 +273,10 @@ function AsciiTerminal() {
       fontSize: 'var(--font-size-body)',
       lineHeight: 1.7,
       width: '100%',
-      maxWidth: 'calc(var(--content-max-width) + 64px)',
+      maxWidth: 1166,
       margin: '0 auto',
       minHeight: '100%',
-      padding: 'var(--page-padding)',
+      padding: '20px var(--page-gutter) 80px',
       position: 'relative',
       cursor: 'none',
       transition: 'background-color var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out)',
@@ -344,20 +296,23 @@ function AsciiTerminal() {
       display: 'block',
       position: 'relative',
       width: 'fit-content',
-      marginBottom: 22,
-      fontSize: 'clamp(22px, 2.6vw, 30px)',
-      lineHeight: 1.2,
+      marginBottom: 0,
+      fontFamily: 'var(--font-family-editorial)',
+      fontWeight: 400,
+      fontSize: 32,
+      lineHeight: '34px',
       letterSpacing: 0.6,
       textTransform: 'none',
       color: C.bigFg,
     },
     heroBody: {
       display: 'block',
-      fontSize: 'clamp(28px, 2.95vw, 34px)',
+      fontSize: 18,
       fontWeight: 400,
-      lineHeight: 1.5,
-      color: C.mute,
-      maxWidth: '32ch',
+      lineHeight: '19px',
+      letterSpacing: '-0.3px',
+      color: C.fg,
+      maxWidth: 262,
     },
     dim: { color: C.dim },
     accent: { color: C.accent },
@@ -374,9 +329,9 @@ function AsciiTerminal() {
       paddingBottom: 1,
     },
     footer: {
-      marginTop: 60, paddingTop: 16, borderTop: `1px dashed ${C.line}`,
+      marginTop: 60, paddingTop: 16,
       color: C.faint, fontSize: 11,
-      display: 'flex', justifyContent: 'space-between',
+      display: 'flex', justifyContent: 'center', textAlign: 'center',
     },
     prompt: { color: C.green, marginRight: 6 },
     // Chat 对话框（由底部按钮弹出）
@@ -406,19 +361,18 @@ function AsciiTerminal() {
     en: {
       heroLead: "Hi, I’m Super Lee.",
       heroBodyLines: [
-        'I’m Li Weichao, an AI-Native designer.',
+        'AI-Native designer.',
         'I explore the fusion of AI and taste, shaping a distinct aesthetic for digital products.',
       ],
       creativePrefix: 'My creative drive comes from ',
       creativeWords: ['curiosity', 'reading', 'travel', 'reflection'],
       creativeReduced: 'curiosity, reading, travel, and reflection',
       creativeSuffix: '.',
-      worksTitle: 'selected works',
+      worksTitle: 'Work',
       writingTitle: 'writing',
       labTitle: 'lab',
       labBody: 'a place for half-baked ideas, generative toys, and tiny tools.',
       footerLeft: '@ 2026 · super lee',
-      footerRight: 'v1.0 · updated 2026.07',
       works: [
         { n: '01', t: 'Huolala', y: '2025', k: 'product', pat: PATTERNS[0], img: 'assets/works/01-harbor.jpg', href: 'work-harbor.html' },
         { n: '02', t: 'Pimax', y: '2025', k: 'product', pat: PATTERNS[1], img: 'assets/works/02-spatial.jpg', href: 'work-pimax.html' },
@@ -436,21 +390,29 @@ function AsciiTerminal() {
       creativeWords: ['好奇', '阅读', '旅行', '思考'],
       creativeReduced: '好奇、阅读、旅行、思考',
       creativeSuffix: '。',
-      worksTitle: 'selected works',
+      worksTitle: 'Work',
       writingTitle: 'writing',
       labTitle: 'lab',
       labBody: '一个放半成品想法、生成式玩具和微型工具的地方。',
       footerLeft: '@ 2026 · super lee',
-      footerRight: 'v1.0 · 更新于 2026.07',
       works: [
         { n: '01', t: '货拉拉', y: '2025', k: 'product', pat: PATTERNS[0], img: 'assets/works/01-harbor.jpg', href: 'work-harbor.html' },
-        { n: '02', t: 'pimax', y: '2025', k: 'product', pat: PATTERNS[1], img: 'assets/works/02-spatial.jpg', href: 'work-pimax.html' },
+        { n: '02', t: 'Pimax', y: '2025', k: 'product', pat: PATTERNS[1], img: 'assets/works/02-spatial.jpg', href: 'work-pimax.html' },
         { n: '03', t: 'ai os 概念探索', y: '2024', k: 'concept', pat: PATTERNS[2], img: 'assets/works/03-zixiang.jpg' },
         { n: '04', t: 'oppo', y: '2024', k: 'product', pat: PATTERNS[3], img: 'assets/works/04-quiet.jpg' },
       ],
     },
   };
   const text = copy[lang] || copy.en;
+  const selectedWorks = ['02', '01'].map(id => {
+    const work = text.works.find(item => item.n === id);
+    return { ...work,
+      img: `assets/home/${id === '02' ? 'pimax-screen' : 'huolala'}.webp`,
+      description: id === '02'
+        ? (lang === 'zh' ? '智能灯串的数字体验设计' : 'A smart light string experience.')
+        : (lang === 'zh' ? '让货运出行更简单的产品设计' : 'A simpler way to move goods.'),
+    };
+  });
 
   const writings = [
     ['On the slow web', '6 min', '2025.03'],
@@ -627,16 +589,10 @@ function AsciiTerminal() {
         @media (prefers-reduced-motion: reduce) {
           .selected-works-dots { animation: none; }
         }
-        /* selected works：两条交错轨道，保留作品尺寸的节奏差。 */
         .work-bento {
-          --work-column-gap: 30px;
-          --work-row-gap: 30px;
-          --work-row: 28px;
           display: grid;
-          grid-template-columns: repeat(12, minmax(0, 1fr));
-          grid-auto-rows: var(--work-row);
-          column-gap: var(--work-column-gap);
-          row-gap: var(--work-row-gap);
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 40px;
         }
         .work-card {
           min-width: 0;
@@ -680,10 +636,6 @@ function AsciiTerminal() {
           background: radial-gradient(circle at center, transparent 0 14%, ${C.bg} 68%);
           opacity: .78;
         }
-        .work-card:nth-child(1) { grid-column: 1 / span 7; grid-row: 1 / span 11; }
-        .work-card:nth-child(2) { grid-column: 8 / span 5; grid-row: 1 / span 7; }
-        .work-card:nth-child(3) { grid-column: 8 / span 5; grid-row: 8 / span 10; }
-        .work-card:nth-child(4) { grid-column: 1 / span 7; grid-row: 12 / span 7; }
         @media (prefers-reduced-motion: reduce) {
           .work-tile {
             transform: none !important;
@@ -704,23 +656,6 @@ function AsciiTerminal() {
             transition: opacity .16s ease;
           }
           .hero-rolling-word { transition: none; }
-        }
-        @media (max-width: 1024px) and (min-width: 721px) {
-          .work-bento {
-            --work-row: 26px;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-          .work-card:nth-child(1) { grid-column: 1; grid-row: 1 / span 11; }
-          .work-card:nth-child(2) { grid-column: 2; grid-row: 1 / span 7; }
-          .work-card:nth-child(3) { grid-column: 2; grid-row: 8 / span 10; }
-          .work-card:nth-child(4) { grid-column: 1; grid-row: 12 / span 7; }
-        }
-        @media (max-width: 720px) {
-          .work-bento { display: flex; flex-direction: column; gap: 30px; }
-          .work-card:nth-child(1) { height: clamp(320px, 105vw, 430px); }
-          .work-card:nth-child(2) { height: clamp(220px, 70vw, 300px); }
-          .work-card:nth-child(3) { height: clamp(300px, 90vw, 380px); }
-          .work-card:nth-child(4) { height: clamp(240px, 75vw, 320px); }
         }
       `}</style>
 
@@ -754,13 +689,14 @@ function AsciiTerminal() {
                   }}>
                   <img src="assets/profile-superlee.jpg" alt="" draggable={false} />
                 </span>
+                <HeroDecodeText key={`role-${lang}`} text={text.heroBodyLines[0]} className="hero-decode-role" delay={190} duration={520} />
               </span>
-              <span style={s.heroBody}>
-                {text.heroBodyLines.map((line, index) => <HeroDecodeText
+              <span className="hero-description" style={s.heroBody}>
+                {text.heroBodyLines.slice(1).map((line, index) => <HeroDecodeText
                   key={`body-${lang}-${index}`}
                   text={line}
                   className="hero-decode-body"
-                  delay={190 + index * 190}
+                  delay={380 + index * 190}
                   duration={520}
                 />)}
                 <span className="hero-creative-line" aria-hidden="true">
@@ -788,10 +724,10 @@ function AsciiTerminal() {
         </div>
       </AsciiHeroSection>
 
-      {/* Works — asymmetric editorial grid；第一项链到 work-harbor.html */}
+      {/* Works — published cases, Pimax followed by Huolala */}
       <div
         id="works"
-        style={{ ...s.sectionTitle, marginBottom: 'clamp(32px, 4vw, 48px)' }}>
+        className="home-section-heading">
         <svg
           width="181"
           height="53"
@@ -800,7 +736,7 @@ function AsciiTerminal() {
           xmlns="http://www.w3.org/2000/svg"
           role="img"
           aria-label={text.worksTitle}
-          style={{ display: 'block', width: 'min(140px, 42vw)', height: 'auto' }}
+          style={{ display: 'block', width: 'min(180px, 42vw)', height: 'auto' }}
         >
           <defs>
             <filter id="selected-works-round-dots" x="-5%" y="-12%" width="110%" height="124%" colorInterpolationFilters="sRGB">
@@ -835,7 +771,7 @@ function AsciiTerminal() {
         </svg>
       </div>
       <div className={`work-bento${leavingCase ? ' is-transitioning' : ''}${returnedFromCase ? ' is-returning' : ''}`}>
-        {text.works.map(w => (
+        {selectedWorks.map(w => (
           <a
             key={w.n}
             className={`work-card${leavingCase === w.href ? ' is-leaving' : ''}`}
@@ -843,19 +779,38 @@ function AsciiTerminal() {
             onClick={onWorkClick(w.href)}
             {...linkProbe}
             style={{ textDecoration: 'none', color: 'inherit', display: 'block', cursor: 'none' }}>
-            <AsciiTile {...w} theme={theme} fillCell />
+            <AsciiTile {...w} theme={theme} />
+            <div className="work-caption"><h3>{w.t}</h3><p>{w.description}</p></div>
           </a>
         ))}
       </div>
+      <section id="play" className="play-section" aria-labelledby="play-heading">
+        <h2 id="play-heading" className="home-section-heading">
+          <img className="play-wordmark" src="assets/play/play.svg?v=twinkle-1" width="180" height="53" alt="Play" />
+        </h2>
+        <div className="play-grid">
+          {[
+            [['controller', 'Game controller study', 166], ['tiles', 'Colorful interface experiments', 166], ['tiles', 'Colorful interface experiments', 166]],
+            [['laptop', 'Website design study', 206], ['dashboard', 'Dashboard interface', 166], ['dashboard', 'Dashboard interface', 166]],
+            [['wallet', 'Digital wallet concept', 166], ['gradient', 'Gradient and color exploration', 208], ['gradient', 'Gradient and color exploration', 208]],
+            [['type', 'Experimental typography', 166], ['controls', 'Soft interface controls', 208], ['controls', 'Soft interface controls', 208]],
+          ].map((column, index) => (
+            <div className="play-column" key={index}>
+              {column.map(([src, alt, height], row) => (
+                <img key={`${src}-${row}`} src={`assets/play/${src}.webp`} alt={alt} loading="lazy" decoding="async" width="241" height={height} style={{ aspectRatio: `241 / ${height}` }} />
+              ))}
+            </div>
+          ))}
+        </div>
+      </section>
       <div className={`case-transition-veil${leavingCase ? ' is-visible' : ''}`} aria-hidden="true" />
 
       <div style={s.footer}>
         <span>{text.footerLeft}</span>
-        <span>{text.footerRight}</span>
       </div>
 
       {/* 底部正中：简化图标，点击打开对话 */}
-      <button
+      {showChatEntry && <button
         type="button"
         aria-label="打开 ask-bot 对话"
         aria-expanded={chatOpen}
@@ -882,9 +837,9 @@ function AsciiTerminal() {
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden>
           <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
         </svg>
-      </button>
+      </button>}
 
-      {chatOpen && (
+      {showChatEntry && chatOpen && (
         <div
           role="presentation"
           style={{
@@ -944,7 +899,12 @@ function AsciiTerminal() {
       )}
 
       {/* Custom block cursor */}
-      <div style={cursorBlock} />
+      <div style={{ ...cursorBlock, opacity: cur.mode === 'case' ? 0 : cursorBlock.opacity }} />
+      <GlassSurface className="case-glass-cursor" borderRadius={7.5} distortionScale={-18} mapBlur={1.5}
+        style={{ position: 'absolute', left: cur.x, top: cur.y, width: 15, height: 15,
+          padding: 0, borderRadius: '50%', pointerEvents: 'none', zIndex: 201,
+          transform: 'translate(-50%, -50%)',
+          opacity: cur.visible && cur.mode === 'case' ? 1 : 0 }} />
     </div>
   );
 }

@@ -18,11 +18,11 @@ function getSiteCursorStyle(cur, C, dark) {
     boxSizing: 'border-box',
   };
 
-  if (cur.mode === 'link') {
+  if (cur.mode === 'link' || cur.mode === 'case') {
     return {
       ...base,
-      width: 12,
-      height: 12,
+      width: cur.mode === 'case' ? 15 : 12,
+      height: cur.mode === 'case' ? 15 : 12,
       borderRadius: '50%',
       background: C.accent,
       border: 'none',

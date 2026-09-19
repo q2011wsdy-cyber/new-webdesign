@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>花 · ASCII Botanical Study</title>
+<style>
+:root{color-scheme:dark;--bg:#000;--fg:#eee9df;--muted:#88857e;--line:#292723;--accent:#e6ae57;--space:24px;font-family:"Courier New",monospace}
+:root[data-theme="light"]{color-scheme:light;--bg:#fff;--fg:#25221c;--muted:#777167;--line:#dedbd5;--accent:#915400}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg)}
+header{position:absolute;z-index:1;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:28px 36px;gap:24px}h1{font-size:13px;font-weight:400;letter-spacing:.12em;margin:0}h1 span{color:var(--muted);font-size:10px;display:block;margin-top:8px;letter-spacing:.16em}
+.themes{display:flex;gap:4px;border:1px solid var(--line);padding:4px;border-radius:30px}button{font:inherit;color:var(--muted);background:none;border:1px solid transparent;padding:8px 14px;cursor:pointer;font-size:11px;border-radius:20px}button:hover{color:var(--fg)}button[aria-pressed="true"]{color:var(--fg);border-color:var(--line)}button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+main{min-height:100svh;display:grid;place-items:center;padding:88px 20px 110px}canvas{display:block;width:min(calc(100svh - 200px),100%);height:auto;aspect-ratio:1;max-width:1100px}footer{position:fixed;bottom:0;left:0;width:100%;padding:20px 36px;background:var(--bg);display:flex;justify-content:space-between;align-items:center;gap:24px;border-top:1px solid var(--line)}.caption{font-size:11px;line-height:1.8;color:var(--muted)}.caption strong{font-weight:400;color:var(--fg);letter-spacing:.12em}.controls{display:flex;align-items:center;gap:18px;font-size:11px;color:var(--muted)}label{display:flex;gap:12px;align-items:center}input{width:100px;accent-color:var(--accent)}.export{border:1px solid var(--line);color:var(--fg)}#status{position:absolute;top:50%;color:var(--muted);font-size:12px} @media(max-width:600px){header{padding:22px 18px}h1{font-size:11px}h1 span{font-size:8px}.themes button{padding:7px 10px}main{padding:100px 8px 150px}canvas{width:100%}footer{padding:16px 18px;align-items:start;flex-direction:column;gap:10px}.controls{width:100%;justify-content:space-between}.caption{font-size:10px}}
+</style>
+<header><h1>花 / CHRYSANTHEMUM<span>ASCII BOTANICAL STUDY — 001</span></h1><div class="themes" role="group" aria-label="背景颜色"><button data-theme="dark" aria-pressed="true">● 黑色</button><button data-theme="light" aria-pressed="false">○ 白色</button></div></header>
+<main><canvas id="flower" width="2048" height="2048" role="img" aria-label="由金色与绿色字符绘制的菊花，保留层叠花瓣、花芯、茎与叶片"></canvas><div id="status">正在生成字符花朵…</div></main>
+<footer><div class="caption"><strong>以字符，留住花的纹理。</strong><br><span id="count">采样原图 · 逐字绘制</span></div><div class="controls"><label>细节 <input id="density" type="range" min="140" max="320" value="180" step="20" aria-label="字符细节密度"></label><button class="export" id="export">导出 PNG ↗</button></div></footer>
+<script src="assets/ascii-flower/flower.js"></script>
+</html>
