@@ -58,11 +58,6 @@
       "type": "image"
     },
     {
-      "src": "assets/play/controls.webp",
-      "alt": "Soft interface controls",
-      "type": "image"
-    },
-    {
       "src": "assets/play/tiles.webp",
       "alt": "Colorful interface experiments",
       "type": "image"
@@ -75,11 +70,6 @@
     {
       "src": "assets/play/gradient.webp",
       "alt": "Gradient and color exploration",
-      "type": "image"
-    },
-    {
-      "src": "assets/play/controls.webp",
-      "alt": "Soft interface controls",
       "type": "image"
     }
   ]
