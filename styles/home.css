@@ -40,29 +40,31 @@
 .pimax-screen-bottom { position: absolute; left: 13.34%; top: 39.84%; width: 70.58%; height: 75.3%; overflow: hidden; }
 .pimax-screen-bottom img { position: absolute; width: 100.1%; height: 174.96%; left: -.08%; top: -74.94%; }
 .huolala-cover { position: absolute; width: 171.79%; height: 221.65%; left: -36.47%; top: -39.01%; object-fit: cover; }
+.work-upload-cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 :root[data-theme='light'] .hero-flower { filter: invert(1); mix-blend-mode: multiply; }
 .hero-description { margin-top: 40px; }
 .hero-creative-line { margin-top: 24px; font-size: 12px; line-height: 1.7; color: var(--color-muted); }
 .home-section-heading { margin: 0 0 39px; line-height: 1; }
+.home-section-heading > svg { filter: grayscale(1); }
 .work-caption { padding-top: 18px; }
 .work-caption h3 { margin: 0; font-weight: 400; font-size: 16px; line-height: 1.5; }
 .work-caption p { margin: 5px 0 0; font-size: 14px; line-height: 1.6; }
 .work-card:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 8px; border-radius: 30px; }
 .play-section { margin-top: 104px; scroll-margin-top: 90px; }
-.play-wordmark { display: block; width: min(180px, 42vw); height: auto; }
-:root[data-theme='light'] .play-wordmark { filter: invert(1); }
+.play-wordmark { display: block; width: min(180px, 42vw); height: auto; filter: grayscale(1); }
+:root[data-theme='light'] .play-wordmark { filter: grayscale(1) invert(1); }
 .play-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: start;
   gap: 16px;
-  padding: 27px 22px 0;
-  aspect-ratio: 1074 / 605;
+  padding: 27px 22px;
   overflow: hidden;
   border-radius: 30px;
   background: #161616;
 }
 .play-column { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
-.play-column img { display: block; width: 100%; height: auto; object-fit: cover; border-radius: 20px; }
+.play-column img, .play-column video { display: block; width: 100%; height: auto; object-fit: cover; border-radius: 20px; }
 :root[data-theme='light'] .play-grid { background: #efefed; }
 @media (min-width: 721px) {
   .hero-copy .hero-lead { white-space: nowrap; }
@@ -73,7 +75,7 @@
   .hero-copy { width: 40%; }
   .play-grid { gap: 12px; padding: 18px 16px 0; }
   .play-column { gap: 12px; }
-  .play-column img { border-radius: 14px; }
+  .play-column img, .play-column video { border-radius: 14px; }
 }
 @media (max-width: 720px) {
   .home-hero { min-height: 660px; align-items: flex-end; padding-bottom: 56px; }
@@ -85,7 +87,7 @@
   .play-section { margin-top: 72px; }
   .play-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); aspect-ratio: auto; padding: 14px; gap: 14px; }
   .play-column { gap: 14px; }
-  .play-column img { border-radius: 12px; }
+  .play-column img, .play-column video { border-radius: 12px; }
 }
 
 /* Pointer-following glass lens, clipped to the original case cover. */

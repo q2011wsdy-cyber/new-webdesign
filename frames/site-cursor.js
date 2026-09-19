@@ -21,8 +21,8 @@ function getSiteCursorStyle(cur, C, dark) {
   if (cur.mode === 'link' || cur.mode === 'case') {
     return {
       ...base,
-      width: cur.mode === 'case' ? 15 : 12,
-      height: cur.mode === 'case' ? 15 : 12,
+      width: cur.mode === 'case' ? 78 : 12,
+      height: cur.mode === 'case' ? 78 : 12,
       borderRadius: '50%',
       background: C.accent,
       border: 'none',

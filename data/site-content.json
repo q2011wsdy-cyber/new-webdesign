@@ -1,0 +1,86 @@
+{
+  "works": [
+    {
+      "id": "02",
+      "title": "Pimax",
+      "description": "A smart light string experience.",
+      "href": "work-pimax.html",
+      "cover": {
+        "src": "assets/uploads/1789839484964-cd90b2ce.png",
+        "type": "image"
+      }
+    },
+    {
+      "id": "01",
+      "title": "Huolala",
+      "description": "A simpler way to move goods.",
+      "href": "work-harbor.html",
+      "cover": {
+        "src": "assets/uploads/1789839484996-06489eae.png",
+        "type": "image"
+      }
+    }
+  ],
+  "play": [
+    {
+      "src": "assets/play/controller.webp",
+      "alt": "Game controller study",
+      "type": "image"
+    },
+    {
+      "src": "assets/play/laptop.webp",
+      "alt": "Website design study",
+      "type": "image"
+    },
+    {
+      "src": "assets/play/wallet.webp",
+      "alt": "Digital wallet concept",
+      "type": "image"
+    },
+    {
+      "src": "assets/play/type.webp",
+      "alt": "Experimental typography",
+      "type": "image"
+    },
+    {
+      "src": "assets/play/tiles.webp",
+      "alt": "Colorful interface experiments",
+      "type": "image"
+    },
+    {
+      "src": "assets/play/dashboard.webp",
+      "alt": "Dashboard interface",
+      "type": "image"
+    },
+    {
+      "src": "assets/play/gradient.webp",
+      "alt": "Gradient and color exploration",
+      "type": "image"
+    },
+    {
+      "src": "assets/play/controls.webp",
+      "alt": "Soft interface controls",
+      "type": "image"
+    },
+    {
+      "src": "assets/play/tiles.webp",
+      "alt": "Colorful interface experiments",
+      "type": "image"
+    },
+    {
+      "src": "assets/play/dashboard.webp",
+      "alt": "Dashboard interface",
+      "type": "image"
+    },
+    {
+      "src": "assets/play/gradient.webp",
+      "alt": "Gradient and color exploration",
+      "type": "image"
+    },
+    {
+      "src": "assets/play/controls.webp",
+      "alt": "Soft interface controls",
+      "type": "image"
+    }
+  ]
+}

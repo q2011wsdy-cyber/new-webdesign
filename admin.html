@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio 后台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/admin.css?v=1">
+</head>
+<body>
+  <header class="admin-header">
+    <div><p class="eyebrow">SUPER LEE / CONTENT</p><h1>作品后台</h1></div>
+    <div class="header-actions"><a href="ascii-terminal.html#works" target="_blank">查看首页 ↗</a><button id="save-all" class="primary">保存并同步</button></div>
+  </header>
+  <main>
+    <section>
+      <div class="section-head"><div><span>01</span><h2>Work</h2></div><p>编辑封面、标题、描述和跳转链接。支持 WebP、PNG、JPG、GIF、MP4。</p></div>
+      <div id="work-editor" class="work-editor"></div>
+    </section>
+    <section>
+      <div class="section-head"><div><span>02</span><h2>Play</h2></div><p>最多 12 项，桌面端每行 4 个，媒体保持原始比例形成 Feed 流。</p></div>
+      <div class="play-toolbar"><label class="upload-button">＋ 上传媒体<input id="play-upload" type="file" multiple accept=".webp,.png,.jpg,.jpeg,.gif,.mp4,image/webp,image/png,image/jpeg,image/gif,video/mp4"></label><span id="play-count">0 / 12</span></div>
+      <div id="play-editor" class="play-editor"></div>
+    </section>
+  </main>
+  <div id="status" class="status" role="status" aria-live="polite"></div>
+  <script src="frames/admin.js?v=1"></script>
+</body>
+</html>

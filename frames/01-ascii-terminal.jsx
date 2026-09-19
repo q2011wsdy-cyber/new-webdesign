@@ -153,7 +153,12 @@ function HeroRollingWords({ words, reducedText, interval = 2000 }) {
   );
 }
 
-function WorkCover({ n, img, t, decorative = false }) {
+function WorkCover({ n, img, t, cover, decorative = false }) {
+  if (cover && cover.src) {
+    return cover.type === 'video'
+      ? <video className="work-upload-cover" src={cover.src} aria-label={decorative ? undefined : t} autoPlay muted loop playsInline preload="metadata" />
+      : <img className="work-upload-cover" src={cover.src} alt={decorative ? '' : t} draggable={false} />;
+  }
   return n === '02' ? <div className="pimax-cover" role={decorative ? undefined : 'img'} aria-label={decorative ? undefined : t}>
     <div className="pimax-phone"><img src="assets/home/phone.webp" alt="" draggable={false} /></div>
     <img className="pimax-screen" src="assets/home/pimax-screen.webp" alt="" draggable={false} />
@@ -161,7 +166,7 @@ function WorkCover({ n, img, t, decorative = false }) {
   </div> : <img className="huolala-cover" src={img} alt={decorative ? '' : t} draggable={false} />;
 }
 
-function AsciiTile({ pat, t, img, n }) {
+function AsciiTile({ pat, t, img, n, cover }) {
   const [hover, setHover] = React.useState(false);
   const move = event => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || event.pointerType === 'touch') return;
@@ -189,8 +194,15 @@ function AsciiTile({ pat, t, img, n }) {
     display: 'block', background: pat.bg, borderRadius: 30,
     aspectRatio: '521/605', position: 'relative', overflow: 'hidden',
   }}>
-    <WorkCover n={n} img={img} t={t} />
+    <WorkCover n={n} img={img} t={t} cover={cover} />
   </div>;
+}
+
+function PlayMedia({ item }) {
+  if (item.type === 'video') {
+    return <video src={item.src} aria-label={item.alt || 'Play media'} autoPlay muted loop playsInline preload="metadata" />;
+  }
+  return <img src={item.src} alt={item.alt || ''} loading="lazy" decoding="async" />;
 }
 
 function AsciiTerminal() {
@@ -213,6 +225,7 @@ function AsciiTerminal() {
       return returned;
     } catch (_) { return false; }
   });
+  const [cmsContent, setCmsContent] = React.useState(null);
   const dark = theme === 'dark';
   const C = window.getAsciiThemePalette(dark);
 
@@ -229,6 +242,23 @@ function AsciiTerminal() {
   React.useEffect(() => {
     try { localStorage.setItem('ascii-lang', lang); } catch {}
   }, [lang]);
+
+  React.useEffect(() => {
+    let active = true;
+    const loadContent = () => fetch('/api/content', { cache: 'no-store' })
+      .then(response => response.ok ? response.json() : Promise.reject(new Error('Content unavailable')))
+      .then(content => { if (active) setCmsContent(content); })
+      .catch(() => {});
+    loadContent();
+    const timer = window.setInterval(loadContent, 3000);
+    const channel = 'BroadcastChannel' in window ? new BroadcastChannel('portfolio-content') : null;
+    if (channel) channel.onmessage = loadContent;
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      if (channel) channel.close();
+    };
+  }, []);
 
   React.useEffect(() => {
     if (!chatOpen) return;
@@ -406,13 +436,31 @@ function AsciiTerminal() {
   const text = copy[lang] || copy.en;
   const selectedWorks = ['02', '01'].map(id => {
     const work = text.works.find(item => item.n === id);
+    const managed = cmsContent && Array.isArray(cmsContent.works)
+      ? cmsContent.works.find(item => item.id === id)
+      : null;
     return { ...work,
+      t: (managed && managed.title) || work.t,
+      href: (managed && managed.href) || work.href,
+      cover: managed && managed.cover ? managed.cover : null,
       img: `assets/home/${id === '02' ? 'pimax-screen' : 'huolala'}.webp`,
-      description: id === '02'
+      description: (managed && managed.description) || (id === '02'
         ? (lang === 'zh' ? '智能灯串的数字体验设计' : 'A smart light string experience.')
-        : (lang === 'zh' ? '让货运出行更简单的产品设计' : 'A simpler way to move goods.'),
+        : (lang === 'zh' ? '让货运出行更简单的产品设计' : 'A simpler way to move goods.')),
     };
   });
+  const defaultPlayItems = [
+    ['controller', 'Game controller study', 166], ['laptop', 'Website design study', 206],
+    ['wallet', 'Digital wallet concept', 166], ['type', 'Experimental typography', 166],
+    ['tiles', 'Colorful interface experiments', 166], ['dashboard', 'Dashboard interface', 166],
+    ['gradient', 'Gradient and color exploration', 208], ['controls', 'Soft interface controls', 208],
+    ['tiles', 'Colorful interface experiments', 166], ['dashboard', 'Dashboard interface', 166],
+    ['gradient', 'Gradient and color exploration', 208], ['controls', 'Soft interface controls', 208],
+  ].map(([src, alt, height]) => ({ src: `assets/play/${src}.webp`, alt, type: 'image', height }));
+  const playItems = cmsContent && Array.isArray(cmsContent.play) && cmsContent.play.length
+    ? cmsContent.play.slice(0, 12)
+    : defaultPlayItems;
+  const playColumns = [0, 1, 2, 3].map(column => playItems.filter((_, index) => index % 4 === column));
 
   const writings = [
     ['On the slow web', '6 min', '2025.03'],
@@ -751,7 +799,7 @@ function AsciiTerminal() {
             filter="url(#selected-works-round-dots)"
             style={{ display: 'none' }}
             d="M4.16016 52.1602H0V48H4.16016V52.1602ZM36.1602 52.1602H32V48H36.1602V52.1602ZM60.1289 52.1602H55.9688V48H60.1289V52.1602ZM68.1289 52.1602H63.9688V48H68.1289V52.1602ZM76.1289 52.1602H71.9688V48H76.1289V52.1602ZM100.098 52.1602H95.9375V48H100.098V52.1602ZM132.098 52.1602H127.938V48H132.098V52.1602ZM148.066 52.1602H143.906V48H148.066V52.1602ZM180.066 52.1602H175.906V48H180.066V52.1602ZM4.16016 44.1602H0V40H4.16016V44.1602ZM12.1602 44.1602H8V40H12.1602V44.1602ZM28.1602 44.1602H24V40H28.1602V44.1602ZM36.1602 44.1602H32V40H36.1602V44.1602ZM52.1289 44.1602H47.9688V40H52.1289V44.1602ZM84.1289 44.1602H79.9688V40H84.1289V44.1602ZM100.098 44.1602H95.9375V40H100.098V44.1602ZM124.098 44.1602H119.938V40H124.098V44.1602ZM148.066 44.1602H143.906V40H148.066V44.1602ZM172.066 44.1602H167.906V40H172.066V44.1602ZM4.16016 36.1602H0V32H4.16016V36.1602ZM20.1602 36.1602H16V32H20.1602V36.1602ZM36.1602 36.1602H32V32H36.1602V36.1602ZM52.1289 36.1602H47.9688V32H52.1289V36.1602ZM84.1289 36.1602H79.9688V32H84.1289V36.1602ZM100.098 36.1602H95.9375V32H100.098V36.1602ZM116.098 36.1602H111.938V32H116.098V36.1602ZM148.066 36.1602H143.906V32H148.066V36.1602ZM164.066 36.1602H159.906V32H164.066V36.1602ZM4.16016 28.1602H0V24H4.16016V28.1602ZM20.1602 28.1602H16V24H20.1602V28.1602ZM36.1602 28.1602H32V24H36.1602V28.1602ZM52.1289 28.1602H47.9688V24H52.1289V28.1602ZM84.1289 28.1602H79.9688V24H84.1289V28.1602ZM100.098 28.1602H95.9375V24H100.098V28.1602ZM108.098 28.1602H103.938V24H108.098V28.1602ZM116.098 28.1602H111.938V24H116.098V28.1602ZM124.098 28.1602H119.938V24H124.098V28.1602ZM148.066 28.1602H143.906V24H148.066V28.1602ZM156.066 28.1602H151.906V24H156.066V28.1602ZM4.16016 20.1602H0V16H4.16016V20.1602ZM36.1602 20.1602H32V16H36.1602V20.1602ZM52.1289 20.1602H47.9688V16H52.1289V20.1602ZM84.1289 20.1602H79.9688V16H84.1289V20.1602ZM100.098 20.1602H95.9375V16H100.098V20.1602ZM132.098 20.1602H127.938V16H132.098V20.1602ZM148.066 20.1602H143.906V16H148.066V20.1602ZM164.066 20.1602H159.906V16H164.066V20.1602ZM4.16016 12.1602H0V8H4.16016V12.1602ZM36.1602 12.1602H32V8H36.1602V12.1602ZM52.1289 12.1602H47.9688V8H52.1289V12.1602ZM84.1289 12.1602H79.9688V8H84.1289V12.1602ZM100.098 12.1602H95.9375V8H100.098V12.1602ZM132.098 12.1602H127.938V8H132.098V12.1602ZM148.066 12.1602H143.906V8H148.066V12.1602ZM172.066 12.1602H167.906V8H172.066V12.1602ZM4.16016 4.16016H0V0H4.16016V4.16016ZM36.1602 4.16016H32V0H36.1602V4.16016ZM60.1289 4.16016H55.9688V0H60.1289V4.16016ZM68.1289 4.16016H63.9688V0H68.1289V4.16016ZM76.1289 4.16016H71.9688V0H76.1289V4.16016ZM100.098 4.16016H95.9375V0H100.098V4.16016ZM108.098 4.16016H103.938V0H108.098V4.16016ZM116.098 4.16016H111.938V0H116.098V4.16016ZM124.098 4.16016H119.938V0H124.098V4.16016ZM148.066 4.16016H143.906V0H148.066V4.16016ZM180.066 4.16016H175.906V0H180.066V4.16016Z"
-            fill={C.bigFg}
+            fill={theme === 'dark' ? '#ffffff' : '#111111'}
           />
           {SELECTED_WORKS_DOTS.map(([cx, cy], index) => (
             <circle
@@ -760,7 +808,7 @@ function AsciiTerminal() {
               cx={cx}
               cy={cy}
               r="2.08"
-              fill={C.bigFg}
+              fill={theme === 'dark' ? '#ffffff' : '#111111'}
               style={{
                 '--dot-duration': `${0.75 + ((index * 17) % 16) / 10}s`,
                 '--dot-delay': `${-((index * 23) % 31) / 10}s`,
@@ -786,18 +834,13 @@ function AsciiTerminal() {
       </div>
       <section id="play" className="play-section" aria-labelledby="play-heading">
         <h2 id="play-heading" className="home-section-heading">
-          <img className="play-wordmark" src="assets/play/play.svg?v=twinkle-1" width="180" height="53" alt="Play" />
+          <img className="play-wordmark" src="assets/play/play.svg?v=monochrome-1" width="180" height="53" alt="Play" />
         </h2>
         <div className="play-grid">
-          {[
-            [['controller', 'Game controller study', 166], ['tiles', 'Colorful interface experiments', 166], ['tiles', 'Colorful interface experiments', 166]],
-            [['laptop', 'Website design study', 206], ['dashboard', 'Dashboard interface', 166], ['dashboard', 'Dashboard interface', 166]],
-            [['wallet', 'Digital wallet concept', 166], ['gradient', 'Gradient and color exploration', 208], ['gradient', 'Gradient and color exploration', 208]],
-            [['type', 'Experimental typography', 166], ['controls', 'Soft interface controls', 208], ['controls', 'Soft interface controls', 208]],
-          ].map((column, index) => (
+          {playColumns.map((column, index) => (
             <div className="play-column" key={index}>
-              {column.map(([src, alt, height], row) => (
-                <img key={`${src}-${row}`} src={`assets/play/${src}.webp`} alt={alt} loading="lazy" decoding="async" width="241" height={height} style={{ aspectRatio: `241 / ${height}` }} />
+              {column.map((item, row) => (
+                <PlayMedia key={`${item.src}-${row}`} item={item} />
               ))}
             </div>
           ))}
@@ -900,8 +943,8 @@ function AsciiTerminal() {
 
       {/* Custom block cursor */}
       <div style={{ ...cursorBlock, opacity: cur.mode === 'case' ? 0 : cursorBlock.opacity }} />
-      <GlassSurface className="case-glass-cursor" borderRadius={7.5} distortionScale={-18} mapBlur={1.5}
-        style={{ position: 'absolute', left: cur.x, top: cur.y, width: 15, height: 15,
+      <GlassSurface className="case-glass-cursor" borderRadius={39} distortionScale={-52} mapBlur={3.5}
+        style={{ position: 'absolute', left: cur.x, top: cur.y, width: 78, height: 78,
           padding: 0, borderRadius: '50%', pointerEvents: 'none', zIndex: 201,
           transform: 'translate(-50%, -50%)',
           opacity: cur.visible && cur.mode === 'case' ? 1 : 0 }} />
