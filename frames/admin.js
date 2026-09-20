@@ -16,6 +16,15 @@ const escapeHtml = value => String(value || '').replace(/[&<>'"]/g, char => ({ '
 const fileType = file => file.type === 'video/mp4' || file.name.toLowerCase().endsWith('.mp4') ? 'video' : 'image';
 const fileToDataUrl = file => new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); });
 
+async function readJson(response) {
+  const text = await response.text();
+  let data;
+  try { data = JSON.parse(text); }
+  catch { throw new Error(response.ok ? '服务器返回了无法识别的内容' : `接口不可用（${response.status}）`); }
+  if (!response.ok) throw new Error(data.error || `请求失败（${response.status}）`);
+  return data;
+}
+
 function notify(message) {
   statusEl.textContent = message;
   statusEl.classList.add('show');
@@ -130,12 +139,21 @@ playEditor.addEventListener('click', event => {
 });
 
 async function uploadPending(pending) {
+  if (location.hostname.endsWith('.vercel.app')) {
+    const { upload } = await import('https://esm.sh/@vercel/blob@2/client');
+    const safeName = pending.file.name.replace(/[^a-zA-Z0-9._-]+/g, '-');
+    const blob = await upload(`portfolio-media/${Date.now()}-${safeName}`, pending.file, {
+      access: 'public',
+      handleUploadUrl: '/api/upload',
+      multipart: pending.file.size > 4 * 1024 * 1024
+    });
+    return { src: blob.url, type: fileType(pending.file) };
+  }
   const response = await fetch('/api/upload', {
     method: 'POST', headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ name: pending.file.name, data: pending.src })
   });
-  if (!response.ok) throw new Error((await response.json()).error || '上传失败');
-  return response.json();
+  return readJson(response);
 }
 
 document.getElementById('save-all').addEventListener('click', async event => {
@@ -151,7 +169,7 @@ document.getElementById('save-all').addEventListener('click', async event => {
     }
     const payload = { works: content.works.map(({ _pending, ...work }) => work), play: content.play.map(({ _pending, ...item }) => item) };
     const response = await fetch('/api/content', { method:'POST', headers:{ 'content-type':'application/json' }, body:JSON.stringify(payload) });
-    if (!response.ok) throw new Error((await response.json()).error || '保存失败');
+    await readJson(response);
     content = payload;
     if ('BroadcastChannel' in window) { const channel = new BroadcastChannel('portfolio-content'); channel.postMessage('updated'); channel.close(); }
     renderWorks(); renderPlay(); notify('已保存并同步到首页');
@@ -160,6 +178,6 @@ document.getElementById('save-all').addEventListener('click', async event => {
 });
 
 fetch('/api/content', { cache:'no-store' })
-  .then(response => response.ok ? response.json() : Promise.reject(new Error('读取失败')))
+  .then(readJson)
   .then(data => { content = data; renderWorks(); renderPlay(); })
   .catch(() => { renderWorks(); renderPlay(); notify('正在使用默认内容'); });
