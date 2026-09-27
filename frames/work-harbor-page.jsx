@@ -372,6 +372,7 @@ function WorkHarborPage() {
     if (type === 'video') {
       content = (
         <video
+          className="case-media-content"
           src={media.src}
           poster={media.poster}
           controls={media.controls !== false}
@@ -389,6 +390,7 @@ function WorkHarborPage() {
     } else {
       content = (
         <img
+          className="case-media-content"
           draggable={false}
           src={media.src}
           alt={media.alt || media.title || ''}
@@ -404,9 +406,9 @@ function WorkHarborPage() {
           {media.title && <div style={s.blockTitle}>{media.title}</div>}
           {media.subtitle && <div style={s.blockSubtitle}>{media.subtitle}</div>}
         </figcaption>}
-        <div style={media.frame === false
-          ? { overflow: 'hidden', background: 'transparent', border: 'none', borderRadius: radius }
-          : { ...s.mediaFrame, borderRadius: radius }}>
+        <div className="case-media-frame" style={media.frame === false
+          ? { overflow: 'hidden', background: 'transparent', border: 'none', borderRadius: radius, '--case-media-radius': `${radius}px` }
+          : { ...s.mediaFrame, borderRadius: radius, '--case-media-radius': `${radius}px` }}>
           {content}
         </div>
         {media.caption && <div style={{ ...s.caption, margin: '8px 0 0' }}>{media.caption}</div>}
@@ -514,6 +516,21 @@ function WorkHarborPage() {
           transform-origin: center center;
           will-change: transform, opacity;
           transition: none;
+        }
+        .case-media-frame {
+          clip-path: inset(.01px round var(--case-media-radius, 12px));
+          -webkit-mask-image: -webkit-radial-gradient(white, black);
+          backface-visibility: hidden;
+          transform: translateZ(0);
+          isolation: isolate;
+        }
+        .case-media-content {
+          width: calc(100% + 2px) !important;
+          max-width: none;
+          margin: -1px;
+          transform: translateZ(0) scale(1.001);
+          transform-origin: center;
+          backface-visibility: hidden;
         }
         img, a, button { cursor: none !important; }
         @media (max-width: 720px) {
