@@ -1,0 +1,17 @@
+{
+  "sourceBytes": 44499654,
+  "animationBytes": 14615410,
+  "posterBytes": 19222,
+  "crop": [
+    200,
+    1,
+    978,
+    607
+  ],
+  "width": 778,
+  "height": 606,
+  "frameCount": 192,
+  "durationMs": 8000,
+  "compression": "lossless WebP",
+  "verified": "All 192 frames: identical visible RGBA pixels and alpha"
+}

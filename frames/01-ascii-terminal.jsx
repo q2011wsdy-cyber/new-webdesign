@@ -29,6 +29,42 @@ const SELECTED_WORKS_DOTS = [
   [2.08,2.08], [34.08,2.08], [58.049,2.08], [66.049,2.08], [74.049,2.08], [98.018,2.08], [106.018,2.08], [114.018,2.08], [122.018,2.08], [145.986,2.08], [177.986,2.08],
 ];
 
+// Native animated WebP keeps the complete sequence in one lossless asset.
+function HeroFlowerSequence() {
+  const containerRef = React.useRef(null);
+  const [playing, setPlaying] = React.useState(false);
+
+  React.useEffect(() => {
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let visible = false;
+    const syncPlayback = () => setPlaying(visible && !document.hidden && !motion.matches);
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      syncPlayback();
+    });
+    observer.observe(containerRef.current);
+    motion.addEventListener('change', syncPlayback);
+    document.addEventListener('visibilitychange', syncPlayback);
+    return () => {
+      observer.disconnect();
+      motion.removeEventListener('change', syncPlayback);
+      document.removeEventListener('visibilitychange', syncPlayback);
+    };
+  }, []);
+
+  return <div ref={containerRef} className="hero-flower" aria-hidden="true">
+    <img
+      src={playing ? 'assets/home/dahlia/animation.webp?v=20260929' : 'assets/home/dahlia/poster.webp?v=20260929'}
+      alt="" width="778" height="606" decoding="async" fetchPriority="high"
+      onError={(event) => {
+        if (event.currentTarget.getAttribute('src') !== 'assets/home/dahlia/poster.webp?v=20260929') {
+          event.currentTarget.src = 'assets/home/dahlia/poster.webp?v=20260929';
+        }
+      }}
+    />
+  </div>;
+}
+
 function AsciiHeroSection({ dark, children }) {
   const fg = dark
     ? { textShadow: '0 2px 18px rgba(0,0,0,0.9), 0 0 32px rgba(0,0,0,0.65)' }
@@ -36,7 +72,7 @@ function AsciiHeroSection({ dark, children }) {
 
   return (
     <div id="about" className="home-hero">
-      <div className="hero-flower" aria-hidden="true"><img src="assets/home/flower.webp" alt="" /></div>
+      <HeroFlowerSequence />
       <div className="hero-copy" style={fg}>
         {children}
       </div>
