@@ -163,7 +163,7 @@
 .home-hero .hero-lead { letter-spacing: .4857px !important; }
 .home-hero .hero-description { margin-top: 27px; }
 .home-hero .hero-decode-body { text-wrap: wrap; }
-.hero-carousel { container-type: inline-size; position: absolute; width: 620px; max-width: 100%; height: auto; top: 261px; left: 50%; transform: translateX(-50%); }
+.hero-carousel { container-type: inline-size; position: absolute; width: 620px; max-width: 100%; height: auto; top: 76px; left: auto; right: -80px; transform: none; }
 .hero-slides { position: relative; height: calc(79.6154cqw); }
 .hero-slide { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 600ms ease; pointer-events: none; }
 .hero-slide.is-active { opacity: 1; }
@@ -194,7 +194,7 @@
 @media (max-width: 720px) {
   .home-hero { min-height: 700px; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 28px; }
   .home-hero .hero-copy { padding-top: 60px; padding-bottom: 0; }
-  .hero-carousel { position: relative; top: auto; left: auto; transform: none; align-self: center; }
+  .hero-carousel { position: relative; top: auto; left: auto; right: auto; transform: none; align-self: center; }
   .hero-slides { height: calc((100vw - 2 * var(--page-gutter)) * .7077 + 52px); max-height: 420px; }
   .hero-slide--eye .hero-art { height: auto; aspect-ratio: 520 / 368; }
   .hero-slide--cat .hero-art { height: auto; aspect-ratio: 381 / 298; top: 3.46%; }
@@ -274,7 +274,7 @@
 .hero-slide .hero-ascii-text { top: 0; }
 .hero-slides { height: calc(79.7778cqw + 48px); max-height: none; }
 .hero-slide figcaption, .hero-slide--eye figcaption { top: 79.7778cqw; bottom: auto; }
-.home-hero { min-height: 880px; }
+.home-hero { min-height: 660px; }
 @media (max-width: 720px) {
   .home-hero { min-height: 740px; }
 }
