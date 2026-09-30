@@ -136,6 +136,8 @@ function ScrambledBrand({ text, linkProbe = {} }) {
  * @param {function} [props.closeOnClick] 详情页关闭动画完成后跳转；不传时保持普通链接
  */
 function SiteTopbar({
+  compactHero = false,
+  logo,
   brand = 'Super lee',
   brandHref = 'ascii-terminal.html',
   linkProbe,
@@ -152,7 +154,7 @@ function SiteTopbar({
   const C = getAsciiThemePalette(dark);
   const topbarStyle = {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: compactHero && !logo ? 'flex-end' : 'space-between',
     alignItems: 'center',
     paddingTop: 20,
     paddingLeft: 'var(--page-gutter)',
@@ -197,8 +199,8 @@ function SiteTopbar({
 
   return (
     <>
-      <div aria-hidden="true" style={topbarSpacerStyle} />
-      <div style={topbarStyle}>
+      {!compactHero && <div aria-hidden="true" style={topbarSpacerStyle} />}
+      <div className={compactHero ? 'hero-topbar' : undefined} style={topbarStyle}>
       <style>{`
         .site-scrambled-brand.is-scrambling {
           animation: site-brand-flicker 150ms steps(2, end) 3;
@@ -263,7 +265,8 @@ function SiteTopbar({
           .site-liquid-button { transition: none; }
         }
       `}</style>
-      <a
+      {compactHero && logo && <a className="hero-logo-link" href={brandHref} aria-label="Super Lee — 回到首页" {...linkProbe}>{logo}</a>}
+      {!compactHero && <a
         href={brandHref}
         style={{
           color: C.faint,
@@ -274,7 +277,7 @@ function SiteTopbar({
         }}
         aria-label="回到首页">
         <ScrambledBrand text={brand} linkProbe={linkProbe} />
-      </a>
+      </a>}
       <GlassSurface controlCount={closeHref ? 3 : 2} style={navLinks}>
         <button
           className="site-liquid-button"
@@ -311,7 +314,7 @@ function SiteTopbar({
             lineHeight: 0,
           }}
           aria-label={dark ? '切换为浅色' : '切换为深色'}>
-          {dark ? (
+          {compactHero ? <img src="assets/home/hero-carousel/moon.svg" alt="" /> : dark ? (
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden>
               <circle cx="12" cy="12" r="4" />
               <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />

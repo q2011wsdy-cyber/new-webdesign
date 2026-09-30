@@ -29,54 +29,162 @@ const SELECTED_WORKS_DOTS = [
   [2.08,2.08], [34.08,2.08], [58.049,2.08], [66.049,2.08], [74.049,2.08], [98.018,2.08], [106.018,2.08], [114.018,2.08], [122.018,2.08], [145.986,2.08], [177.986,2.08],
 ];
 
-// Native animated WebP keeps the complete sequence in one lossless asset.
-function HeroFlowerSequence() {
-  const containerRef = React.useRef(null);
-  const [playing, setPlaying] = React.useState(false);
+const HERO_SLIDES = [
+  { id: 'eye', en: 'Curiosity broadens my horizons', zh: '好奇心拓宽了我的视野', alt: 'ASCII eye' },
+  { id: 'coffee', en: 'No ideas? Coffee, then pretend to think.', zh: '没灵感？喝杯咖啡，再假装思考。', alt: 'ASCII coffee cup' },
+  { id: 'cat', en: 'Cats taught empathy.', zh: '猫教会了我共情。', alt: 'ASCII cat' },
+];
 
-  React.useEffect(() => {
-    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let visible = false;
-    const syncPlayback = () => setPlaying(visible && !document.hidden && !motion.matches);
-    const observer = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      syncPlayback();
+// Stable per-cell variation keeps motion independent of React renders and slide changes.
+const HeroAsciiArt = React.memo(function HeroAsciiArt({ id, label, art }) {
+  const characters = React.useMemo(() => {
+    const ramp = '.super*%&#';
+    return Array.from(art || window.HERO_ASCII_ART[id]).map((glyph, index) => {
+      if (glyph === ' ' || glyph === '\n') return glyph;
+      const random = seed => {
+        const value = Math.sin((index + 1) * 127.1 + seed * 311.7) * 43758.5453;
+        return value - Math.floor(value);
+      };
+      const density = Math.max(0, ramp.indexOf(glyph)) / (ramp.length - 1);
+      return <span key={index} className="hero-ascii-cell" style={{
+        '--drift-duration': `${3 + random(1) * 5}s`,
+        '--drift-delay': `${-random(2) * 8}s`,
+        '--flicker-duration': `${1.8 + random(3) * 4.6}s`,
+        '--flicker-delay': `${-random(4) * 7}s`,
+        '--drift-x': `${(random(5) - .5) * .46}em`,
+        '--drift-y': `${(random(6) - .5) * .5}em`,
+        '--shade-low': .14 + density * .2,
+        '--shade-mid': .38 + density * .4,
+        '--shade-high': .68 + density * .32,
+      }}>{glyph}</span>;
     });
-    observer.observe(containerRef.current);
-    motion.addEventListener('change', syncPlayback);
-    document.addEventListener('visibilitychange', syncPlayback);
-    return () => {
-      observer.disconnect();
-      motion.removeEventListener('change', syncPlayback);
-      document.removeEventListener('visibilitychange', syncPlayback);
-    };
-  }, []);
+  }, [id, art]);
+  return <pre className="hero-ascii-text" role="img" aria-label={label}>{characters}</pre>;
+});
 
-  return <div ref={containerRef} className="hero-flower" aria-hidden="true">
-    <img
-      src={playing ? 'assets/home/dahlia/animation.webp?v=20260929' : 'assets/home/dahlia/poster.webp?v=20260929'}
-      alt="" width="778" height="606" decoding="async" fetchPriority="high"
-      onError={(event) => {
-        if (event.currentTarget.getAttribute('src') !== 'assets/home/dahlia/poster.webp?v=20260929') {
-          event.currentTarget.src = 'assets/home/dahlia/poster.webp?v=20260929';
+// One shared character field moves between silhouettes instead of cross-fading images.
+function HeroMorphArt({ id, label, reduced }) {
+  const [art, setArt] = React.useState(window.HERO_ASCII_ART[id]);
+  const current = React.useRef(art);
+  React.useEffect(() => {
+    const target = window.HERO_ASCII_ART[id];
+    if (reduced || current.current === target) {
+      current.current = target;
+      setArt(target);
+      return;
+    }
+    const points = text => text.split('\n').flatMap((row, y) =>
+      Array.from(row).flatMap((glyph, x) => glyph === ' ' ? [] : [{x, y, glyph}])
+    );
+    const from = points(current.current), to = points(target);
+    const count = Math.max(from.length, to.length);
+    const glyphs = 'super.#%*&';
+    let frame, start;
+    const tick = now => {
+      if (start === undefined) start = now;
+      const progress = Math.min(1, (now - start) / 250);
+      if (progress === 1) {
+        current.current = target;
+        setArt(target);
+        return;
+      }
+      // Update on each animation frame so the 250ms eased morph stays fluid.
+      {
+        const grid = Array.from({length: 35}, () => Array(90).fill(' '));
+        const ease = progress * progress * (3 - 2 * progress);
+        const spread = Math.sin(Math.PI * progress);
+        for (let i = 0; i < count; i++) {
+          const a = from[Math.floor(i * from.length / count)];
+          const b = to[Math.floor(i * to.length / count)];
+          const phase = i * 2.39996;
+          const x = Math.round(a.x + (b.x - a.x) * ease + Math.sin(phase + progress * 4) * spread * 5);
+          const y = Math.round(a.y + (b.y - a.y) * ease + Math.cos(phase + progress * 3) * spread * 2.5);
+          if (x >= 0 && x < 90 && y >= 0 && y < 35) {
+            grid[y][x] = progress < .18 ? a.glyph : progress > .82 ? b.glyph : glyphs[(i + Math.floor(progress * 12)) % glyphs.length];
+          }
         }
-      }}
-    />
-  </div>;
+        const next = grid.map(row => row.join('')).join('\n');
+        current.current = next;
+        setArt(next);
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [id, reduced]);
+  return <div className="hero-art hero-morph-art"><HeroAsciiArt id={id} label={label} art={art} /></div>;
 }
 
-function AsciiHeroSection({ dark, children }) {
-  const fg = dark
-    ? { textShadow: '0 2px 18px rgba(0,0,0,0.9), 0 0 32px rgba(0,0,0,0.65)' }
-    : { textShadow: '0 1px 14px rgba(255,255,255,0.98), 0 0 24px rgba(255,255,255,0.85)' };
+// Original pixel portrait: side-swept hair, round glasses and a collared shirt.
+const HERO_PORTRAIT_PIXELS = [
+  '      #####      ',
+  '    ########     ',
+  '   ###    ###    ',
+  '   ##      ##    ',
+  '   #        #    ',
+  '  ## ### ### #   ',
+  '  #  # # # # #   ',
+  '  #  ### ### #   ',
+  '   #    #   #    ',
+  '   #        #    ',
+  '    #  ### #     ',
+  '     #    #      ',
+  '     ##  ##      ',
+  '   ## #  # ##    ',
+  '  #   ####   #   ',
+  ' #    #  #    #  ',
+  ' #    #  #    #  ',
+];
+function HeroPortraitBadge() {
+  const Surface = window.GlassSurface;
+  return <Surface className="hero-portrait-badge">
+    <svg className="hero-portrait-icon" width="38" height="38" viewBox="0 0 38 38" aria-hidden="true" focusable="false">
+      {HERO_PORTRAIT_PIXELS.flatMap((row, y) => Array.from(row).map((pixel, x) =>
+        pixel === '#' ? <rect key={`${x}-${y}`} x={2 + x * 2} y={2 + y * 2} width="1.65" height="1.65" rx=".25" fill="currentColor" /> : null
+      ))}
+    </svg>
+  </Surface>;
+}
 
+function AsciiHeroSection({ lang, children }) {
+  const [active, setActive] = React.useState(0);
+  const [paused, setPaused] = React.useState(false);
+  const [reduced, setReduced] = React.useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  React.useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReduced(media.matches);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
+  React.useEffect(() => {
+    if (paused || reduced) return;
+    const timer = window.setInterval(() => {
+      if (!document.hidden) setActive(index => (index + 1) % HERO_SLIDES.length);
+    }, 4200);
+    return () => window.clearInterval(timer);
+  }, [paused, reduced]);
   return (
-    <div id="about" className="home-hero">
-      <HeroFlowerSequence />
-      <div className="hero-copy" style={fg}>
-        {children}
+    <section id="about" className="home-hero">
+      <div className="hero-copy">{children}</div>
+      <div className="hero-carousel" role="region" aria-roledescription="carousel"
+        aria-label={lang === 'en' ? 'Creative inspirations' : '创作灵感'}
+        onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}>
+        <div className="hero-slides" aria-live={paused || reduced ? 'polite' : 'off'}>
+          <HeroMorphArt id={HERO_SLIDES[active].id} label={HERO_SLIDES[active].alt} reduced={reduced} />
+          {HERO_SLIDES.map((slide, index) => (
+            <figure key={slide.id} className={`hero-slide hero-slide--${slide.id}${active === index ? ' is-active' : ''}`}
+              aria-hidden={active !== index} role="group" aria-roledescription="slide" aria-label={`${index + 1} / ${HERO_SLIDES.length}`}>
+              <figcaption>{slide[lang]}</figcaption>
+            </figure>
+          ))}
+        </div>
+        <div className="hero-carousel-controls">
+          {HERO_SLIDES.map((slide, index) => <button key={slide.id} type="button" aria-label={slide[lang]}
+            aria-pressed={active === index} onClick={() => setActive(index)}><span /></button>)}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -421,7 +529,7 @@ function AsciiTerminal() {
       lineHeight: '19px',
       letterSpacing: '-0.3px',
       color: C.fg,
-      maxWidth: 262,
+      maxWidth: 374,
     },
     dim: { color: C.dim },
     accent: { color: C.accent },
@@ -795,6 +903,8 @@ function AsciiTerminal() {
       `}</style>
 
       <SiteTopbar
+        compactHero
+        logo={<HeroPortraitBadge />}
         brand="Super lee"
         linkProbe={linkProbe}
         dark={dark}
@@ -806,7 +916,7 @@ function AsciiTerminal() {
         anchorClickFactory={onNavClick}
       />
 
-      <AsciiHeroSection dark={dark}>
+      <AsciiHeroSection lang={lang}>
         <div style={s.intro}>
           <div {...textProbe}>
             <div style={s.bigLine}>
@@ -834,25 +944,7 @@ function AsciiTerminal() {
                   delay={380 + index * 190}
                   duration={520}
                 />)}
-                <span className="hero-creative-line" aria-hidden="true">
-                  <HeroDecodeText
-                    key={`creative-${lang}`}
-                    text={text.creativePrefix}
-                    className="hero-decode-body hero-creative-prefix"
-                    delay={190 + text.heroBodyLines.length * 190}
-                    duration={520}
-                  />
-                  <HeroRollingWords
-                    key={`rolling-${lang}`}
-                    words={text.creativeWords}
-                    reducedText={text.creativeReduced}
-                    interval={2000}
-                  />
-                  <span>{text.creativeSuffix}</span>
-                </span>
-                <span className="hero-visually-hidden">
-                  {text.creativePrefix}{text.creativeReduced}{text.creativeSuffix}
-                </span>
+
               </span>
             </div>
           </div>
