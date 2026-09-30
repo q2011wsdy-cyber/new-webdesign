@@ -115,6 +115,39 @@ function HeroMorphArt({ id, label, reduced }) {
   return <div className="hero-art hero-morph-art"><HeroAsciiArt id={id} label={label} art={art} /></div>;
 }
 
+function HeroMorphCaption({ text, reduced }) {
+  const [display, setDisplay] = React.useState(text);
+  const current = React.useRef(text);
+  React.useEffect(() => {
+    const before = current.current;
+    if (reduced || before === text) {
+      current.current = text;
+      setDisplay(text);
+      return;
+    }
+    const glyphs = 'super.#%*&';
+    let frame, start;
+    const tick = now => {
+      if (start === undefined) start = now;
+      const progress = Math.min(1, (now - start) / 250);
+      const eased = progress * progress * (3 - 2 * progress);
+      const length = Math.round(before.length + (text.length - before.length) * eased);
+      const next = progress === 1 ? text : Array.from({length}, (_, index) => {
+        const threshold = ((index * 17 + 7) % 31) / 31;
+        if (eased > .25 + threshold * .7) return text[index] || '';
+        if (eased < threshold * .2) return before[index] || '';
+        return text[index] === ' ' ? ' ' : glyphs[(index + Math.floor(eased * 16)) % glyphs.length];
+      }).join('');
+      current.current = next;
+      setDisplay(next);
+      if (progress < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [text, reduced]);
+  return <p className="hero-morph-caption" aria-label={text}><span aria-hidden="true">{display}</span></p>;
+}
+
 // Original pixel portrait: side-swept hair, round glasses and a collared shirt.
 const HERO_PORTRAIT_PIXELS = [
   '      #####      ',
@@ -172,12 +205,7 @@ function AsciiHeroSection({ lang, children }) {
         onFocus={() => setPaused(true)} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}>
         <div className="hero-slides" aria-live={paused || reduced ? 'polite' : 'off'}>
           <HeroMorphArt id={HERO_SLIDES[active].id} label={HERO_SLIDES[active].alt} reduced={reduced} />
-          {HERO_SLIDES.map((slide, index) => (
-            <figure key={slide.id} className={`hero-slide hero-slide--${slide.id}${active === index ? ' is-active' : ''}`}
-              aria-hidden={active !== index} role="group" aria-roledescription="slide" aria-label={`${index + 1} / ${HERO_SLIDES.length}`}>
-              <figcaption>{slide[lang]}</figcaption>
-            </figure>
-          ))}
+          <HeroMorphCaption text={HERO_SLIDES[active][lang]} reduced={reduced} />
         </div>
         <div className="hero-carousel-controls">
           {HERO_SLIDES.map((slide, index) => <button key={slide.id} type="button" aria-label={slide[lang]}
