@@ -35,6 +35,23 @@ const HERO_SLIDES = [
   { id: 'cat', en: 'Cats taught empathy.', zh: '猫教会了我共情。', alt: 'ASCII cat' },
 ];
 
+// Fit silhouettes into one optical frame while preserving character proportions.
+const HERO_ART_LAYOUT = Object.fromEntries(Object.entries(window.HERO_ASCII_ART).map(([id, text]) => {
+  const rows = text.split('\n');
+  const points = rows.flatMap((row, y) => Array.from(row).flatMap((glyph, x) => glyph === ' ' ? [] : [{x, y}]));
+  const minX = Math.min(...points.map(p => p.x)), maxX = Math.max(...points.map(p => p.x));
+  const minY = Math.min(...points.map(p => p.y)), maxY = Math.max(...points.map(p => p.y));
+  const width = maxX - minX + 1, height = maxY - minY + 1;
+  const scale = Math.min(64 / width, 27 / height);
+  const w = Math.round(width * scale), h = Math.round(height * scale);
+  const left = Math.floor((90 - w) / 2), top = Math.floor((27 - h) / 2);
+  const grid = Array.from({length: 35}, () => Array(90).fill(' '));
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    grid[top + y][left + x] = rows[minY + Math.min(height - 1, Math.floor(y / scale))][minX + Math.min(width - 1, Math.floor(x / scale))] || ' ';
+  }
+  return [id, {art: grid.map(row => row.join('')).join('\n'), bottom: top + h}];
+}));
+
 // Stable per-cell variation keeps motion independent of React renders and slide changes.
 const HeroAsciiArt = React.memo(function HeroAsciiArt({ id, label, art }) {
   const characters = React.useMemo(() => {
@@ -64,10 +81,10 @@ const HeroAsciiArt = React.memo(function HeroAsciiArt({ id, label, art }) {
 
 // One shared character field moves between silhouettes instead of cross-fading images.
 function HeroMorphArt({ id, label, reduced }) {
-  const [art, setArt] = React.useState(window.HERO_ASCII_ART[id]);
+  const [art, setArt] = React.useState(HERO_ART_LAYOUT[id].art);
   const current = React.useRef(art);
   React.useEffect(() => {
-    const target = window.HERO_ASCII_ART[id];
+    const target = HERO_ART_LAYOUT[id].art;
     if (reduced || current.current === target) {
       current.current = target;
       setArt(target);
@@ -198,20 +215,28 @@ function AsciiHeroSection({ lang, children }) {
   }, [paused, reduced]);
   return (
     <section id="about" className="home-hero">
-      <div className="hero-copy">{children}</div>
+      <div className="hero-copy">{children}
+        <HeroMorphCaption text={HERO_SLIDES[active][lang]} reduced={reduced} />
+      </div>
       <div className="hero-carousel" role="region" aria-roledescription="carousel"
         aria-label={lang === 'en' ? 'Creative inspirations' : '创作灵感'}
         onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
         onFocus={() => setPaused(true)} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}>
-        <div className="hero-slides" aria-live={paused || reduced ? 'polite' : 'off'}>
+        <div className="hero-slides" style={{'--caption-top': `${HERO_ART_LAYOUT[HERO_SLIDES[active].id].bottom * 2.22222222}cqw`}} aria-live={paused || reduced ? 'polite' : 'off'}>
           <HeroMorphArt id={HERO_SLIDES[active].id} label={HERO_SLIDES[active].alt} reduced={reduced} />
-          <HeroMorphCaption text={HERO_SLIDES[active][lang]} reduced={reduced} />
-        </div>
-        <div className="hero-carousel-controls">
-          {HERO_SLIDES.map((slide, index) => <button key={slide.id} type="button" aria-label={slide[lang]}
-            aria-pressed={active === index} onClick={() => setActive(index)}><span /></button>)}
         </div>
       </div>
+      <a className="hero-scroll-cue" href="#works" aria-label={lang === 'en' ? 'View selected work' : '查看作品'}>
+        <svg className="hero-scroll-dots" width="37" height="53" viewBox="0 0 37 53" aria-hidden="true" focusable="false">
+          {[[18.08,2.08],[18.08,10.08],[18.08,18.08],[18.08,26.08],[18.08,34.08],
+            [2.08,34.08],[10.08,42.08],[18.08,50.08],[26.08,42.08],[34.08,34.08]].map(([cx, cy], index) => (
+            <circle key={`${cx}-${cy}`} className="selected-works-dots" cx={cx} cy={cy} r="2.08" fill="currentColor"
+              style={{'--dot-duration': `${0.75 + ((index * 17) % 16) / 10}s`,
+                '--dot-delay': `${-((index * 23) % 31) / 10}s`,
+                '--dot-min-opacity': 0.16 + ((index * 11) % 6) * 0.08}} />
+          ))}
+        </svg>
+      </a>
     </section>
   );
 }

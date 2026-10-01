@@ -292,3 +292,51 @@
 }
 :root[data-theme='light'] .hero-morph-caption { color: var(--color-fg); }
 .hero-slides { height: calc(68.8889cqw + 48px); }
+
+/* Align introduction to the shared optical artwork frame, not its padded text grid. */
+@media (min-width: 721px) {
+  .home-hero .hero-copy { position: absolute; top: 262px; padding-top: 0; transform: translateY(-50%); }
+}
+.hero-morph-art { height: 60cqw; }
+.hero-morph-caption { top: calc(var(--caption-top, 60cqw) + 24px); transition: top 250ms ease-in-out; }
+.hero-slides { height: calc(60cqw + 68px); }
+
+/* Supporting slide copy belongs beneath the introduction. */
+.home-hero .hero-copy > .hero-morph-caption {
+  top: calc(100% + 52px);
+  left: 0;
+  transform: none;
+  text-align: left;
+  font-size: 14px;
+  line-height: 20px;
+  transition: none;
+}
+@media (max-width: 720px) {
+  .home-hero .hero-copy > .hero-morph-caption {
+    position: static;
+    margin-top: 32px;
+    font-size: clamp(11px, 3.1vw, 14px);
+  }
+}
+
+/* The cue shares the introduction's responsive column width and left edge. */
+.home-hero { --hero-copy-width: 374px; }
+.home-hero .hero-copy { width: var(--hero-copy-width); }
+.hero-scroll-cue {
+  position: absolute;
+  left: 0;
+  bottom: 24px;
+  width: var(--hero-copy-width);
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+.hero-scroll-cue img { display: block; flex: none; }
+:root[data-theme='light'] .hero-scroll-cue img { filter: invert(1); }
+@media (max-width: 720px) {
+  .home-hero { --hero-copy-width: 100%; padding-bottom: 76px; }
+}
+
+.hero-scroll-cue { color: var(--color-fg); }
+.hero-scroll-dots { display: block; flex: none; width: min(36.7956px, 8.5856vw); height: auto; }

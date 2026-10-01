@@ -120,7 +120,7 @@ function WorkHarborPage() {
   const missingRequired = [
     !work.title && 'title',
     !work.subtitle && 'subtitle',
-    !(work.cover && work.cover.src) && 'cover.src',
+    work.showCover !== false && !(work.cover && work.cover.src) && 'cover.src',
   ].filter(Boolean);
   const metadata = Array.isArray(work.meta) ? work.meta : [
     work.client && { label: ui.client, value: work.client },
@@ -369,7 +369,13 @@ function WorkHarborPage() {
     const radius = media.radius == null ? 12 : media.radius;
     let content;
 
-    if (type === 'video') {
+    if (type === 'placeholder') {
+      content = <div className="case-placeholder" role="img" aria-label={`${media.label}，图片待补充`} data-asset-slot={media.id} data-figma-node={media.nodeId} style={{ aspectRatio: media.aspectRatio }}>
+        <span className="case-placeholder-number">{media.id.split('-')[0]}</span>
+        <span>{media.label}</span>
+        <span className="case-placeholder-hint">图片待补充</span>
+      </div>;
+    } else if (type === 'video') {
       content = (
         <video
           className="case-media-content"
@@ -428,6 +434,10 @@ function WorkHarborPage() {
     if (!block) return null;
     const type = block.type || 'text';
 
+    if (type === 'case-copy') return <div key={key} className={`case-editorial-copy case-editorial-copy--${block.variant || 'body'}`}>
+      {block.title && <h2>{block.title}</h2>}<p>{block.body}</p>
+    </div>;
+    if (type === 'placeholder') return renderMedia({...block, frame: false, radius: 20}, key);
     if (type === 'text') return renderText(block, key);
     if (type === 'image' || type === 'video' || type === 'lottie' || type === 'json') return renderMedia(block, key);
 
@@ -483,7 +493,7 @@ function WorkHarborPage() {
   }
 
   return (
-    <div ref={rootRef} style={s.wrap}>
+    <div ref={rootRef} className={work.className} style={s.wrap}>
       <style>{`
         @keyframes ascii-caret-blink { 0%, 48% { opacity: 1; } 50%, 100% { opacity: 0.22; } }
         @keyframes case-detail-arrival {
@@ -545,6 +555,9 @@ function WorkHarborPage() {
           .case-scroll-item { opacity: 1 !important; transform: none !important; transition: none !important; }
         }
       `}</style>
+      {work.bannerCover && <div className="case-banner-cover" role="img" aria-label={work.bannerCover.alt || '通栏封面，图片待补充'} style={work.bannerCover.src ? {backgroundImage: `url(${work.bannerCover.src})`} : undefined}>
+        {!work.bannerCover.src && <span>封面图片待补充</span>}
+      </div>}
       <SiteTopbar
         brand="Super lee"
         linkProbe={linkProbe}
@@ -593,7 +606,7 @@ function WorkHarborPage() {
         </section>;
       })}
 
-      <div className="case-scroll-item" style={s.nextNav}>
+      {!work.hideNextNav && <div className="case-scroll-item" style={s.nextNav}>
         <a href="ascii-terminal.html" {...linkProbe} style={{ textDecoration: 'none', color: C.fg }}>
           <div style={s.nextBlock}>
             <span style={s.nextSmall}>{ui.back}</span>
@@ -606,12 +619,12 @@ function WorkHarborPage() {
             <span style={s.nextBig}>{work.nextTitle}</span>
           </div>
         </a>
-      </div>
+      </div>}
 
-      <div className="case-scroll-item" style={s.footer}>
+      {!work.hideFooter && <div className="case-scroll-item" style={s.footer}>
         <span>© 2025 · handmade, kept simple</span>
         <span>v1.0 · last updated 2025.03</span>
-      </div>
+      </div>}
 
       </main>
       </div>
