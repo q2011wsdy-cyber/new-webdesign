@@ -340,3 +340,42 @@
 
 .hero-scroll-cue { color: var(--color-fg); }
 .hero-scroll-dots { display: block; flex: none; width: min(36.7956px, 8.5856vw); height: auto; }
+
+/* Scroll-driven inspiration stack. */
+.home-hero.hero-stack-section { height: 420vh; min-height: 0; display: block; overflow: visible; padding: 0; }
+.hero-stack-sticky { position: sticky; top: 0; height: 100svh; overflow: clip; }
+.home-hero .hero-copy.hero-stack-copy {
+  position: absolute; top: clamp(110px, 18.5vh, 167px); left: 50%;
+  width: min(512px, calc(100% - 40px)); padding: 0; transform: translateX(-50%);
+}
+.hero-stack-copy .hero-description { margin-top: 27px; }
+.hero-stack-card {
+  position: absolute; top: 62vh; left: 50%; width: min(430px, calc(100% - 32px));
+  height: min(519px, 65svh); border-radius: 38px; overflow: hidden;
+  transform: translate(-50%, calc(var(--stack-depth) * -32px)) scale(calc(1 - var(--stack-depth) * .07));
+  transform-origin: center top; color: #fff; background: #000;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.12); will-change: transform;
+  container-type: inline-size;
+}
+.hero-stack-card--coffee { background: #f64983; }
+.hero-stack-card--eye { background: #4977f6; }
+.hero-stack-card--placeholder { background: #f68949; }
+.hero-card-caption { position: absolute; top: 12%; left: 20px; right: 20px; margin: 0; text-align: center; color: #fff; font: 400 14px/1.5 var(--font-family-mono); }
+.hero-card-art { position: absolute; top: 50%; left: 5%; width: 90%; height: 60cqw; transform: translateY(-38%); }
+.hero-card-art .hero-ascii-text { color: #fff; font-size: 1.66666667cqw; line-height: 2cqw; }
+.hero-card-placeholder { position: absolute; inset: 0; display: grid; place-items: center; font: 400 24px var(--font-family-mono); opacity: .6; }
+@media (max-width: 720px) {
+  .hero-stack-card { border-radius: 30px; }
+  .home-hero .hero-copy.hero-stack-copy { top: 110px; }
+  .hero-stack-copy .hero-lead { font-size: clamp(28px, 7vw, 40px) !important; }
+}
+.hero-stack-section.is-reduced { height: auto; }
+.is-reduced .hero-stack-sticky { position: relative; height: auto; overflow: visible; padding: 100px 0 48px; }
+.home-hero.is-reduced .hero-copy.hero-stack-copy { position: relative; top: auto; left: auto; transform: none; margin: 0 auto 48px; }
+.is-reduced .hero-card-stack { display: grid; gap: 24px; justify-items: center; }
+.is-reduced .hero-stack-card { position: relative; top: auto; left: auto; transform: none; }
+
+.home-hero .hero-copy.hero-stack-copy { z-index: 0; }
+
+/* Work follows the final card as the sticky stage releases. */
+.hero-stack-section:not(.is-reduced) { margin-bottom: -12vh; }

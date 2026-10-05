@@ -5,7 +5,7 @@
 if (typeof window.getSiteCursorStyle !== 'function') {
   window.getSiteCursorStyle = function getSiteCursorStyleFallback(cur, C) {
     return {
-      position: 'absolute', pointerEvents: 'none', zIndex: 200, left: cur.x, top: cur.y,
+      position: 'fixed', pointerEvents: 'none', zIndex: 200, left: cur.x, top: cur.y,
       transform: 'translate(-50%,-50%)', opacity: cur.visible ? 1 : 0,
       width: 10, height: 10, borderRadius: '50%', background: (C && C.curDefault) || '#6fb36f',
     };
@@ -174,8 +174,7 @@ function WorkHarborPage() {
     const el = rootRef.current;
     if (!el) return;
     const onMove = (e) => {
-      const r = el.getBoundingClientRect();
-      setCur((c) => ({ ...c, x: e.clientX - r.left, y: e.clientY - r.top, visible: true }));
+      setCur((c) => ({ ...c, x: e.clientX, y: e.clientY, visible: true }));
     };
     const onLeave = () => setCur((c) => ({ ...c, visible: false }));
     el.addEventListener('mousemove', onMove);

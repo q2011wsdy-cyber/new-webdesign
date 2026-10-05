@@ -3,7 +3,7 @@
 if (typeof window.getSiteCursorStyle !== 'function') {
   window.getSiteCursorStyle = function getSiteCursorStyleFallback(cur, C) {
     return {
-      position: 'absolute', pointerEvents: 'none', zIndex: 200, left: cur.x, top: cur.y,
+      position: 'fixed', pointerEvents: 'none', zIndex: 200, left: cur.x, top: cur.y,
       transform: 'translate(-50%,-50%)', opacity: cur.visible ? 1 : 0,
       width: 10, height: 10, borderRadius: '50%', background: (C && C.curDefault) || '#6fb36f',
     };
@@ -197,8 +197,7 @@ function HeroPortraitBadge() {
 }
 
 function AsciiHeroSection({ lang, children }) {
-  const [active, setActive] = React.useState(0);
-  const [paused, setPaused] = React.useState(false);
+  const section = React.useRef(null);
   const [reduced, setReduced] = React.useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   React.useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -207,36 +206,61 @@ function AsciiHeroSection({ lang, children }) {
     return () => media.removeEventListener('change', update);
   }, []);
   React.useEffect(() => {
-    if (paused || reduced) return;
-    const timer = window.setInterval(() => {
-      if (!document.hidden) setActive(index => (index + 1) % HERO_SLIDES.length);
-    }, 4200);
-    return () => window.clearInterval(timer);
-  }, [paused, reduced]);
+    const root = section.current;
+    if (reduced) return;
+    const cards = Array.from(root.querySelectorAll('.hero-stack-card'));
+    const copy = root.querySelector('.hero-stack-copy');
+    let frame = 0;
+    const clamp = n => Math.max(0, Math.min(1, n));
+    const ease = n => n * n * (3 - 2 * n);
+    const render = () => {
+      frame = 0;
+      const vh = window.innerHeight;
+      const progress = Math.max(0, -root.getBoundingClientRect().top / vh);
+      const entry = ease(clamp(progress / .8));
+      const lift = vh * .62 - Math.max(90, (vh - cards[0].offsetHeight) / 2);
+      // Fade out before the back card reaches the bottom of the introduction.
+      const copyBottom = copy.offsetTop + copy.offsetHeight;
+      const initialStackTop = vh * .62 - (cards.length - 1) * 32;
+      const fadeDistance = Math.max(1, initialStackTop - copyBottom - 20);
+      const copyOpacity = 1 - ease(clamp(lift * entry / fadeDistance));
+      copy.style.opacity = String(copyOpacity);
+      copy.style.visibility = copyOpacity === 0 ? 'hidden' : 'visible';
+      cards.forEach((card, i) => {
+        const exit = ease(clamp((progress - .8 - i * .8) / .8));
+        const isLast = i === cards.length - 1;
+        // Add a short upward pop as Work follows the releasing sticky stage.
+        const lastExit = ease(clamp((progress - 3.05) / .55));
+        const depth = Math.max(0, i - Math.max(0, (progress - .8) / .8));
+        const y = -lift * entry - depth * 32 - (isLast ? lastExit * vh * .65 : exit * (vh + card.offsetHeight));
+        const scale = 1 - Math.min(3, depth) * .07;
+        card.style.transform = `translate(-50%, ${y}px) scale(${scale}) rotate(${(isLast ? lastExit : exit) * -5}deg)`;
+        card.style.opacity = '1';
+        card.style.visibility = !isLast && exit >= 1 ? 'hidden' : 'visible';
+      });
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(render); };
+    window.addEventListener('scroll', schedule, {passive: true});
+    window.addEventListener('resize', schedule);
+    render();
+    return () => { cancelAnimationFrame(frame); window.removeEventListener('scroll', schedule); window.removeEventListener('resize', schedule); };
+  }, [reduced]);
+  const slides = [HERO_SLIDES[2], HERO_SLIDES[1], HERO_SLIDES[0]];
   return (
-    <section id="about" className="home-hero">
-      <div className="hero-copy">{children}
-        <HeroMorphCaption text={HERO_SLIDES[active][lang]} reduced={reduced} />
-      </div>
-      <div className="hero-carousel" role="region" aria-roledescription="carousel"
-        aria-label={lang === 'en' ? 'Creative inspirations' : '创作灵感'}
-        onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
-        onFocus={() => setPaused(true)} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}>
-        <div className="hero-slides" style={{'--caption-top': `${HERO_ART_LAYOUT[HERO_SLIDES[active].id].bottom * 2.22222222}cqw`}} aria-live={paused || reduced ? 'polite' : 'off'}>
-          <HeroMorphArt id={HERO_SLIDES[active].id} label={HERO_SLIDES[active].alt} reduced={reduced} />
+    <section ref={section} id="about" className={`home-hero hero-stack-section${reduced ? ' is-reduced' : ''}`}>
+      <div className="hero-stack-sticky">
+        <div className="hero-copy hero-stack-copy">{children}</div>
+        <div className="hero-card-stack" aria-label={lang === 'en' ? 'Creative inspirations' : '创作灵感'}>
+          {slides.map((slide, index) => <article key={slide.id} className={`hero-stack-card hero-stack-card--${slide.id}`} style={{zIndex: 4 - index, '--stack-depth': index}}>
+            <p className="hero-card-caption">{slide[lang]}</p>
+            <div className="hero-card-art"><HeroAsciiArt id={slide.id} label={slide.alt} art={HERO_ART_LAYOUT[slide.id].art} /></div>
+          </article>)}
+          <article className="hero-stack-card hero-stack-card--placeholder" style={{zIndex: 1, '--stack-depth': 3}} aria-label={lang === 'en' ? 'Illustration placeholder' : '插图占位'}>
+            <span className="hero-card-placeholder" aria-hidden="true">super.#%*&</span>
+            <p className="hero-card-caption">{lang === 'en' ? 'More to explore.' : '还有更多，待探索。'}</p>
+          </article>
         </div>
       </div>
-      <a className="hero-scroll-cue" href="#works" aria-label={lang === 'en' ? 'View selected work' : '查看作品'}>
-        <svg className="hero-scroll-dots" width="37" height="53" viewBox="0 0 37 53" aria-hidden="true" focusable="false">
-          {[[18.08,2.08],[18.08,10.08],[18.08,18.08],[18.08,26.08],[18.08,34.08],
-            [2.08,34.08],[10.08,42.08],[18.08,50.08],[26.08,42.08],[34.08,34.08]].map(([cx, cy], index) => (
-            <circle key={`${cx}-${cy}`} className="selected-works-dots" cx={cx} cy={cy} r="2.08" fill="currentColor"
-              style={{'--dot-duration': `${0.75 + ((index * 17) % 16) / 10}s`,
-                '--dot-delay': `${-((index * 23) % 31) / 10}s`,
-                '--dot-min-opacity': 0.16 + ((index * 11) % 6) * 0.08}} />
-          ))}
-        </svg>
-      </a>
     </section>
   );
 }
@@ -521,8 +545,7 @@ function AsciiTerminal() {
     const el = rootRef.current;
     if (!el) return;
     const onMove = (e) => {
-      const r = el.getBoundingClientRect();
-      setCur(c => ({ ...c, x: e.clientX - r.left, y: e.clientY - r.top, visible: true, mode: e.target.closest('.work-tile') ? 'case' : (c.mode === 'case' ? 'link' : c.mode) }));
+      setCur(c => ({ ...c, x: e.clientX, y: e.clientY, visible: true, mode: e.target.closest('.work-tile') ? 'case' : (c.mode === 'case' ? 'link' : c.mode) }));
     };
     const onLeave = () => setCur(c => ({ ...c, visible: false }));
     el.addEventListener('mousemove', onMove);
@@ -975,18 +998,6 @@ function AsciiTerminal() {
             <div style={s.bigLine}>
               <span className="hero-lead" style={s.heroLead}>
                 <HeroDecodeText key={`lead-${lang}`} text={text.heroLead} className="hero-decode-lead" delay={0} duration={520} />
-                <span
-                  className="hero-avatar"
-                  aria-hidden="true"
-                  style={{
-                    border: `2px solid ${C.bg}`,
-                    background: C.line,
-                    boxShadow: dark
-                      ? '0 10px 28px rgba(0,0,0,.34)'
-                      : '0 10px 28px rgba(55,48,36,.16)',
-                  }}>
-                  <img src="assets/profile-superlee.jpg" alt="" draggable={false} />
-                </span>
                 <HeroDecodeText key={`role-${lang}`} text={text.heroBodyLines[0]} className="hero-decode-role" delay={190} duration={520} />
               </span>
               <span className="hero-description" style={s.heroBody}>
@@ -1176,7 +1187,7 @@ function AsciiTerminal() {
       {/* Custom block cursor */}
       <div style={{ ...cursorBlock, opacity: cur.mode === 'case' ? 0 : cursorBlock.opacity }} />
       <GlassSurface className="case-glass-cursor" borderRadius={39} distortionScale={-52} mapBlur={3.5}
-        style={{ position: 'absolute', left: cur.x, top: cur.y, width: 78, height: 78,
+        style={{ position: 'fixed', left: cur.x, top: cur.y, width: 78, height: 78,
           padding: 0, borderRadius: '50%', pointerEvents: 'none', zIndex: 201,
           transform: 'translate(-50%, -50%)',
           opacity: cur.visible && cur.mode === 'case' ? 1 : 0 }} />

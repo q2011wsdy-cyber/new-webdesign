@@ -5,7 +5,7 @@
 function getSiteCursorStyle(cur, C, dark) {
   const ease = 'cubic-bezier(0.22, 1, 0.36, 1)';
   const base = {
-    position: 'absolute',
+    position: 'fixed',
     pointerEvents: 'none',
     zIndex: 200,
     left: cur.x,
