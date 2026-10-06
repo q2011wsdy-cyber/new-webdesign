@@ -18,6 +18,7 @@
   }
 
   function render() {
+    if (window.__heroQuickScrollActive) { frame = 0; isAnimating = false; current = target = window.scrollY; return; }
     var distance = target - current;
     current += distance * smoothing;
     if (Math.abs(distance) < 0.45) {

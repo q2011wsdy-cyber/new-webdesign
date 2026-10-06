@@ -1,45 +1,420 @@
-// Figma 410:41272. Visuals deliberately remain placeholders until supplied exports arrive.
+// Default bilingual content.
 (() => {
-  const media = (id, label, width, height, nodeId) => ({type: 'placeholder', id, label, aspectRatio: `${width}/${height}`, nodeId});
-  const copy = (body, variant = 'body', title = '') => ({type: 'case-copy', body, variant, title});
-  const sections = [
-    {id: 'project-cover', hideTitle: true, blocks: [media('01-cover', '项目封面', 1200, 675, '410:41283')]},
-    {id: 'background', hideTitle: true, blocks: [
-      copy('近三年框架没有变动，整体框架比较陈旧，在承载新业务上面有比较大的局限性。并且因为框架问题，随着迭代，页面功能堆砌越来越多，没有有效的组织手段，无法被更快地关注到。不同的业务结构差异越来越大，缺乏通用性。', 'background', '背景：'),
-      copy('随之而来的问题就是\n1、页面越来越臃肿。\n2、开发成本越来越高。\n3、业务增长缺少新动力', 'problems'),
-      copy('所以在改版的设计目标上，我们继续做一个面向未来的框架\n1、通过重构来承载业务的新增长，并减少页面冗余，\n2、统一多业务的设计语言，减少适配成本。\n3、加入情感化设计，来调动用户的正向决策意愿。', 'goals'),
-      media('02-design-goals', '设计目标示意图', 1200, 600, '412:58664'),
-      {type: 'gallery', columns: 2, gap: 26, frame: false, items: [
-        media('03-driver-avatars', '司机头像设计', 587.234, 594.894, '410:41288'),
-        media('04-icon-system', '图标设计系统', 587.234, 594.894, '411:58595'),
-      ]},
-      media('05-framework', '改版后的司货匹配界面', 1200, 976, '410:51169'),
-    ]},
-    {id: 'emotional-design', hideTitle: true, blocks: [
-      copy('就讲通过把自己做单难的场景情感化，利用正向文案加场景加表情的钩子，渲染情绪，让加价更有说服力。', 'feature', '我把司机「做单难」场景情感化，\n让加价更有说服力'),
-      media('06-emotional-pricing', '情感化加价场景', 1200, 1099, '410:51452'),
-    ]},
-    {id: 'weather-particles', hideTitle: true, blocks: [
-      copy('此外，我补充了天气场景、并与研发同学共创“天气粒子系统”，使天气场景的动效与信息表达更具沉浸感与可信度。', 'feature', '“呼风唤雨”的天气粒子\n让恶劣天气更沉浸'),
-      media('07-weather-particles', '天气粒子与天气场景', 1200, 1099, '410:55204'),
-    ]},
-    {id: 'broadcast-motion', hideTitle: true, blocks: [
-      copy('叫车更远更快，这里应该是讲通过调整地图中的动效速度，提高流畅度，同时联动地图的缩放比例，去表达扩播范围的广度。所以这里主要体现两点：一个是速度，一个是广度。让用户有更明确的感知，相比以往，感知上变得更流畅、更快了。', 'feature'),
-      media('08-broadcast-motion', '地图扩播动效', 1200, 1099, '410:51798'),
-    ]},
-    {id: 'waiting-experience', hideTitle: true, blocks: [
-      copy('一系列的交互转场，来延长用户的愿等时间。在不同的时间段，让页面处于活跃的状态，并在感知层面，加强了平台努力帮助用户找车的感知', 'closing', '建立用户等待时间的预期\n强化平台找车感知'),
-      media('09-waiting-experience', '等待找车的交互转场', 1200, 1099, '410:54440'),
-    ]},
-  ];
-  const content = {
-    title: 'huolala',
-    subtitle: '工作期间，负责货运中，司货匹配的主链路设计，通俗来讲就是如何帮助货主更快找到适合的车的；帮助产品的指标增长的同时，在设计上平衡双方角色的体验；\n\n身为此模块的 设计owner，推动了一次大的设计改版。构建了天气粒子的设计系统，以及 AI 的运用与探索。',
-    bannerCover: {src: '', alt: '货拉拉通栏封面，图片待补充'},
-    className: 'huolala-case', hideIndex: true, compactCaseLayout: true,
-    showMeta: false, showCover: false, hideNextNav: true, hideFooter: true,
-    sections,
-  };
-  // The supplied case copy is Chinese; preserve it in either UI language.
-  window.__workCaseData = {zh: content, en: content};
+ const content = {
+  "title": "货拉拉 · 司货匹配体验改版",
+  "subtitle": "帮助货主更快找到合适的车，是司货匹配主链路的核心目标。我负责这条链路的设计，在业务增长与货主、司机双方的体验之间寻找平衡。\n\n作为模块的设计负责人，我推动了整体框架改版，并与研发共创天气粒子系统，探索情感化设计与 AI 在货运场景中的应用。",
+  "bannerCover": {
+    "src": "",
+    "alt": "货拉拉通栏封面，图片待补充"
+  },
+  "className": "huolala-case",
+  "hideIndex": true,
+  "compactCaseLayout": true,
+  "showMeta": false,
+  "showCover": false,
+  "hideNextNav": true,
+  "hideFooter": true,
+  "sections": [
+    {
+      "id": "project-cover",
+      "hideTitle": true,
+      "blocks": [
+        {
+          "type": "placeholder",
+          "id": "01-cover",
+          "label": "项目封面",
+          "aspectRatio": "1200/675",
+          "nodeId": "410:41283"
+        }
+      ]
+    },
+    {
+      "id": "background",
+      "hideTitle": true,
+      "blocks": [
+        {
+          "type": "case-copy",
+          "body": "原有框架近三年未做整体调整。随着业务持续迭代，页面功能不断叠加，关键信息难以被快速关注；不同业务的结构差异逐渐扩大，也增加了复用与适配的成本。",
+          "variant": "background",
+          "title": "项目背景：为业务增长重构匹配框架"
+        },
+        {
+          "type": "case-copy",
+          "body": "信息层级复杂｜功能持续堆叠，关键信息难以被快速关注。\n跨业务复用不足｜业务缺少统一框架，开发与适配成本不断增加。\n增长承载受限｜既有体验难以适应新的业务需求。",
+          "variant": "problems",
+          "title": "核心问题"
+        },
+        {
+          "type": "case-copy",
+          "body": "重构匹配框架｜梳理信息与交互层级，减少页面冗余，承载新的业务需求。\n统一设计语言｜建立多业务共用的设计语言，提高复用效率，降低适配成本。\n引入情感化表达｜结合场景、文案与动效，帮助用户理解处境并做出决策。",
+          "variant": "goals",
+          "title": "设计目标",
+          "intro": "围绕结构、效率与体验，建立面向未来业务的匹配框架。"
+        },
+        {
+          "type": "comparison",
+          "id": "02-design-goals",
+          "label": "改版前后对比",
+          "frame": false,
+          "radius": 20,
+          "before": {
+            "type": "placeholder",
+            "id": "02-design-goals-before",
+            "label": "Before / 改版前",
+            "imageOnly": true
+          },
+          "after": {
+            "type": "placeholder",
+            "id": "02-design-goals-after",
+            "label": "After / 改版后",
+            "imageOnly": true
+          }
+        },
+        {
+          "type": "gallery",
+          "columns": 2,
+          "gap": 26,
+          "frame": false,
+          "items": [
+            {
+              "type": "placeholder",
+              "id": "03-driver-avatars",
+              "label": "司机头像设计",
+              "aspectRatio": "587.234/594.894",
+              "nodeId": "410:41288"
+            },
+            {
+              "type": "placeholder",
+              "id": "04-icon-system",
+              "label": "图标设计系统",
+              "aspectRatio": "587.234/594.894",
+              "nodeId": "411:58595"
+            }
+          ]
+        },
+        {
+          "type": "placeholder",
+          "id": "05-framework",
+          "label": "改版后的司货匹配界面",
+          "aspectRatio": "1200/976",
+          "nodeId": "410:51169"
+        }
+      ]
+    },
+    {
+      "id": "emotional-design",
+      "hideTitle": true,
+      "blocks": [
+        {
+          "type": "case-copy",
+          "body": "将司机接单困难的场景转化为更易理解的情感表达。通过正向文案、场景化视觉与表情，向货主解释加价的原因，让决策有更清晰的依据。",
+          "variant": "feature",
+          "title": "情感化加价：让司机的困难被理解"
+        },
+        {
+          "type": "placeholder",
+          "id": "06-emotional-pricing",
+          "label": "情感化加价场景",
+          "aspectRatio": "1200/1099",
+          "nodeId": "410:51452"
+        },
+        {
+          "type": "gallery",
+          "id": "pricing-details",
+          "columns": 2,
+          "gap": 24,
+          "frame": false,
+          "items": [
+            {
+              "type": "placeholder",
+              "id": "06-pricing-detail-1",
+              "label": "加价场景细节 01",
+              "aspectRatio": "1/1",
+              "frame": false,
+              "radius": 20
+            },
+            {
+              "type": "placeholder",
+              "id": "06-pricing-detail-2",
+              "label": "加价场景细节 02",
+              "aspectRatio": "1/1",
+              "frame": false,
+              "radius": 20
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weather-particles",
+      "hideTitle": true,
+      "blocks": [
+        {
+          "type": "case-copy",
+          "body": "补充天气场景，并与研发共同构建天气粒子系统。将动效与天气信息结合，表达司机在恶劣天气下的接单环境，增强场景的沉浸感与可信度。",
+          "variant": "feature",
+          "title": "天气粒子：让恶劣天气更有感知"
+        },
+        {
+          "type": "placeholder",
+          "id": "07-weather-particles",
+          "label": "天气粒子与天气场景",
+          "aspectRatio": "1200/1099",
+          "nodeId": "410:55204"
+        }
+      ]
+    },
+    {
+      "id": "broadcast-motion",
+      "hideTitle": true,
+      "blocks": [
+        {
+          "type": "case-copy",
+          "body": "调整地图扩播的动效速度，并联动地图缩放，让用户同时感知找车的推进节奏与搜索范围。通过更连贯的动态反馈，使平台正在扩大范围寻找车辆的过程更清晰。",
+          "variant": "feature",
+          "title": "地图扩播：表达找车的速度与范围"
+        },
+        {
+          "type": "placeholder",
+          "id": "08-broadcast-motion",
+          "label": "地图扩播动效",
+          "aspectRatio": "1200/1099",
+          "nodeId": "410:51798"
+        }
+      ]
+    },
+    {
+      "id": "waiting-experience",
+      "hideTitle": true,
+      "blocks": [
+        {
+          "type": "case-copy",
+          "body": "围绕等待过程中的不同阶段，设计连续的交互转场与状态反馈。让用户持续感知平台正在寻找车辆，建立对等待过程的预期，提升继续等待的意愿。",
+          "variant": "feature",
+          "title": "等待体验：让找车进展持续可见"
+        },
+        {
+          "type": "placeholder",
+          "id": "09-waiting-experience",
+          "label": "等待找车的交互转场",
+          "aspectRatio": "1200/1099",
+          "nodeId": "410:54440"
+        }
+      ]
+    }
+  ]
+};
+ const english = {
+  "title": "Huolala · Redesigning the shipper–driver matching experience",
+  "subtitle": "The matching journey has one central goal: helping shippers find the right vehicle faster. I led its design, balancing business growth with the needs of both shippers and drivers.\n\nAs the design owner, I drove a redesign of the overall framework, partnered with engineering to build a weather particle system, and explored emotional design and AI in freight services.",
+  "bannerCover": {
+    "src": "",
+    "alt": "Huolala matching experience redesign cover"
+  },
+  "className": "huolala-case",
+  "hideIndex": true,
+  "compactCaseLayout": true,
+  "showMeta": false,
+  "showCover": false,
+  "hideNextNav": true,
+  "hideFooter": true,
+  "sections": [
+    {
+      "id": "project-cover",
+      "hideTitle": true,
+      "blocks": [
+        {
+          "type": "placeholder",
+          "id": "01-cover",
+          "label": "Project cover",
+          "aspectRatio": "1200/675",
+          "nodeId": "410:41283",
+          "alt": "Project cover"
+        }
+      ]
+    },
+    {
+      "id": "background",
+      "hideTitle": true,
+      "blocks": [
+        {
+          "type": "case-copy",
+          "body": "The framework had gone almost three years without a major update. As the product evolved, features accumulated and key information became harder to find. Increasing differences between service flows also made components harder to reuse and more costly to adapt.",
+          "variant": "background",
+          "title": "Project background: rebuilding the matching framework for growth"
+        },
+        {
+          "type": "case-copy",
+          "body": "Complex information hierarchy｜As features accumulated, key information became harder to find.\nLimited reuse across services｜The lack of a shared framework increased development and adaptation costs.\nLimited room for growth｜The existing experience struggled to accommodate new business needs.",
+          "variant": "problems",
+          "title": "Key challenges"
+        },
+        {
+          "type": "case-copy",
+          "body": "Rebuild the matching framework｜Clarify information and interaction hierarchies, reduce clutter, and support new business needs.\nUnify the design language｜Establish shared patterns across services to improve reuse and reduce adaptation costs.\nBring emotion into the experience｜Use context, copy, and motion to help users understand the situation and make informed decisions.",
+          "variant": "goals",
+          "title": "Design goals",
+          "intro": "Build a matching framework that supports future growth through clearer structure, greater efficiency, and a better experience."
+        },
+        {
+          "type": "comparison",
+          "id": "02-design-goals",
+          "label": "改版前后对比",
+          "frame": false,
+          "radius": 20,
+          "before": {
+            "type": "placeholder",
+            "id": "02-design-goals-before",
+            "label": "Before / 改版前",
+            "imageOnly": true
+          },
+          "after": {
+            "type": "placeholder",
+            "id": "02-design-goals-after",
+            "label": "After / 改版后",
+            "imageOnly": true
+          }
+        },
+        {
+          "type": "gallery",
+          "columns": 2,
+          "gap": 26,
+          "frame": false,
+          "items": [
+            {
+              "type": "placeholder",
+              "id": "03-driver-avatars",
+              "label": "Driver avatar design",
+              "aspectRatio": "587.234/594.894",
+              "nodeId": "410:41288",
+              "alt": "Driver avatar design"
+            },
+            {
+              "type": "placeholder",
+              "id": "04-icon-system",
+              "label": "Icon design system",
+              "aspectRatio": "587.234/594.894",
+              "nodeId": "411:58595",
+              "alt": "Icon design system"
+            }
+          ]
+        },
+        {
+          "type": "placeholder",
+          "id": "05-framework",
+          "label": "Redesigned matching interface",
+          "aspectRatio": "1200/976",
+          "nodeId": "410:51169",
+          "alt": "Redesigned matching interface"
+        }
+      ]
+    },
+    {
+      "id": "emotional-design",
+      "hideTitle": true,
+      "blocks": [
+        {
+          "type": "case-copy",
+          "body": "I translated the difficulties drivers face when taking an order into an experience shippers could relate to. Supportive copy, contextual visuals, and expressive characters explain the reasons for a fare increase and give shippers a clearer basis for deciding.",
+          "variant": "feature",
+          "title": "Making drivers’ difficulties relatable: a more compelling reason to increase the fare"
+        },
+        {
+          "type": "placeholder",
+          "id": "06-emotional-pricing",
+          "label": "Emotional pricing scenarios",
+          "aspectRatio": "1200/1099",
+          "nodeId": "410:51452",
+          "alt": "Emotional pricing scenarios"
+        },
+        {
+          "type": "gallery",
+          "id": "pricing-details",
+          "columns": 2,
+          "gap": 24,
+          "frame": false,
+          "items": [
+            {
+              "type": "placeholder",
+              "id": "06-pricing-detail-1",
+              "label": "Pricing scenario detail 01",
+              "aspectRatio": "1/1",
+              "frame": false,
+              "radius": 20
+            },
+            {
+              "type": "placeholder",
+              "id": "06-pricing-detail-2",
+              "label": "Pricing scenario detail 02",
+              "aspectRatio": "1/1",
+              "frame": false,
+              "radius": 20
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weather-particles",
+      "hideTitle": true,
+      "blocks": [
+        {
+          "type": "case-copy",
+          "body": "I expanded the weather scenarios and worked with engineering to build a weather particle system. By combining animation with weather information, we made the conditions drivers face more tangible, immersive, and believable.",
+          "variant": "feature",
+          "title": "Bringing weather to life: a more immersive experience in harsh conditions"
+        },
+        {
+          "type": "placeholder",
+          "id": "07-weather-particles",
+          "label": "Weather particles and scenarios",
+          "aspectRatio": "1200/1099",
+          "nodeId": "410:55204",
+          "alt": "Weather particles and scenarios"
+        }
+      ]
+    },
+    {
+      "id": "broadcast-motion",
+      "hideTitle": true,
+      "blocks": [
+        {
+          "type": "case-copy",
+          "body": "I refined the pace of the search expansion animation and coordinated it with map zoom to communicate both progress and reach. More continuous visual feedback makes it clearer that the platform is expanding its search for a vehicle.",
+          "variant": "feature",
+          "title": "A faster search that reaches further"
+        },
+        {
+          "type": "placeholder",
+          "id": "08-broadcast-motion",
+          "label": "Map search expansion motion",
+          "aspectRatio": "1200/1099",
+          "nodeId": "410:51798",
+          "alt": "Map search expansion motion"
+        }
+      ]
+    },
+    {
+      "id": "waiting-experience",
+      "hideTitle": true,
+      "blocks": [
+        {
+          "type": "case-copy",
+          "body": "I designed connected transitions and status updates for each stage of the wait. These signals show that the platform is actively looking for a vehicle, help users understand what to expect, and encourage them to keep waiting.",
+          "variant": "feature",
+          "title": "Setting expectations while users wait: keeping search progress visible"
+        },
+        {
+          "type": "placeholder",
+          "id": "09-waiting-experience",
+          "label": "Vehicle search waiting transitions",
+          "aspectRatio": "1200/1099",
+          "nodeId": "410:54440",
+          "alt": "Vehicle search waiting transitions"
+        }
+      ]
+    }
+  ]
+};
+ window.__workCaseData = {zh:content,en:english};
 })();

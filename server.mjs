@@ -25,7 +25,7 @@ function json(res, status, body) {
   res.end(JSON.stringify(body));
 }
 
-function readBody(req, limit = 120 * 1024 * 1024) {
+function readBody(req, limit = 140 * 1024 * 1024) {
   return new Promise((resolve, reject) => {
     let size = 0;
     const chunks = [];
@@ -58,7 +58,9 @@ const server = http.createServer(async (req, res) => {
       if (!allowedExt.has(originalExt) || typeof body.data !== 'string') return json(res, 400, { error: 'Unsupported file format' });
       const base64 = body.data.replace(/^data:[^;]+;base64,/, '');
       const filename = `${Date.now()}-${randomUUID().slice(0, 8)}${originalExt}`;
-      await writeFile(join(uploadDir, filename), Buffer.from(base64, 'base64'));
+      const bytes = Buffer.from(base64, 'base64');
+      if (bytes.length > 100 * 1024 * 1024) return json(res, 413, { error: '文件超过 100 MB' });
+      await writeFile(join(uploadDir, filename), bytes);
       return json(res, 200, { src: `assets/uploads/${filename}`, type: originalExt === '.mp4' ? 'video' : 'image' });
     }
     const requested = url.pathname === '/' ? '/index.html' : decodeURIComponent(url.pathname);

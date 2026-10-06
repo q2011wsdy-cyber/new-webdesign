@@ -7,14 +7,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/admin.css?v=work-add-1">
+  <link rel="stylesheet" href="styles/admin.css?v=compare-1">
 </head>
 <body>
   <header class="admin-header">
     <div><p class="eyebrow">SUPER LEE / CONTENT</p><h1>作品后台</h1></div>
-    <div class="header-actions"><a href="ascii-terminal.html#works" target="_blank">查看首页 ↗</a><button id="save-all" class="primary">保存并同步</button></div>
+    <div class="header-actions"><a href="ascii-terminal.html#works" target="_blank">查看首页 ↗</a><button id="save-all" class="primary" disabled>保存并同步</button></div>
   </header>
   <main>
+    <section id="huolala-editor-section">
+      <div class="section-head"><div><span>CASE</span><h2>货拉拉案例</h2></div><p>按页面顺序编辑图文。上传素材后，点击右上角保存并同步。</p></div>
+      <div class="work-toolbar"><a href="work-harbor.html" target="_blank">预览案例 ↗</a><span>图片 / GIF / MP4 · 单个文件最多 100 MB</span></div>
+      <div id="case-editor"></div>
+    </section>
     <section>
       <div class="section-head"><div><span>01</span><h2>Work</h2></div><p>编辑封面、标题、描述和跳转链接。支持 WebP、PNG、JPG、GIF、MP4。</p></div>
       <div class="work-toolbar"><button id="add-work" type="button">＋ 添加案例</button><span id="work-count">0 个案例</span></div>
@@ -27,6 +32,8 @@
     </section>
   </main>
   <div id="status" class="status" role="status" aria-live="polite"></div>
-  <script type="module" src="frames/admin.js?v=vercel-blob-1"></script>
+  <script src="frames/huolala-case-data.js?v=compare-1"></script>
+  <script src="frames/huolala-i18n.js?v=1"></script>
+  <script type="module" src="frames/admin.js?v=compare-hover-1"></script>
 </body>
 </html>

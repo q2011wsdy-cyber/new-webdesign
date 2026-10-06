@@ -1,7 +1,7 @@
 /** GlassSurface backdrop pipeline adapted from React Bits (DavidHDev/react-bits).
  * Keeps the existing global React/static-page setup and button semantics.
  */
-function GlassSurface({ children, style, controlCount, className = '', borderRadius, distortionScale = -65, mapBlur = 7 }) {
+function GlassSurface({ children, style, controlCount, className = '', borderRadius, distortionScale = -65, mapBlur = 7, smoothRefraction = false }) {
   const host = React.useRef(null);
   const mapRef = React.useRef(null);
   const id = `surface-${React.useId().replace(/:/g, '')}`;
@@ -15,7 +15,9 @@ function GlassSurface({ children, style, controlCount, className = '', borderRad
       if (!w || !h) return;
       const edge = Math.min(w, h) * .035;
       const radius = borderRadius == null ? h / 2 : borderRadius;
-      const map = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+      // Oversample only the lens map; geometry and displacement stay in CSS pixels.
+      const resolution = smoothRefraction ? Math.max(6, window.devicePixelRatio || 1) : 1;
+      const map = `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.ceil(w * resolution)}" height="${Math.ceil(h * resolution)}" viewBox="0 0 ${w} ${h}">
         <defs><linearGradient id="r" x1="100%" x2="0%"><stop stop-color="red" stop-opacity="0"/><stop offset="1" stop-color="red"/></linearGradient>
         <linearGradient id="b" x1="0%" y1="0%" x2="0%" y2="100%"><stop stop-color="blue" stop-opacity="0"/><stop offset="1" stop-color="blue"/></linearGradient></defs>
         <rect width="${w}" height="${h}" fill="black"/>
@@ -28,12 +30,13 @@ function GlassSurface({ children, style, controlCount, className = '', borderRad
     const observer = new ResizeObserver(update);
     observer.observe(host.current);
     return () => observer.disconnect();
-  }, [id, borderRadius, mapBlur]);
+  }, [id, borderRadius, mapBlur, smoothRefraction]);
   return <div ref={host} className={`site-liquid-controls ${className}`} data-control-count={controlCount}
     data-svg-glass={supported} style={{...style, '--surface-filter': `url(#${id})`}}>
     <svg className="site-glass-filter" aria-hidden="true" focusable="false">
-      <defs><filter id={id} x="0%" y="0%" width="100%" height="100%" colorInterpolationFilters="sRGB">
-        <feImage ref={mapRef} width="100%" height="100%" preserveAspectRatio="none" result="map"/>
+      <defs><filter id={id} x={smoothRefraction ? "-50%" : "0%"} y={smoothRefraction ? "-50%" : "0%"} width={smoothRefraction ? "200%" : "100%"} height={smoothRefraction ? "200%" : "100%"} colorInterpolationFilters="sRGB">
+        <feImage ref={mapRef} x="0%" y="0%" width="100%" height="100%" preserveAspectRatio="none" result="rawMap"/>
+        <feGaussianBlur in="rawMap" stdDeviation={smoothRefraction ? .45 : 0} edgeMode="duplicate" result="map"/>
         <feDisplacementMap in="SourceGraphic" in2="map" scale={distortionScale} xChannelSelector="R" yChannelSelector="G" result="redShift"/>
         <feColorMatrix in="redShift" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red"/>
         <feDisplacementMap in="SourceGraphic" in2="map" scale={distortionScale + 5} xChannelSelector="R" yChannelSelector="G" result="greenShift"/>
@@ -42,7 +45,8 @@ function GlassSurface({ children, style, controlCount, className = '', borderRad
         <feColorMatrix in="blueShift" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue"/>
         <feBlend in="red" in2="green" mode="screen" result="rg"/>
         <feBlend in="rg" in2="blue" mode="screen" result="combined"/>
-        <feGaussianBlur in="combined" stdDeviation=".35"/>
+        <feGaussianBlur in="combined" stdDeviation={smoothRefraction ? .75 : .35} edgeMode="duplicate" result="antialiased"/>
+        {smoothRefraction && <feComposite in="antialiased" in2="SourceGraphic" operator="over"/>}
       </filter></defs>
     </svg>
     {children}

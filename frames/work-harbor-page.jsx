@@ -48,6 +48,36 @@ function CaseLottie({ media, C }) {
   );
 }
 
+function CaseComparison({ media, lang }) {
+  const [position, setPosition] = React.useState(50);
+  const [ratio, setRatio] = React.useState(media.aspectRatio || '2 / 1');
+  const followPointer = event => {
+    if (event.pointerType === 'touch') return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    setPosition(Math.max(0, Math.min(100, (event.clientX - bounds.left) / bounds.width * 100)));
+  };
+  const before = media.before || {};
+  const after = media.after || {};
+  const image = (item, side) => item.src
+    ? <img src={item.src} alt={item.alt || side} draggable={false} onLoad={side === 'Before' ? event => {
+      if (!media.aspectRatio) setRatio(`${event.target.naturalWidth} / ${event.target.naturalHeight}`);
+    } : undefined} />
+    : <div className="case-compare-empty">{lang === 'zh' ? `请在后台上传${side === 'Before' ? '改版前' : '改版后'}界面` : `Upload the ${side.toLowerCase()} image in the editor`}</div>;
+  return <figure className="case-scroll-item case-comparison" style={{margin:0}}>
+    <div className="case-comparison-stage" onPointerEnter={followPointer} onPointerMove={followPointer} style={{aspectRatio:ratio, '--compare-position':`${position}%`}}>
+      <div className="case-comparison-layer">{image(after, 'After')}</div>
+      <div className="case-comparison-layer case-comparison-before" style={{clipPath:`inset(0 ${100-position}% 0 0)`}}>{image(before, 'Before')}</div>
+      <span className="case-compare-label case-compare-label-before">Before</span>
+      <span className="case-compare-label case-compare-label-after">After</span>
+      <div className="case-comparison-divider" aria-hidden="true" />
+      <input className="case-comparison-range" type="range" min="0" max="100" step="0.1" value={position}
+        aria-label={lang === 'zh' ? '左右移动查看改版前后对比' : 'Move left and right to compare before and after'}
+        aria-valuetext={`${position}% Before`} onChange={event => setPosition(Number(event.target.value))} />
+    </div>
+    {media.caption && <figcaption className="case-media-caption">{media.caption}</figcaption>}
+  </figure>;
+}
+
 function WorkHarborPage() {
   const SiteTopbar = window.SiteTopbar;
   const defaultWork = {
@@ -101,7 +131,23 @@ function WorkHarborPage() {
   const [lang, setLang] = React.useState(() => {
     try { return localStorage.getItem('ascii-lang') || 'en'; } catch { return 'en'; }
   });
-  const rawWork = (window.__workCaseData && window.__workCaseData[lang]) || defaultWork;
+  const [savedCase, setSavedCase] = React.useState(null);
+  React.useEffect(() => {
+    if (!window.__workCaseData) return undefined;
+    let active = true;
+    const load = () => fetch('/api/content', { cache: 'no-store' })
+      .then(response => response.ok ? response.json() : Promise.reject())
+      .then(data => { if (active) setSavedCase(data.cases || null); })
+      .catch(() => {});
+    load();
+    const timer = window.setInterval(load, 3000);
+    const channel = 'BroadcastChannel' in window ? new BroadcastChannel('portfolio-content') : null;
+    if (channel) channel.onmessage = load;
+    return () => { active = false; clearInterval(timer); channel?.close(); };
+  }, []);
+  const rawWork = (savedCase?.huolala && (lang === 'en'
+    ? window.buildHuolalaEnglish(savedCase.huolala, savedCase.huolalaEnglish?.overrides || {})
+    : savedCase.huolala)) || (window.__workCaseData && window.__workCaseData[lang]) || defaultWork;
   const ui = lang === 'zh'
     ? { overview: '概览', client: '客户', year: '年份', role: '角色', team: '团队', context: '背景', process: '过程', gallery: '画廊', outcome: '成果', credits: '鸣谢', back: '← 返回', allWork: '全部案例' }
     : { overview: 'overview', client: 'Client', year: 'Year', role: 'Role', team: 'Team', context: 'context', process: 'process', gallery: 'gallery', outcome: 'outcome', credits: 'credits', back: '← back', allWork: 'all work' };
@@ -174,7 +220,7 @@ function WorkHarborPage() {
     const el = rootRef.current;
     if (!el) return;
     const onMove = (e) => {
-      setCur((c) => ({ ...c, x: e.clientX, y: e.clientY, visible: true }));
+      setCur((c) => ({ ...c, x: e.clientX, y: e.clientY, visible: true, mode: e.target.closest('.case-media-frame, .case-banner-cover') ? 'case' : (c.mode === 'case' ? 'default' : c.mode) }));
     };
     const onLeave = () => setCur((c) => ({ ...c, visible: false }));
     el.addEventListener('mousemove', onMove);
@@ -369,10 +415,10 @@ function WorkHarborPage() {
     let content;
 
     if (type === 'placeholder') {
-      content = <div className="case-placeholder" role="img" aria-label={`${media.label}，图片待补充`} data-asset-slot={media.id} data-figma-node={media.nodeId} style={{ aspectRatio: media.aspectRatio }}>
+      content = <div className="case-placeholder" role="img" aria-label={`${media.label}${lang === 'en' ? ', media pending' : '，图片待补充'}`} data-asset-slot={media.id} data-figma-node={media.nodeId} style={{ aspectRatio: media.aspectRatio }}>
         <span className="case-placeholder-number">{media.id.split('-')[0]}</span>
         <span>{media.label}</span>
-        <span className="case-placeholder-hint">图片待补充</span>
+        <span className="case-placeholder-hint">{lang === 'en' ? 'Media coming soon' : '图片待补充'}</span>
       </div>;
     } else if (type === 'video') {
       content = (
@@ -406,8 +452,8 @@ function WorkHarborPage() {
     }
 
     return (
-      <figure key={key} className={media.scrollMotion === false ? undefined : 'case-scroll-item'} style={{ margin: 0 }}>
-        {(media.title || media.subtitle) && <figcaption style={{ marginBottom: 10 }}>
+      <figure key={key} data-png-media={type === 'image' && /\.png(?:[?#]|$)/i.test(media.src || '') ? 'true' : undefined} data-invert-on-theme={['06-pricing-detail-1', '06-pricing-detail-2'].includes(media.id) ? 'dark' : media.invertOnTheme} className={media.scrollMotion === false ? undefined : 'case-scroll-item'} style={{ margin: 0 }}>
+        {(media.title || media.subtitle) && <figcaption {...textProbe} style={{ marginBottom: 10 }}>
           {media.title && <div style={s.blockTitle}>{media.title}</div>}
           {media.subtitle && <div style={s.blockSubtitle}>{media.subtitle}</div>}
         </figcaption>}
@@ -416,7 +462,7 @@ function WorkHarborPage() {
           : { ...s.mediaFrame, borderRadius: radius, '--case-media-radius': `${radius}px` }}>
           {content}
         </div>
-        {media.caption && <div style={{ ...s.caption, margin: '8px 0 0' }}>{media.caption}</div>}
+        {media.caption && <figcaption className="case-media-caption" {...textProbe} style={{ ...s.caption, margin: '10px 0 0' }}>{media.caption}</figcaption>}
       </figure>
     );
   };
@@ -433,9 +479,34 @@ function WorkHarborPage() {
     if (!block) return null;
     const type = block.type || 'text';
 
-    if (type === 'case-copy') return <div key={key} className={`case-editorial-copy case-editorial-copy--${block.variant || 'body'}`}>
-      {block.title && <h2>{block.title}</h2>}<p>{block.body}</p>
-    </div>;
+    if (type === 'comparison') return <CaseComparison key={key} media={block} lang={lang} />;
+    if (type === 'case-copy') {
+      const heading = String(block.title || '');
+      const separator = heading.search(/[：:]/);
+      const splitHeading = separator > 0 && heading.slice(separator + 1).trim();
+      const isProblems = block.variant === 'problems';
+      const isGoals = block.variant === 'goals';
+      const items = String(block.body || '').split('\n').map(line => line.trim()).filter(Boolean).map(line => {
+        const clean = line.replace(/^\d+[、.．\s]+/, '');
+        const split = clean.indexOf('｜');
+        return split < 0 ? {title: clean, description: ''} : {title: clean.slice(0, split), description: clean.slice(split + 1)};
+      });
+      const icons = ['M4 19v-4m5 4v-8m5 8V7m5 12V3', 'M4 5h16M4 12h10M4 19h6', 'M4 17l6-6 4 3 6-9M15 5h5v5'];
+      return <div key={key} className={`case-editorial-copy case-editorial-copy--${block.variant || 'body'}`} {...textProbe}>
+        {block.title && <h2>{splitHeading ? <>
+          <span className="case-heading-primary">{heading.slice(0, separator).trim()}</span>
+          <span className="case-heading-secondary">{heading.slice(separator + 1).trim()}</span>
+        </> : block.title}</h2>}
+        {block.intro && <p className="case-panel-intro">{block.intro}</p>}
+        {isProblems || isGoals ? <ul className={isProblems ? 'case-problem-cards' : 'case-goal-panel'}>
+          {items.map((item, index) => <li key={index}>
+            {isProblems ? <svg className="case-problem-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={icons[index % icons.length]} /></svg>
+              : <span className="case-goal-marker" aria-hidden="true">{String(index + 1).padStart(2, '0')}<span>↗</span></span>}
+            <div><strong>{item.title}</strong>{item.description && <p>{item.description}</p>}</div>
+          </li>)}
+        </ul> : (!block.captionBodyMoved && <p>{block.body}</p>)}
+      </div>;
+    }
     if (type === 'placeholder') return renderMedia({...block, frame: false, radius: 20}, key);
     if (type === 'text') return renderText(block, key);
     if (type === 'image' || type === 'video' || type === 'lottie' || type === 'json') return renderMedia(block, key);
@@ -492,7 +563,40 @@ function WorkHarborPage() {
   }
 
   return (
-    <div ref={rootRef} className={work.className} style={s.wrap}>
+    <div ref={rootRef} className={work.className} lang={lang === 'zh' ? 'zh-CN' : 'en'} style={s.wrap}>
+      <svg width="0" height="0" aria-hidden="true" style={{position:'absolute',pointerEvents:'none'}}>
+        <defs><filter id="case-neutral-invert" colorInterpolationFilters="sRGB">
+          <feColorMatrix in="SourceGraphic" type="saturate" values="0" result="gray" />
+          <feBlend in="SourceGraphic" in2="gray" mode="difference" result="chroma" />
+          <feColorMatrix in="chroma" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  4 4 4 0 0" result="colorMask" />
+          <feComponentTransfer in="colorMask" result="mask"><feFuncA type="table" tableValues="0 0 0 1 1" /></feComponentTransfer>
+          <feColorMatrix in="SourceGraphic" type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0" result="inverted" />
+          <feComposite in="SourceGraphic" in2="mask" operator="in" result="color" />
+          <feComposite in="inverted" in2="mask" operator="out" result="neutral" />
+          <feComposite in="color" in2="neutral" operator="arithmetic" k2="1" k3="1" />
+        </filter>
+        <filter id="case-dark-ink" colorInterpolationFilters="sRGB">
+          <feColorMatrix in="SourceGraphic" type="saturate" values="0" result="gray" />
+          <feBlend in="SourceGraphic" in2="gray" mode="difference" result="chroma" />
+          <feColorMatrix in="chroma" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  4 4 4 0 0" result="colorMask" />
+          <feComponentTransfer in="colorMask" result="mask"><feFuncA type="table" tableValues="0 0 0 1 1" /></feComponentTransfer>
+          <feComponentTransfer in="SourceGraphic" result="readableInk">
+            {['R','G','B'].map(channel => {
+              const Func = `feFunc${channel}`;
+              const values = Array.from({length:256}, (_, i) => {
+                const value = i / 255;
+                const t = Math.max(0, Math.min(1, (.14 - value) / .025));
+                const blend = t * t * (3 - 2 * t);
+                return (value + (1 - 2 * value) * blend).toFixed(5);
+              }).join(' ');
+              return <Func key={channel} type="table" tableValues={values} />;
+            })}
+          </feComponentTransfer>
+          <feComposite in="SourceGraphic" in2="mask" operator="in" result="color" />
+          <feComposite in="readableInk" in2="mask" operator="out" result="neutral" />
+          <feComposite in="color" in2="neutral" operator="arithmetic" k2="1" k3="1" />
+        </filter></defs>
+      </svg>
       <style>{`
         @keyframes ascii-caret-blink { 0%, 48% { opacity: 1; } 50%, 100% { opacity: 0.22; } }
         @keyframes case-detail-arrival {
@@ -542,6 +646,8 @@ function WorkHarborPage() {
           backface-visibility: hidden;
         }
         img, a, button { cursor: none !important; }
+        .case-glass-cursor { overflow: hidden; transition: opacity 120ms ease; }
+        @media (hover: none), (pointer: coarse) { .case-glass-cursor { display: none; } }
         @media (max-width: 720px) {
           .case-detail-grid { grid-template-columns: 1fr !important; margin-top: 58px !important; }
           .case-detail-index { position: static !important; grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; padding: 4px 0 12px !important; border-bottom: 1px dashed ${C.line}; }
@@ -599,9 +705,18 @@ function WorkHarborPage() {
       {work.sections.map((section, sectionIndex) => {
         const sectionId = section.id || `section-${sectionIndex + 1}`;
         const sectionTitle = section.title || ui[section.id] || section.id || `section ${sectionIndex + 1}`;
+        const blocks = section.blocks || [];
+        const explanatoryCopy = blocks.find(block => block.type === 'case-copy' && ['feature', 'closing'].includes(block.variant));
+        const lastMediaIndex = blocks.reduce((last, block, index) => ['image','video','placeholder','lottie','json'].includes(block.type) ? index : last, -1);
+        const moveCaption = Boolean(work.className === 'huolala-case' && explanatoryCopy?.body && lastMediaIndex >= 0);
+        const displayBlocks = moveCaption ? blocks.map((block, index) => {
+          if (block === explanatoryCopy) return {...block, captionBodyMoved: true};
+          if (index === lastMediaIndex) return {...block, caption: [block.caption, explanatoryCopy.body].filter(Boolean).join('\n')};
+          return block;
+        }) : blocks;
         return <section key={sectionId} id={sectionId} style={{ scrollMarginTop: 110 }}>
           {section.hideTitle !== true && <div style={{ ...s.sectionTitle, ...(section.accent ? { color: C.accent } : {}) }}>── {sectionTitle} ─────────────────────────────────────────────</div>}
-          <div style={s.blockStack}>{(section.blocks || []).map((block, blockIndex) => renderBlock(block, `${sectionId}-${blockIndex}`))}</div>
+          <div style={s.blockStack}>{displayBlocks.map((block, blockIndex) => renderBlock(block, `${sectionId}-${blockIndex}`))}</div>
         </section>;
       })}
 
@@ -629,7 +744,12 @@ function WorkHarborPage() {
       </div>
       <div className={`case-return-veil${leavingCase ? ' is-visible' : ''}`} aria-hidden="true" />
 
-      <div style={cursorBlock} />
+      <div style={{ ...cursorBlock, opacity: cur.mode === 'case' ? 0 : cursorBlock.opacity }} />
+      <window.GlassSurface className="case-glass-cursor" borderRadius={39} distortionScale={-52} mapBlur={3.5} smoothRefraction
+        style={{ position: 'fixed', left: cur.x, top: cur.y, width: 78, height: 78,
+          padding: 0, borderRadius: '50%', pointerEvents: 'none', zIndex: 201,
+          transform: 'translate(-50%, -50%)',
+          opacity: cur.visible && cur.mode === 'case' ? 1 : 0 }} />
     </div>
   );
 }

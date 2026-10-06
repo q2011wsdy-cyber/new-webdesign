@@ -1,45 +1,250 @@
-.huolala-case { --case-copy: #bbb; --case-heading: #fff; }
-:root[data-theme='light'] .huolala-case { --case-copy: #555; --case-heading: #181818; }
-.huolala-case .case-detail-grid { width: min(100%, 1200px) !important; }
-.huolala-case #overview h1 { font-size: clamp(36px, 3.752vw, 56.17px) !important; margin: 0 0 20px !important; line-height: 1.15 !important; }
-.huolala-case #overview > div > p { max-width: 868px !important; font-size: clamp(16px, 1.3645vw, 20.426px) !important; line-height: 1.6 !important; white-space: pre-line; margin: 0 0 26px !important; color: var(--case-copy) !important; }
-.huolala-case .case-detail-main > section > div { gap: 26px !important; margin-bottom: 26px !important; }
-.case-editorial-copy { white-space: pre-line; color: var(--case-copy); font-size: clamp(16px, 1.3645vw, 20.426px); line-height: 1.6; }
-.case-editorial-copy h2, .case-editorial-copy p { margin: 0; }
-.case-editorial-copy--background { padding-top: 90px; }
-.case-editorial-copy--background h2 { font-size: 30px; font-weight: 500; margin-bottom: 32px; }
-.case-editorial-copy--goals { font-size: clamp(18px, 2vw, 30px); line-height: 1.3; }
-.case-editorial-copy--feature { padding: clamp(48px, 6.82vw, 102px) 0; font-size: clamp(20px, 2.558vw, 38.298px); line-height: 1.45; }
-.case-editorial-copy--feature h2 { max-width: 800px; color: var(--case-heading); font-family: 'PingFang SC', sans-serif; font-size: clamp(26px, 3.206vw, 48px); line-height: 1.56; font-weight: 500; }
-.case-editorial-copy--closing { padding: 50px 0; font-size: 14px; }
-.case-editorial-copy--closing h2 { color: var(--case-heading); font-family: 'PingFang SC', sans-serif; font-size: 18px; font-weight: 400; margin-bottom: 26px; }
+/* Editorial hierarchy inspired by the Satellite SOS case. */
+.huolala-case {
+  --case-copy: #b8b8b8; --case-heading: #f5f5f5;
+  --case-body-size: 16px; --case-section-gap: 96px;
+  --case-banner-height: clamp(280px, 44vw, 600px);
+  padding-top: var(--case-banner-height) !important;
+}
+:root[data-theme='light'] .huolala-case { --case-copy: #5c5c5c; --case-heading: #181818; }
+.huolala-case .case-detail-main { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: var(--case-body-size); line-height: 1.75; }
+.huolala-case .case-detail-grid { width: min(100%, 1100px) !important; margin-top: 80px !important; }
+.huolala-case #overview > div { max-width: 860px; margin-inline: auto; }
+.huolala-case #overview h1 { font-size: clamp(32px, 4vw, 48px) !important; font-weight: 600; margin: 0 0 24px !important; line-height: 1.25 !important; letter-spacing: -.035em; color: var(--case-heading); text-wrap: balance; }
+.huolala-case #overview > div > p { max-width: 860px !important; font-size: 16px !important; line-height: 1.75 !important; white-space: pre-line; margin: 0 0 48px !important; color: var(--case-copy) !important; }
+.huolala-case .case-detail-main > section + section { margin-top: var(--case-section-gap); }
+.huolala-case .case-detail-main > section > div { gap: 32px !important; margin-bottom: 0 !important; }
+.huolala-case .case-editorial-copy { width: min(100%, 860px); margin-inline: auto; padding: 0; white-space: pre-line; color: var(--case-copy); font-size: 16px; line-height: 1.75; }
+.huolala-case .case-editorial-copy h2 { max-width: 860px; margin: 0 0 16px; color: var(--case-heading); font: 600 28px/1.4 'PingFang SC', 'Microsoft YaHei', sans-serif; letter-spacing: -.025em; text-wrap: balance; }
+.huolala-case .case-editorial-copy p { margin: 0; text-wrap: pretty; }
+.huolala-case .case-editorial-copy--problems h2, .huolala-case .case-editorial-copy--goals h2 { font-size: 20px; }
+.huolala-case .case-editorial-copy--goals { margin-bottom: 16px; }
+.huolala-case figcaption { font-size: 14px; line-height: 1.6; }
+.huolala-case .case-banner-cover { position: absolute; inset: 0 0 auto; width: 100%; height: var(--case-banner-height); background: #151515 center / cover no-repeat; display: grid; place-items: center; color: #737373; font-size: 14px; }
+:root[data-theme='light'] .huolala-case .case-banner-cover { background-color: #f0f0ee; }
 .case-placeholder { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: #151515; color: #aaa; border: 1px dashed #383838; border-radius: 20px; font: 400 14px/1.5 'JetBrains Mono', monospace; }
 .case-placeholder-number { font-size: 12px; letter-spacing: .16em; color: #666; }
 .case-placeholder-hint { font-size: 12px; color: #737373; }
 :root[data-theme='light'] .case-placeholder { background: #f0f0ee; border-color: #ccc; color: #555; }
+
 @media (max-width: 720px) {
-  .huolala-case .case-detail-grid { margin-top: 36px !important; }
-  .case-editorial-copy--background { padding-top: 40px; }
+  .huolala-case { --case-section-gap: 64px; }
+  .huolala-case .case-detail-grid { margin-top: 40px !important; }
+  .huolala-case #overview h1 { font-size: 32px !important; }
+  .huolala-case #overview > div > p { margin-bottom: 32px !important; }
+  .huolala-case .case-detail-main > section > div { gap: 24px !important; }
+  .huolala-case .case-editorial-copy h2 { font-size: 24px; }
+  .huolala-case .case-editorial-copy--problems h2, .huolala-case .case-editorial-copy--goals h2 { font-size: 20px; }
   .case-placeholder { border-radius: 12px; gap: 6px; font-size: 12px; }
-  .case-editorial-copy--background h2 { font-size: 24px; margin-bottom: 20px; }
-  .case-editorial-copy--closing { padding: 32px 0; }
 }
 
-/* Full-bleed cover; supplied export is centered and cropped responsively. */
-.huolala-case { padding-top: 700px !important; }
-.huolala-case .case-banner-cover {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 700px;
-  background-color: #151515;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  display: grid;
-  place-items: center;
-  color: #737373;
-  font-size: 14px;
+/* Background: compact summary cards followed by one shared goals panel. */
+.huolala-case { --case-panel: #f1f1f1; }
+:root[data-theme='dark'] .huolala-case { --case-panel: #242424; }
+.huolala-case .case-editorial-copy--problems h2,
+.huolala-case .case-editorial-copy--goals h2 { font-size: 28px; }
+.huolala-case .case-panel-intro { margin: 0 0 16px; }
+.case-problem-cards, .case-goal-panel { list-style: none; margin: 0; padding: 0; white-space: normal; }
+.case-problem-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.case-problem-cards li { min-width: 0; padding: 24px; border-radius: 24px; background: var(--case-panel); }
+.case-problem-icon { display: block; margin-bottom: 12px; color: var(--case-heading); }
+.case-problem-cards strong, .case-goal-panel strong { display: block; color: var(--case-heading); font-size: 16px; font-weight: 500; line-height: 1.5; }
+.huolala-case .case-problem-cards p, .huolala-case .case-goal-panel p { margin: 4px 0 0; font-size: 14px; line-height: 1.65; }
+.case-goal-panel { display: grid; gap: 24px; padding: 24px; border-radius: 24px; background: var(--case-panel); }
+.case-goal-panel li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; align-items: start; }
+.case-goal-marker { display: grid; place-items: center; width: 18px; height: 18px; margin-top: 3px; border-radius: 50%; color: #fff; background: #d84c24; font-size: 12px; line-height: 1; }
+@media(max-width:720px) {
+  .case-problem-cards { grid-template-columns: 1fr; gap: 12px; }
+  .case-problem-cards li { padding: 20px; }
+  .case-goal-panel { padding: 20px; gap: 20px; }
+  .huolala-case .case-editorial-copy--problems h2,
+  .huolala-case .case-editorial-copy--goals h2 { font-size: 24px; }
 }
-:root[data-theme='light'] .huolala-case .case-banner-cover { background-color: #f0f0ee; }
+
+/* Keep case copy consistently aligned to the left. */
+.huolala-case .case-detail-main,
+.huolala-case .case-editorial-copy,
+.huolala-case .case-editorial-copy h2,
+.huolala-case .case-editorial-copy p,
+.huolala-case .case-problem-cards li,
+.huolala-case .case-goal-panel li,
+.huolala-case figcaption { text-align: left; }
+
+/* Align the reading column to the media edge, retaining its readable measure. */
+.huolala-case #overview > div,
+.huolala-case .case-editorial-copy { margin-inline: 0; }
+
+/* Latin glyphs retain the site's original mono face; Chinese uses its fallback. */
+.huolala-case .case-detail-main {
+  font-family: var(--font-family-mono), 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+.huolala-case .case-editorial-copy h2 {
+  font-family: var(--font-family-mono), 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+/* All reading and card regions share the full media column. */
+.huolala-case #overview > div,
+.huolala-case #overview > div > p,
+.huolala-case .case-editorial-copy,
+.huolala-case .case-editorial-copy h2 {
+  width: 100%;
+  max-width: none !important;
+  margin-inline: 0;
+}
+
+/* Case typography uses regular weight throughout. */
+.huolala-case .case-detail-main,
+.huolala-case .case-detail-main h1,
+.huolala-case .case-detail-main h2,
+.huolala-case .case-detail-main h3,
+.huolala-case .case-detail-main strong,
+.huolala-case .case-detail-main b { font-weight: 400 !important; }
+
+/* Chinese typography: compact proportions with a steady reading rhythm. */
+.huolala-case[lang='zh-CN'] .case-detail-main,
+.huolala-case[lang='zh-CN'] .case-editorial-copy {
+  font-size: 16px; line-height: 1.55; letter-spacing: .005em;
+  -webkit-font-smoothing: antialiased;
+}
+.huolala-case[lang='zh-CN'] #overview h1 {
+  font-size: clamp(28px, 3vw, 36px) !important;
+  line-height: 1.25 !important; letter-spacing: -.0125em;
+  margin-bottom: 20px !important;
+}
+.huolala-case[lang='zh-CN'] #overview > div > p {
+  line-height: 1.55 !important; letter-spacing: .005em;
+}
+.huolala-case[lang='zh-CN'] .case-editorial-copy h2 {
+  font-size: 26px; line-height: 1.3; letter-spacing: -.0125em;
+  margin-bottom: 14px;
+}
+.huolala-case[lang='zh-CN'] .case-problem-cards strong,
+.huolala-case[lang='zh-CN'] .case-goal-panel strong { font-size: 16px; line-height: 1.4; }
+.huolala-case[lang='zh-CN'] .case-problem-cards p,
+.huolala-case[lang='zh-CN'] .case-goal-panel p { font-size: 14px; line-height: 1.55; margin-top: 6px; }
+.huolala-case[lang='zh-CN'] .case-goal-panel { gap: 20px; }
+@media(max-width:720px) {
+  .huolala-case[lang='zh-CN'] .case-editorial-copy h2 { font-size: 23px; line-height: 1.35; }
+}
+
+/* Two-line chapter headings share a size, distinguished by tone. */
+.huolala-case .case-heading-primary,
+.huolala-case .case-heading-secondary { display: block; }
+.huolala-case .case-heading-primary { color: var(--case-heading); }
+.huolala-case .case-heading-secondary { color: var(--case-copy); margin-top: 4px; }
+
+/* Supporting feature copy becomes a quiet note beneath its media. */
+.huolala-case .case-media-caption {
+  width: 100%; max-width: none; text-align: left;
+  color: var(--case-copy); font-size: 12px !important;
+  line-height: 1.55 !important; letter-spacing: 0;
+  white-space: pre-line; font-weight: 400;
+}
+.huolala-case .case-editorial-copy--feature h2:last-child,
+.huolala-case .case-editorial-copy--closing h2:last-child { margin-bottom: 0; }
+
+/* Goals read as future directions, with generous separation from challenges. */
+.huolala-case .case-editorial-copy--goals { padding-top: 40px; margin-bottom: 24px; }
+.huolala-case .case-editorial-copy--goals h2 { margin-bottom: 20px; }
+.huolala-case .case-editorial-copy--goals .case-panel-intro { margin-bottom: 32px; }
+.huolala-case .case-goal-panel {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px; padding: 0; border-radius: 0; background: transparent;
+}
+.huolala-case .case-goal-panel li { display: flex; flex-direction: column; gap: 24px; padding: 24px 0 8px; border-top: 1px solid rgba(128,128,128,.3); }
+.huolala-case .case-goal-marker {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; height: auto; margin: 0; border-radius: 0;
+  background: transparent; color: #e97c49; font-size: 14px; line-height: 1.4;
+  font-family: var(--font-family-mono);
+}
+.huolala-case .case-goal-marker > span { font-size: 22px; }
+.huolala-case .case-goal-panel strong { font-size: 18px; line-height: 1.4; }
+.huolala-case .case-goal-panel p { margin-top: 12px; line-height: 1.65 !important; }
+.huolala-case[lang='zh-CN'] .case-goal-panel { gap: 32px; }
+.huolala-case[lang='zh-CN'] .case-goal-panel strong { font-size: 18px; }
+.huolala-case[lang='zh-CN'] .case-goal-panel p { margin-top: 12px; }
+@media(max-width:720px) {
+  .huolala-case .case-editorial-copy--goals { padding-top: 24px; }
+  .huolala-case .case-goal-panel { grid-template-columns: 1fr; gap: 24px; }
+  .huolala-case .case-goal-panel li { gap: 16px; }
+}
+
+/* Uploaded media uses its intrinsic proportions and a translucent white backing. */
+.huolala-case .case-media-frame { background: rgba(255,255,255,.1) !important; }
+.huolala-case img.case-media-content,
+.huolala-case video.case-media-content {
+  display: block; width: 100% !important; max-width: 100%;
+  height: auto !important; margin: 0; transform: none;
+}
+:root[data-theme='light'] .huolala-case .case-media-frame {
+  background: rgba(0, 0, 0, .1) !important;
+}
+
+/* Reverse neutral tones only; saturated illustration colors stay intact. */
+:root[data-theme='dark'] .huolala-case [data-invert-on-theme='dark'] img,
+:root[data-theme='light'] .huolala-case [data-invert-on-theme='light'] img {
+  filter: url(#case-neutral-invert);
+}
+
+:root[data-theme='dark'] .huolala-case [data-invert-on-theme='light'] img {
+  filter: url(#case-dark-ink);
+}
+
+/* PNG cards use a quieter backing in both themes. */
+.huolala-case [data-png-media='true'] .case-media-frame {
+  background: rgba(255, 255, 255, .05) !important;
+}
+:root[data-theme='light'] .huolala-case [data-png-media='true'] .case-media-frame {
+  background: rgba(0, 0, 0, .05) !important;
+}
+.case-comparison-stage { position:relative; overflow:hidden; border-radius:20px; background:rgba(255,255,255,.05); }
+:root[data-theme='light'] .case-comparison-stage { background:rgba(0,0,0,.05); }
+.case-comparison-layer { position:absolute; inset:0; }
+.case-comparison-layer img { display:block; width:100%; height:100%; object-fit:contain; }
+.case-comparison-before { background:var(--color-bg); }
+.case-compare-empty { height:100%; display:grid; place-items:center; color:var(--case-copy); font-size:14px; background:rgba(128,128,128,.05); }
+.case-compare-label { position:absolute; top:20px; padding:6px 12px; border-radius:20px; background:rgba(0,0,0,.65); color:white; font:400 12px/1.4 var(--font-family-mono); pointer-events:none; }
+.case-compare-label-before { left:20px; }.case-compare-label-after { right:20px; }
+.case-comparison-divider { position:absolute; top:0; bottom:0; left:var(--compare-position); width:2px; transform:translateX(-50%); background:white; box-shadow:0 0 4px rgba(0,0,0,.3); pointer-events:none; }
+.case-comparison-divider span { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); display:grid; place-items:center; width:44px; height:44px; border-radius:50%; background:white; color:#222; font:400 24px/1 var(--font-family-mono); box-shadow:0 2px 12px rgba(0,0,0,.18); }
+.case-comparison-range { position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:ew-resize; z-index:3; touch-action:pan-y; }
+.case-comparison-stage:has(.case-comparison-range:focus-visible) { outline:2px solid #e97c49; outline-offset:4px; }
+@media(max-width:720px) { .case-compare-label { top:12px; }.case-compare-label-before { left:12px; }.case-compare-label-after { right:12px; } }
+/* Both comparison layers use the same padded canvas without cropping. */
+.case-comparison-layer { padding: 20px; box-sizing: border-box; }
+.case-comparison-layer img { width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; object-position: center; }
+
+/* One shared backdrop and identical image canvases on both sides. */
+.case-comparison-before { background: transparent; }
+.case-comparison-layer img { aspect-ratio: auto; object-fit: contain; object-position: 50% 50%; margin: 0; }
+.case-comparison-stage { cursor: none; }
+.case-comparison-range { cursor: none; }
+.case-comparison-stage .case-compare-empty { background: transparent; }
+.case-comparison-stage { --compare-background: color-mix(in srgb, var(--color-bg) 95%, white 5%); background: var(--compare-background); }
+:root[data-theme='light'] .case-comparison-stage { --compare-background: color-mix(in srgb, var(--color-bg) 95%, black 5%); background: var(--compare-background); }
+.case-comparison-layer, .case-comparison-before { background: var(--compare-background); }
+/* A quiet comparison guide that appears only during interaction. */
+.case-comparison-divider {
+  width: 1px;
+  background: rgba(255,255,255,.24);
+  box-shadow: none;
+  opacity: .2;
+  transition: opacity 180ms cubic-bezier(.2,0,0,1);
+}
+.case-comparison-divider span {
+  width: 28px; height: 28px;
+  font-size: 15px; letter-spacing: 2px; padding-left: 2px;
+  color: rgba(255,255,255,.62);
+  background: rgba(24,24,24,.12);
+  box-shadow: none;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 180ms cubic-bezier(.2,0,0,1);
+}
+:root[data-theme='light'] .case-comparison-divider { background: rgba(0,0,0,.15); }
+:root[data-theme='light'] .case-comparison-divider span { color: rgba(0,0,0,.45); background: rgba(255,255,255,.16); }
+.case-comparison-stage:hover .case-comparison-divider,
+.case-comparison-stage:focus-within .case-comparison-divider { opacity: 1; }
+.case-comparison-stage:hover .case-comparison-divider span,
+.case-comparison-stage:focus-within .case-comparison-divider span { opacity: .75; }
+@media(prefers-reduced-motion:reduce) { .case-comparison-divider, .case-comparison-divider span { transition: none; } }

@@ -198,6 +198,7 @@ function HeroPortraitBadge() {
 
 function AsciiHeroSection({ lang, children }) {
   const section = React.useRef(null);
+  const quickScroll = React.useRef(0);
   const [reduced, setReduced] = React.useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   React.useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -215,29 +216,46 @@ function AsciiHeroSection({ lang, children }) {
     const ease = n => n * n * (3 - 2 * n);
     const render = () => {
       frame = 0;
+      root.style.setProperty('--hero-viewport-width', `${document.documentElement.clientWidth}px`);
       const vh = window.innerHeight;
       const progress = Math.max(0, -root.getBoundingClientRect().top / vh);
       const entry = ease(clamp(progress / .8));
-      const lift = vh * .62 - Math.max(90, (vh - cards[0].offsetHeight) / 2);
-      // Fade out before the back card reaches the bottom of the introduction.
-      const copyBottom = copy.offsetTop + copy.offsetHeight;
-      const initialStackTop = vh * .62 - (cards.length - 1) * 32;
-      const fadeDistance = Math.max(1, initialStackTop - copyBottom - 20);
-      const copyOpacity = 1 - ease(clamp(lift * entry / fadeDistance));
-      copy.style.opacity = String(copyOpacity);
-      copy.style.visibility = copyOpacity === 0 ? 'hidden' : 'visible';
+      const cardTop = cards[0].offsetTop;
+      const stackGap = window.innerWidth <= 720 ? 28 : 40;
+      const lift = Math.max(0, cardTop - Math.max(90, (vh - cards[0].offsetHeight) / 2));
       cards.forEach((card, i) => {
         const exit = ease(clamp((progress - .8 - i * .8) / .8));
         const isLast = i === cards.length - 1;
         // Add a short upward pop as Work follows the releasing sticky stage.
         const lastExit = ease(clamp((progress - 3.05) / .55));
         const depth = Math.max(0, i - Math.max(0, (progress - .8) / .8));
-        const y = -lift * entry - depth * 32 - (isLast ? lastExit * vh * .65 : exit * (vh + card.offsetHeight));
+        const y = -lift * entry - depth * stackGap - (isLast ? lastExit * vh * .65 : exit * (vh + card.offsetHeight));
         const scale = 1 - Math.min(3, depth) * .07;
         card.style.transform = `translate(-50%, ${y}px) scale(${scale}) rotate(${(isLast ? lastExit : exit) * -5}deg)`;
         card.style.opacity = '1';
         card.style.visibility = !isLast && exit >= 1 ? 'hidden' : 'visible';
       });
+      // Only fade text when a card approaches its actual horizontal and vertical bounds.
+      const textBounds = Array.from(copy.querySelectorAll('.hero-lead, .hero-description')).map(el => el.getBoundingClientRect());
+      let copyOpacity = 1;
+      cards.forEach(card => {
+        if (card.style.visibility === 'hidden') return;
+        const bounds = card.getBoundingClientRect();
+        textBounds.forEach(text => {
+          const horizontalOverlap = bounds.left < text.right && bounds.right > text.left;
+          if (horizontalOverlap && bounds.bottom > text.top - 24 && bounds.top < text.bottom + 24) {
+            copyOpacity = Math.min(copyOpacity, 1 - ease(clamp((text.bottom + 24 - bounds.top) / 48)));
+          }
+        });
+      });
+      copy.style.opacity = String(copyOpacity);
+      copy.style.visibility = copyOpacity === 0 ? 'hidden' : 'visible';
+      const arrow = root.querySelector('.hero-stack-arrow');
+      const lastBounds = cards[cards.length - 1].getBoundingClientRect();
+      const arrowOpacity = 1 - ease(clamp((32 - lastBounds.bottom) / 64));
+      arrow.style.opacity = String(arrowOpacity);
+      arrow.style.visibility = arrowOpacity === 0 ? 'hidden' : 'visible';
+
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(render); };
     window.addEventListener('scroll', schedule, {passive: true});
@@ -245,11 +263,52 @@ function AsciiHeroSection({ lang, children }) {
     render();
     return () => { cancelAnimationFrame(frame); window.removeEventListener('scroll', schedule); window.removeEventListener('resize', schedule); };
   }, [reduced]);
+  React.useEffect(() => {
+    const stop = () => { cancelAnimationFrame(quickScroll.current); quickScroll.current = 0; window.__heroQuickScrollActive = false; };
+    window.addEventListener('wheel', stop, {passive: true});
+    window.addEventListener('touchstart', stop, {passive: true});
+    window.addEventListener('keydown', stop);
+    return () => { stop(); window.removeEventListener('wheel', stop); window.removeEventListener('touchstart', stop); window.removeEventListener('keydown', stop); };
+  }, []);
+  const onArrowClick = event => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    cancelAnimationFrame(quickScroll.current);
+    const root = section.current;
+    const works = document.getElementById('works');
+    const startY = window.scrollY;
+    const rootY = root.getBoundingClientRect().top + startY;
+    const destination = works.getBoundingClientRect().top + startY - 80;
+    if (reduced) { window.scrollTo(0, destination); history.replaceState(null, '', '#works'); return; }
+    const vh = window.innerHeight;
+    const stops = [.8, 1.6, 2.4, 3.05].map(p => rootY + p * vh).concat(destination).filter(y => y > startY + 1 && y <= destination);
+    if (!stops.length) return;
+    window.__heroQuickScrollActive = true;
+    let phase = 0, phaseStart, from = startY;
+    const tick = now => {
+      if (phaseStart === undefined) phaseStart = now;
+      const duration = phase === 0 && startY < rootY + vh * .5 ? 340 : phase === stops.length - 1 ? 320 : 210;
+      const t = Math.min(1, (now - phaseStart) / duration);
+      const eased = t * t * (3 - 2 * t);
+      window.scrollTo(0, from + (stops[phase] - from) * eased);
+      if (t === 1) {
+        from = stops[phase++]; phaseStart = now;
+        if (phase === stops.length) { quickScroll.current = 0; window.__heroQuickScrollActive = false; history.replaceState(null, '', '#works'); return; }
+      }
+      quickScroll.current = requestAnimationFrame(tick);
+    };
+    quickScroll.current = requestAnimationFrame(tick);
+  };
   const slides = [HERO_SLIDES[2], HERO_SLIDES[1], HERO_SLIDES[0]];
   return (
     <section ref={section} id="about" className={`home-hero hero-stack-section${reduced ? ' is-reduced' : ''}`}>
       <div className="hero-stack-sticky">
         <div className="hero-copy hero-stack-copy">{children}</div>
+        <a className="hero-scroll-cue hero-stack-arrow" href="#works" onClick={onArrowClick} aria-label={lang === 'en' ? 'View selected work' : '查看作品'}>
+          <svg className="hero-scroll-dots" width="37" height="53" viewBox="0 0 37 53" aria-hidden="true">
+            {[[18.08,2.08],[18.08,10.08],[18.08,18.08],[18.08,26.08],[18.08,34.08],[2.08,34.08],[10.08,42.08],[18.08,50.08],[26.08,42.08],[34.08,34.08]].map(([cx,cy]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="2.08" fill="currentColor" />)}
+          </svg>
+        </a>
         <div className="hero-card-stack" aria-label={lang === 'en' ? 'Creative inspirations' : '创作灵感'}>
           {slides.map((slide, index) => <article key={slide.id} className={`hero-stack-card hero-stack-card--${slide.id}`} style={{zIndex: 4 - index, '--stack-depth': index}}>
             <p className="hero-card-caption">{slide[lang]}</p>
@@ -1186,7 +1245,7 @@ function AsciiTerminal() {
 
       {/* Custom block cursor */}
       <div style={{ ...cursorBlock, opacity: cur.mode === 'case' ? 0 : cursorBlock.opacity }} />
-      <GlassSurface className="case-glass-cursor" borderRadius={39} distortionScale={-52} mapBlur={3.5}
+      <GlassSurface className="case-glass-cursor" borderRadius={39} distortionScale={-52} mapBlur={3.5} smoothRefraction
         style={{ position: 'fixed', left: cur.x, top: cur.y, width: 78, height: 78,
           padding: 0, borderRadius: '50%', pointerEvents: 'none', zIndex: 201,
           transform: 'translate(-50%, -50%)',

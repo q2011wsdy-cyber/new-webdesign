@@ -1,60 +1,46 @@
-/**
- * 参考 azumbrunnen.me：空白处为圆形光标，悬停文本区域为竖线文本光标（caret）。
- * cur: { x, y, mode: 'default'|'text'|'link', visible }
- */
+/** Paul Wong reference: a translucent disc morphs into a narrow text caret. */
+const siteCursorReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+// Sample the reference spring (mass 1, stiffness 390, damping 35).
+// CSS transitions remain interruptible when the pointer crosses text rapidly.
+const siteCursorSpring = (() => {
+  const damping = 35 / 2;
+  const frequency = Math.sqrt(390 - damping * damping);
+  const samples = Array.from({ length: 41 }, (_, index) => {
+    const time = index / 40 * .42;
+    const value = 1 - Math.exp(-damping * time) *
+      (Math.cos(frequency * time) + damping / frequency * Math.sin(frequency * time));
+    return `${index === 40 ? 1 : value.toFixed(5)} ${(index / 40 * 100).toFixed(1)}%`;
+  });
+  const easing = `linear(${samples.join(', ')})`;
+  return CSS.supports('transition-timing-function', easing)
+    ? easing : 'cubic-bezier(0.22, 1, 0.36, 1)';
+})();
+
 function getSiteCursorStyle(cur, C, dark) {
-  const ease = 'cubic-bezier(0.22, 1, 0.36, 1)';
-  const base = {
+  const text = cur.mode === 'text';
+  const caseHover = cur.mode === 'case';
+  return {
     position: 'fixed',
     pointerEvents: 'none',
     zIndex: 200,
     left: cur.x,
     top: cur.y,
     transform: 'translate(-50%,-50%)',
-    transition:
-      `width 0.22s ${ease}, height 0.22s ${ease}, border-radius 0.22s ${ease}, ` +
-      `background 0.15s ease, border 0.15s ease, opacity 0.12s ease, box-shadow 0.15s ease`,
+    transition: siteCursorReducedMotion.matches ? 'none' :
+      `width 420ms ${siteCursorSpring}, height 420ms ${siteCursorSpring}, ` +
+      `border-radius 420ms ${siteCursorSpring}, opacity 120ms ease`,
     opacity: cur.visible ? 1 : 0,
     boxSizing: 'border-box',
-  };
-
-  if (cur.mode === 'link' || cur.mode === 'case') {
-    return {
-      ...base,
-      width: cur.mode === 'case' ? 78 : 12,
-      height: cur.mode === 'case' ? 78 : 12,
-      borderRadius: '50%',
-      background: C.accent,
-      border: 'none',
-      boxShadow: dark
-        ? '0 0 0 1px rgba(255,255,255,0.12)'
-        : '0 0 0 1px rgba(0,0,0,0.08)',
-    };
-  }
-
-  if (cur.mode === 'text') {
-    return {
-      ...base,
-      width: 2,
-      height: 22,
-      borderRadius: 1,
-      background: C.curText,
-      border: 'none',
-      boxShadow: 'none',
-      animation: 'ascii-caret-blink 1.05s steps(1, end) infinite',
-    };
-  }
-
-  return {
-    ...base,
-    width: 10,
-    height: 10,
-    borderRadius: '50%',
-    background: dark ? 'rgba(255,255,255,0.94)' : 'rgba(26,23,20,0.9)',
+    width: caseHover ? 78 : text ? 2 : 24,
+    height: caseHover ? 78 : 24,
+    borderRadius: text ? 1 : caseHover ? 39 : 12,
+    background: caseHover ? C.accent : 'rgba(255, 255, 255, 0.24)',
+    mixBlendMode: caseHover ? 'normal' : 'exclusion',
+    backdropFilter: caseHover ? 'none' : 'blur(3px)',
+    WebkitBackdropFilter: caseHover ? 'none' : 'blur(3px)',
     border: 'none',
-    boxShadow: dark
-      ? '0 0 0 1px rgba(255,255,255,0.18), 0 2px 12px rgba(0,0,0,0.35)'
-      : '0 0 0 1px rgba(0,0,0,0.12), 0 2px 10px rgba(0,0,0,0.08)',
+    boxShadow: 'none',
   };
 }
 
