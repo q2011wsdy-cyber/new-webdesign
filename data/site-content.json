@@ -76,7 +76,7 @@
   "cases": {
     "huolala": {
       "title": "货拉拉 · 司货匹配体验改版",
-      "subtitle": "帮助货主更快找到合适的车，是司货匹配主链路的核心目标。我负责这条链路的设计，在业务增长与货主、司机双方的体验之间寻找平衡。\n\n作为模块的设计负责人，我推动了整体框架改版，并与研发共创天气粒子系统，探索情感化设计与 AI 在货运场景中的应用。",
+      "subtitle": "帮助货主更快找到合适的车，是司货匹配主链路的核心目标。我负责这条链路的设计，在业务增长与货主、司机双方的体验之间寻找平衡。作为模块的设计负责人，我推动了整体框架改版，并与研发共创天气粒子系统，探索情感化设计与 AI 在货运场景中的应用。",
       "bannerCover": {
         "src": "assets/uploads/1791267081950-990803c6.png",
         "alt": "货拉拉司货匹配体验改版封面",
@@ -116,15 +116,14 @@
           "blocks": [
             {
               "type": "case-copy",
-              "body": "原有框架近三年未做整体调整。随着业务持续迭代，页面功能不断叠加，关键信息难以被快速关注；不同业务的结构差异逐渐扩大，也增加了复用与适配的成本。",
+              "body": "近三年框架没有变动，整体框架比较陈旧，在承载新业务上面有比较大的局限性。并且因为框架问题，随着迭代，页面功能堆砌越来越多，没有有效的组织手段，无法被更快地关注到。不同的业务结构差异越来越大，缺乏通用性。",
               "variant": "background",
-              "title": "项目背景：为业务增长重构匹配框架"
+              "title": "项目背景"
             },
             {
               "type": "case-copy",
               "body": "信息层级复杂｜功能持续堆叠，关键信息难以被快速关注。\n跨业务复用不足｜业务缺少统一框架，开发与适配成本不断增加。\n增长承载受限｜既有体验难以适应新的业务需求。",
               "variant": "problems",
-              "title": "核心问题",
               "intro": ""
             },
             {
@@ -355,7 +354,11 @@
       ]
     },
     "huolalaEnglish": {
-      "overrides": {},
+      "overrides": {
+        "case.sections.background.blocks.background.title": "Project background",
+        "case.sections.background.blocks.background.body": "The framework had remained unchanged for nearly three years. Its dated structure made it difficult to support new business needs. As the product evolved, features accumulated without a clear way to organize them or help users quickly find what mattered. Different services also grew increasingly divergent in structure, limiting reuse across the platform.",
+        "case.subtitle": "The matching journey has one central goal: helping shippers find the right vehicle faster. I led its design, balancing business growth with the needs of both shippers and drivers. As the design owner, I drove a redesign of the overall framework, partnered with engineering to build a weather particle system, and explored emotional design and AI in freight services."
+      },
       "content": {
         "title": "Huolala · Redesigning the shipper–driver matching experience",
         "subtitle": "The matching journey has one central goal: helping shippers find the right vehicle faster. I led its design, balancing business growth with the needs of both shippers and drivers.\n\nAs the design owner, I drove a redesign of the overall framework, partnered with engineering to build a weather particle system, and explored emotional design and AI in freight services.",

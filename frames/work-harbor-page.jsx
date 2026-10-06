@@ -529,9 +529,9 @@ function WorkHarborPage() {
           <span className="case-heading-secondary">{heading.slice(separator + 1).trim()}</span>
         </> : block.title}</h2>}
         {block.intro && <p className="case-panel-intro">{block.intro}</p>}
-        {isProblems || isGoals ? <ul className={isProblems ? 'case-problem-cards' : 'case-goal-panel'}>
+        {isProblems || isGoals ? <ul className={isProblems ? 'case-problem-cards' : 'case-problem-cards case-goal-cards'}>
           {items.map((item, index) => <li key={index}>
-            {isProblems ? <svg className="case-problem-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={icons[index % icons.length]} /></svg>
+            {(isProblems || isGoals) ? <svg className="case-problem-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={icons[index % icons.length]} /></svg>
               : null}
             <div><strong>{item.title}</strong>{item.description && <p>{item.description}</p>}</div>
           </li>)}
