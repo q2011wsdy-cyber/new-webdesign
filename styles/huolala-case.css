@@ -149,7 +149,7 @@
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 32px; padding: 0; border-radius: 0; background: transparent;
 }
-.huolala-case .case-goal-panel li { display: flex; flex-direction: column; gap: 24px; padding: 24px 0 8px; border-top: 1px solid rgba(128,128,128,.3); }
+.huolala-case .case-goal-panel li { display: flex; flex-direction: column; gap: 0; padding: 0 0 8px; border-top: 0; }
 .huolala-case .case-goal-marker {
   display: flex; align-items: center; justify-content: space-between;
   width: 100%; height: auto; margin: 0; border-radius: 0;

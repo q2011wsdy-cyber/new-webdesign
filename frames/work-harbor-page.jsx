@@ -501,7 +501,7 @@ function WorkHarborPage() {
         {isProblems || isGoals ? <ul className={isProblems ? 'case-problem-cards' : 'case-goal-panel'}>
           {items.map((item, index) => <li key={index}>
             {isProblems ? <svg className="case-problem-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={icons[index % icons.length]} /></svg>
-              : <span className="case-goal-marker" aria-hidden="true">{String(index + 1).padStart(2, '0')}<span>↗</span></span>}
+              : null}
             <div><strong>{item.title}</strong>{item.description && <p>{item.description}</p>}</div>
           </li>)}
         </ul> : (!block.captionBodyMoved && <p>{block.body}</p>)}
