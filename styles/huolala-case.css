@@ -7,7 +7,7 @@
 }
 :root[data-theme='light'] .huolala-case { --case-copy: #5c5c5c; --case-heading: #181818; }
 .huolala-case .case-detail-main { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: var(--case-body-size); line-height: 1.75; }
-.huolala-case .case-detail-grid { width: min(100%, 1100px) !important; margin-top: 80px !important; }
+.huolala-case .case-detail-grid { width: min(100%, 940px) !important; margin-top: 80px !important; }
 .huolala-case #overview > div { max-width: 860px; margin-inline: auto; }
 .huolala-case #overview h1 { font-size: clamp(32px, 4vw, 48px) !important; font-weight: 600; margin: 0 0 24px !important; line-height: 1.25 !important; letter-spacing: -.035em; color: var(--case-heading); text-wrap: balance; }
 .huolala-case #overview > div > p { max-width: 860px !important; font-size: 16px !important; line-height: 1.75 !important; white-space: pre-line; margin: 0 0 48px !important; color: var(--case-copy) !important; }
