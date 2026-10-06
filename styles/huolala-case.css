@@ -279,3 +279,28 @@
 .huolala-case #weather-particles .case-media-caption,
 .huolala-case #broadcast-motion .case-media-caption,
 .huolala-case #waiting-experience .case-media-caption { margin-left:clamp(20px,5vw,64px); margin-right:clamp(20px,5vw,64px); text-align:left; }
+
+/* Centered reading column, with left-aligned text as in the editorial reference. */
+.huolala-case .case-editorial-copy--feature,
+.huolala-case .case-editorial-copy--closing {
+  width:min(100%,640px); max-width:640px; margin:32px auto 40px;
+  padding:0; text-align:left;
+}
+.huolala-case .case-editorial-copy--feature h2,
+.huolala-case .case-editorial-copy--closing h2 {
+  font-size:24px !important; line-height:1.4 !important;
+  font-weight:400; margin-bottom:24px; text-wrap:pretty;
+}
+.huolala-case .case-editorial-copy--feature p,
+.huolala-case .case-editorial-copy--closing p {
+  font-size:18px !important; line-height:1.6 !important;
+  margin:0; color:var(--case-copy);
+}
+@media(max-width:720px) {
+  .huolala-case .case-editorial-copy--feature,
+  .huolala-case .case-editorial-copy--closing { width:calc(100% - 32px); margin:20px auto 24px; }
+  .huolala-case .case-editorial-copy--feature h2,
+  .huolala-case .case-editorial-copy--closing h2 { font-size:22px !important; margin-bottom:18px; }
+  .huolala-case .case-editorial-copy--feature p,
+  .huolala-case .case-editorial-copy--closing p { font-size:16px !important; }
+}
