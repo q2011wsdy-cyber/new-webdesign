@@ -194,17 +194,6 @@
                   "caption": ""
                 }
               ]
-            },
-            {
-              "type": "image",
-              "id": "05-framework",
-              "label": "改版后的司货匹配界面",
-              "nodeId": "410:51169",
-              "alt": "改版后的司货匹配界面",
-              "src": "assets/uploads/1791267467088-68a71874.png",
-              "frame": false,
-              "radius": 20,
-              "caption": ""
             }
           ]
         },
@@ -487,17 +476,6 @@
                     "caption": ""
                   }
                 ]
-              },
-              {
-                "type": "image",
-                "id": "05-framework",
-                "label": "Redesigned matching interface",
-                "nodeId": "410:51169",
-                "alt": "Redesigned matching interface",
-                "src": "assets/uploads/1791267467088-68a71874.png",
-                "frame": false,
-                "radius": 20,
-                "caption": ""
               }
             ]
           },
