@@ -733,7 +733,13 @@ function WorkHarborPage() {
       {work.showCover !== false && work.coverPlacement !== 'before-title' && renderCover()}
       </div>
 
-      {work.sections.map((section, sectionIndex) => {
+      {(work.className === 'huolala-case' ? (() => {
+        const background = work.sections.find(section => section.id === 'background');
+        if (!background) return work.sections;
+        const copy = background.blocks.filter(block => block.type === 'case-copy');
+        const media = background.blocks.filter(block => block.type !== 'case-copy');
+        return [{...background, blocks:copy}, ...work.sections.flatMap(section => section.id === 'background' ? [{...section, id:'background-media', blocks:media}] : [section])];
+      })() : work.sections).map((section, sectionIndex) => {
         const sectionId = section.id || `section-${sectionIndex + 1}`;
         const sectionTitle = section.title || ui[section.id] || section.id || `section ${sectionIndex + 1}`;
         const blocks = section.blocks || [];
