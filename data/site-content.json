@@ -273,15 +273,48 @@
               "title": "“呼风唤雨”的天气粒子 让恶劣天气更沉浸"
             },
             {
-              "type": "image",
+              "type": "weather-tabs",
               "id": "07-weather-particles",
-              "label": "天气粒子与天气场景",
-              "nodeId": "410:55204",
-              "alt": "天气粒子与天气场景",
-              "src": "assets/uploads/1791267467111-ac1e3d36.png",
-              "frame": false,
-              "radius": 20,
-              "caption": ""
+              "defaultOption": "snow",
+              "phoneFrame": "assets/works/huolala-weather/phone.webp",
+              "options": [
+                {
+                  "id": "snow",
+                  "label": "下雪天",
+                  "icon": "assets/works/huolala-weather/snow.svg",
+                  "media": {
+                    "type": "image",
+                    "id": "weather-snow",
+                    "label": "下雪天界面",
+                    "src": "assets/works/huolala-weather/snow.webp",
+                    "alt": "下雪天接单界面"
+                  }
+                },
+                {
+                  "id": "rain",
+                  "label": "下雨天",
+                  "icon": "assets/works/huolala-weather/rain.svg",
+                  "media": {
+                    "type": "image",
+                    "id": "weather-rain",
+                    "label": "下雨天界面",
+                    "src": "",
+                    "alt": "下雨天接单界面"
+                  }
+                },
+                {
+                  "id": "dust",
+                  "label": "沙尘天",
+                  "icon": "assets/works/huolala-weather/dust.svg",
+                  "media": {
+                    "type": "image",
+                    "id": "weather-dust",
+                    "label": "沙尘天界面",
+                    "src": "",
+                    "alt": "沙尘天接单界面"
+                  }
+                }
+              ]
             }
           ]
         },

@@ -1,3 +1,33 @@
+function CaseWeatherTabs({ media, lang }) {
+  const options = media.options || [];
+  const [selected, setSelected] = React.useState(media.defaultOption || 'snow');
+  const active = options.find(option => option.id === selected) || options[0];
+  const english = lang === 'en';
+  const labels = { snow: 'Snow', rain: 'Rain', dust: 'Dust' };
+  const choose = id => setSelected(id);
+  return <figure className="case-scroll-item case-weather" style={{margin:0}}>
+    <div className="case-weather-stage">
+      <div className="case-weather-tabs" role="tablist" aria-label={english ? 'Weather conditions' : '天气场景'} aria-orientation="vertical">
+        {options.map((option,index) => <button key={option.id} type="button" role="tab" id={`weather-tab-${option.id}`} aria-selected={active?.id === option.id} aria-controls="weather-panel" tabIndex={active?.id === option.id ? 0 : -1} onClick={() => choose(option.id)} onKeyDown={event => {
+          let next;
+          if (['ArrowDown','ArrowRight'].includes(event.key)) next=(index+1)%options.length;
+          if (['ArrowUp','ArrowLeft'].includes(event.key)) next=(index+options.length-1)%options.length;
+          if (event.key==='Home') next=0;
+          if (event.key==='End') next=options.length-1;
+          if(next!==undefined){event.preventDefault();choose(options[next].id);document.getElementById(`weather-tab-${options[next].id}`)?.focus();}
+        }} className="case-weather-tab"><img src={option.icon} alt="" /><span>{english ? labels[option.id] || option.label : option.label}</span></button>)}
+      </div>
+      <div className="case-weather-phone" id="weather-panel" role="tabpanel" aria-labelledby={`weather-tab-${active?.id}`}>
+        <img className="case-weather-hardware" src={media.phoneFrame} alt="" />
+        <div className="case-weather-screen" key={active?.id}>
+          {active?.media?.src ? (active.media.type === 'video' ? <video src={active.media.src} poster={active.media.poster} autoPlay={active.media.autoplay !== false} muted={active.media.muted !== false} loop={active.media.loop !== false} controls={active.media.controls === true} playsInline /> : <img src={active.media.src} alt={active.media.alt || active.label} />) : <div className="case-weather-empty">{english ? `${labels[active?.id]} media` : `${active?.label}素材待上传`}</div>}
+        </div>
+      </div>
+    </div>
+    {media.caption && <figcaption className="case-media-caption">{media.caption}</figcaption>}
+  </figure>;
+}
+
 /**
  * Harbor 作品详情 — 与首页共用 SiteTopbar + getAsciiThemePalette
  */
@@ -479,6 +509,7 @@ function WorkHarborPage() {
     if (!block) return null;
     const type = block.type || 'text';
 
+    if (type === 'weather-tabs') return <CaseWeatherTabs key={key} media={block} lang={lang} />;
     if (type === 'comparison') return <CaseComparison key={key} media={block} lang={lang} />;
     if (type === 'case-copy') {
       const heading = String(block.title || '');
@@ -707,7 +738,7 @@ function WorkHarborPage() {
         const sectionTitle = section.title || ui[section.id] || section.id || `section ${sectionIndex + 1}`;
         const blocks = section.blocks || [];
         const explanatoryCopy = blocks.find(block => block.type === 'case-copy' && ['feature', 'closing'].includes(block.variant));
-        const lastMediaIndex = blocks.reduce((last, block, index) => ['image','video','placeholder','lottie','json'].includes(block.type) ? index : last, -1);
+        const lastMediaIndex = blocks.reduce((last, block, index) => ['image','video','placeholder','lottie','json','weather-tabs'].includes(block.type) ? index : last, -1);
         const moveCaption = Boolean(work.className === 'huolala-case' && explanatoryCopy?.body && lastMediaIndex >= 0);
         const displayBlocks = moveCaption ? blocks.map((block, index) => {
           if (block === explanatoryCopy) return {...block, captionBodyMoved: true};
