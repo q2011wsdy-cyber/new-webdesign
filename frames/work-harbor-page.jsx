@@ -133,7 +133,7 @@ function WorkHarborPage() {
   });
   const [savedCase, setSavedCase] = React.useState(null);
   React.useEffect(() => {
-    if (!window.__workCaseData) return undefined;
+    if (window.__workCaseData?.zh?.className !== 'huolala-case') return undefined;
     let active = true;
     const load = () => fetch(window.__STATIC_CONTENT__ ? '/data/site-content.json' : '/api/content', { cache: window.__STATIC_CONTENT__ ? 'default' : 'no-store' })
       .then(response => response.ok ? response.json() : Promise.reject())
@@ -145,7 +145,7 @@ function WorkHarborPage() {
     if (channel) channel.onmessage = load;
     return () => { active = false; clearInterval(timer); channel?.close(); };
   }, []);
-  const rawWork = (savedCase?.huolala && (lang === 'en'
+  const rawWork = (window.__workCaseData?.zh?.className === 'huolala-case' && savedCase?.huolala && (lang === 'en'
     ? window.buildHuolalaEnglish(savedCase.huolala, savedCase.huolalaEnglish?.overrides || {})
     : savedCase.huolala)) || (window.__workCaseData && window.__workCaseData[lang]) || defaultWork;
   const ui = lang === 'zh'
