@@ -6,7 +6,7 @@ const statusEl = document.getElementById('status');
 const defaultContent = {
   works: [
     { id: '02', title: 'Pimax', description: 'A smart light string experience.', href: 'work-pimax.html', cover: null },
-    { id: '01', title: 'Huolala', description: 'A simpler way to move goods.', href: 'work-harbor.html', cover: null }
+    { id: '01', title: 'Huolala', description: 'A simpler way to move goods.', href: 'work-huolala.html', cover: null }
   ],
   play: []
 };

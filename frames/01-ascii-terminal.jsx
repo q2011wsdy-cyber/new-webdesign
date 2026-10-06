@@ -726,7 +726,7 @@ function AsciiTerminal() {
       labBody: 'a place for half-baked ideas, generative toys, and tiny tools.',
       footerLeft: '@ 2026 · super lee',
       works: [
-        { n: '01', t: 'Huolala', y: '2025', k: 'product', pat: PATTERNS[0], img: 'assets/works/01-harbor.jpg', href: 'work-harbor.html' },
+        { n: '01', t: 'Huolala', y: '2025', k: 'product', pat: PATTERNS[0], img: 'assets/works/01-harbor.jpg', href: 'work-huolala.html' },
         { n: '02', t: 'Pimax', y: '2025', k: 'product', pat: PATTERNS[1], img: 'assets/works/02-spatial.jpg', href: 'work-pimax.html' },
         { n: '03', t: 'AI OS Concept', y: '2024', k: 'concept', pat: PATTERNS[2], img: 'assets/works/03-zixiang.jpg' },
         { n: '04', t: 'OPPO', y: '2024', k: 'product', pat: PATTERNS[3], img: 'assets/works/04-quiet.jpg' },
@@ -748,7 +748,7 @@ function AsciiTerminal() {
       labBody: '一个放半成品想法、生成式玩具和微型工具的地方。',
       footerLeft: '@ 2026 · super lee',
       works: [
-        { n: '01', t: '货拉拉', y: '2025', k: 'product', pat: PATTERNS[0], img: 'assets/works/01-harbor.jpg', href: 'work-harbor.html' },
+        { n: '01', t: '货拉拉', y: '2025', k: 'product', pat: PATTERNS[0], img: 'assets/works/01-harbor.jpg', href: 'work-huolala.html' },
         { n: '02', t: 'Pimax', y: '2025', k: 'product', pat: PATTERNS[1], img: 'assets/works/02-spatial.jpg', href: 'work-pimax.html' },
         { n: '03', t: 'ai os 概念探索', y: '2024', k: 'concept', pat: PATTERNS[2], img: 'assets/works/03-zixiang.jpg' },
         { n: '04', t: 'oppo', y: '2024', k: 'product', pat: PATTERNS[3], img: 'assets/works/04-quiet.jpg' },
