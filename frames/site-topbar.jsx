@@ -134,8 +134,8 @@ function ScrambledBrand({ text, linkProbe = {} }) {
  * @param {string} props.theme
  * @param {function} props.setTheme
  * @param {string} [props.closeHref] 详情页关闭入口；传入后显示在右侧控制组
- * @param {string} [props.homeHrefPrefix] 详情页填 'ascii-terminal.html'，首页留空
- * @param {string} [props.brandHref] 点击品牌回首页，默认 ascii-terminal.html
+ * @param {string} [props.homeHrefPrefix] 详情页填 '/'，首页留空
+ * @param {string} [props.brandHref] 点击品牌回首页，默认 /
  * @param {function} [props.anchorClickFactory] 首页：(href) => (e) => void；详情页不传
  * @param {function} [props.closeOnClick] 详情页关闭动画完成后跳转；不传时保持普通链接
  */
@@ -143,7 +143,7 @@ function SiteTopbar({
   compactHero = false,
   logo,
   brand = 'Super lee',
-  brandHref = 'ascii-terminal.html',
+  brandHref = '/',
   linkProbe,
   dark,
   theme,

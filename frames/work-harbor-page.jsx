@@ -294,7 +294,7 @@ function WorkHarborPage() {
     e.preventDefault();
     setLeavingCase(true);
     try { sessionStorage.setItem('ascii-case-return-transition', '1'); } catch (_) {}
-    window.setTimeout(() => { window.location.assign('ascii-terminal.html#works'); }, 400);
+    window.setTimeout(() => { window.location.assign('/#works'); }, 400);
   };
 
   const s = {
@@ -671,8 +671,8 @@ function WorkHarborPage() {
         setTheme={setTheme}
         lang={lang}
         setLang={setLang}
-        homeHrefPrefix="ascii-terminal.html"
-        closeHref="ascii-terminal.html#works"
+        homeHrefPrefix="/"
+        closeHref="/#works"
         closeOnClick={onCloseCase}
       />
 
@@ -721,7 +721,7 @@ function WorkHarborPage() {
       })}
 
       {!work.hideNextNav && <div className="case-scroll-item" style={s.nextNav}>
-        <a href="ascii-terminal.html" {...linkProbe} style={{ textDecoration: 'none', color: C.fg }}>
+        <a href="/" {...linkProbe} style={{ textDecoration: 'none', color: C.fg }}>
           <div style={s.nextBlock}>
             <span style={s.nextSmall}>{ui.back}</span>
             <span style={s.nextBig}>{ui.allWork}</span>

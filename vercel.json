@@ -6,6 +6,16 @@
       "source": "/work-harbor.html",
       "destination": "/work-huolala.html",
       "permanent": true
+    },
+    {
+      "source": "/ascii-terminal.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
     }
   ]
 }
