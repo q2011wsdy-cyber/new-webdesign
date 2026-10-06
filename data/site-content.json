@@ -268,7 +268,6 @@
           "blocks": [
             {
               "type": "case-copy",
-              "body": "",
               "variant": "feature",
               "title": "“呼风唤雨”的天气粒子 让恶劣天气更沉浸"
             },
@@ -314,8 +313,7 @@
                     "alt": "沙尘天接单界面"
                   }
                 }
-              ],
-              "caption": ""
+              ]
             }
           ]
         },
@@ -563,7 +561,6 @@
             "blocks": [
               {
                 "type": "case-copy",
-                "body": "",
                 "variant": "feature",
                 "title": "Bringing weather to life: a more immersive experience in harsh conditions"
               },
