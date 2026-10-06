@@ -269,5 +269,5 @@
 @media(max-width:600px) { .case-weather-stage {aspect-ratio:1200/800} .case-weather-tabs {left:6%;top:30%;gap:3cqw} .case-weather-tab {width:26cqw;height:9cqw;font-size:3cqw;padding:0 3cqw;gap:2cqw} .case-weather-tab img {width:3cqw;height:3cqw} .case-weather-tab[aria-selected='true'] {width:29cqw;height:12cqw;font-size:3.6cqw;padding:0 3cqw;gap:2cqw} .case-weather-tab[aria-selected='true'] img {width:3.6cqw;height:3.6cqw} .case-weather-phone {width:56%;left:40%;height:154%;top:7%} .case-weather-screen {border-radius:6.8cqw} }
 
 /* Orange before/after study, with restrained outline labels in both themes. */
-.huolala-case .case-comparison-stage { --compare-background:#ff6600; background:var(--compare-background); }
+:root[data-theme] .huolala-case .case-comparison-stage { --compare-background:#ff6600; background:var(--compare-background); }
 .huolala-case .case-compare-label { background:transparent; border:1px solid rgba(255,255,255,.4); color:rgba(255,255,255,.92); backdrop-filter:none; -webkit-backdrop-filter:none; }
