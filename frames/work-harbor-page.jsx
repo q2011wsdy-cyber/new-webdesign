@@ -743,14 +743,7 @@ function WorkHarborPage() {
         const sectionId = section.id || `section-${sectionIndex + 1}`;
         const sectionTitle = section.title || ui[section.id] || section.id || `section ${sectionIndex + 1}`;
         const blocks = section.blocks || [];
-        const explanatoryCopy = blocks.find(block => block.type === 'case-copy' && ['feature', 'closing'].includes(block.variant));
-        const lastMediaIndex = blocks.reduce((last, block, index) => ['image','video','placeholder','lottie','json','weather-tabs'].includes(block.type) ? index : last, -1);
-        const moveCaption = Boolean(work.className === 'huolala-case' && explanatoryCopy?.body && lastMediaIndex >= 0);
-        const displayBlocks = moveCaption ? blocks.map((block, index) => {
-          if (block === explanatoryCopy) return {...block, captionBodyMoved: true};
-          if (index === lastMediaIndex) return {...block, caption: [block.caption, explanatoryCopy.body].filter(Boolean).join('\n')};
-          return block;
-        }) : blocks;
+        const displayBlocks = blocks;
         return <section key={sectionId} id={sectionId} style={{ scrollMarginTop: 110 }}>
           {section.hideTitle !== true && <div style={{ ...s.sectionTitle, ...(section.accent ? { color: C.accent } : {}) }}>── {sectionTitle} ─────────────────────────────────────────────</div>}
           <div style={s.blockStack}>{displayBlocks.map((block, blockIndex) => renderBlock(block, `${sectionId}-${blockIndex}`))}</div>
