@@ -139,7 +139,7 @@ playEditor.addEventListener('click', event => {
 });
 
 async function uploadPending(pending) {
-  if (location.hostname.endsWith('.vercel.app')) {
+  if (!['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) {
     const { upload } = await import('https://esm.sh/@vercel/blob@2/client');
     const safeName = pending.file.name.replace(/[^a-zA-Z0-9._-]+/g, '-');
     const blob = await upload(`portfolio-media/${Date.now()}-${safeName}`, pending.file, {
