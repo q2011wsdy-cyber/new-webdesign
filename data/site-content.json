@@ -207,23 +207,23 @@
               "title": "我把司机「做单难」场景情感化，让加价更有说服力"
             },
             {
+              "type": "image",
+              "id": "06-emotional-pricing",
+              "label": "情感化加价场景",
+              "nodeId": "410:51452",
+              "alt": "情感化加价场景",
+              "src": "assets/uploads/1791269241908-df00b9d2.png",
+              "frame": false,
+              "radius": 20,
+              "caption": ""
+            },
+            {
               "type": "gallery",
               "id": "pricing-details",
-              "columns": 3,
+              "columns": 2,
               "gap": 24,
               "frame": false,
               "items": [
-                {
-                  "type": "image",
-                  "id": "06-emotional-pricing",
-                  "label": "情感化加价场景",
-                  "nodeId": "410:51452",
-                  "alt": "情感化加价场景",
-                  "src": "assets/uploads/1791269241908-df00b9d2.png",
-                  "frame": false,
-                  "radius": 20,
-                  "caption": ""
-                },
                 {
                   "type": "image",
                   "id": "06-pricing-detail-1",
@@ -494,23 +494,23 @@
                 "title": "Making drivers’ difficulties relatable: a more compelling reason to increase the fare"
               },
               {
+                "type": "image",
+                "id": "06-emotional-pricing",
+                "label": "Emotional pricing scenarios",
+                "nodeId": "410:51452",
+                "alt": "Emotional pricing scenarios",
+                "src": "assets/uploads/1791269241908-df00b9d2.png",
+                "frame": false,
+                "radius": 20,
+                "caption": ""
+              },
+              {
                 "type": "gallery",
                 "id": "pricing-details",
-                "columns": 3,
+                "columns": 2,
                 "gap": 24,
                 "frame": false,
                 "items": [
-                  {
-                    "type": "image",
-                    "id": "06-emotional-pricing",
-                    "label": "Emotional pricing scenarios",
-                    "nodeId": "410:51452",
-                    "alt": "Emotional pricing scenarios",
-                    "src": "assets/uploads/1791269241908-df00b9d2.png",
-                    "frame": false,
-                    "radius": 20,
-                    "caption": ""
-                  },
                   {
                     "type": "image",
                     "id": "06-pricing-detail-1",
