@@ -1,7 +1,4 @@
 {
-  "functions": {
-    "api/content.js": {
-      "includeFiles": "data/site-content.json"
-    }
-  }
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist"
 }

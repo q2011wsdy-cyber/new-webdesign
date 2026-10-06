@@ -530,13 +530,13 @@ function AsciiTerminal() {
 
   React.useEffect(() => {
     let active = true;
-    const loadContent = () => fetch('/api/content', { cache: 'no-store' })
+    const loadContent = () => fetch(window.__STATIC_CONTENT__ ? '/data/site-content.json' : '/api/content', { cache: window.__STATIC_CONTENT__ ? 'default' : 'no-store' })
       .then(response => response.ok ? response.json() : Promise.reject(new Error('Content unavailable')))
       .then(content => { if (active) setCmsContent(content); })
       .catch(() => {});
     loadContent();
-    const timer = window.setInterval(loadContent, 3000);
-    const channel = 'BroadcastChannel' in window ? new BroadcastChannel('portfolio-content') : null;
+    const timer = window.__STATIC_CONTENT__ ? null : window.setInterval(loadContent, 3000);
+    const channel = !window.__STATIC_CONTENT__ && 'BroadcastChannel' in window ? new BroadcastChannel('portfolio-content') : null;
     if (channel) channel.onmessage = loadContent;
     return () => {
       active = false;

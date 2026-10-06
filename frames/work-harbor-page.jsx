@@ -135,13 +135,13 @@ function WorkHarborPage() {
   React.useEffect(() => {
     if (!window.__workCaseData) return undefined;
     let active = true;
-    const load = () => fetch('/api/content', { cache: 'no-store' })
+    const load = () => fetch(window.__STATIC_CONTENT__ ? '/data/site-content.json' : '/api/content', { cache: window.__STATIC_CONTENT__ ? 'default' : 'no-store' })
       .then(response => response.ok ? response.json() : Promise.reject())
       .then(data => { if (active) setSavedCase(data.cases || null); })
       .catch(() => {});
     load();
-    const timer = window.setInterval(load, 3000);
-    const channel = 'BroadcastChannel' in window ? new BroadcastChannel('portfolio-content') : null;
+    const timer = window.__STATIC_CONTENT__ ? null : window.setInterval(load, 3000);
+    const channel = !window.__STATIC_CONTENT__ && 'BroadcastChannel' in window ? new BroadcastChannel('portfolio-content') : null;
     if (channel) channel.onmessage = load;
     return () => { active = false; clearInterval(timer); channel?.close(); };
   }, []);
@@ -452,7 +452,7 @@ function WorkHarborPage() {
     }
 
     return (
-      <figure key={key} data-png-media={type === 'image' && /\.png(?:[?#]|$)/i.test(media.src || '') ? 'true' : undefined} data-invert-on-theme={['06-pricing-detail-1', '06-pricing-detail-2'].includes(media.id) ? 'dark' : media.invertOnTheme} className={media.scrollMotion === false ? undefined : 'case-scroll-item'} style={{ margin: 0 }}>
+      <figure key={key} data-png-media={type === 'image' && (media.pngBackground || /\.png(?:[?#]|$)/i.test(media.src || '')) ? 'true' : undefined} data-invert-on-theme={['06-pricing-detail-1', '06-pricing-detail-2'].includes(media.id) ? 'dark' : media.invertOnTheme} className={media.scrollMotion === false ? undefined : 'case-scroll-item'} style={{ margin: 0 }}>
         {(media.title || media.subtitle) && <figcaption {...textProbe} style={{ marginBottom: 10 }}>
           {media.title && <div style={s.blockTitle}>{media.title}</div>}
           {media.subtitle && <div style={s.blockSubtitle}>{media.subtitle}</div>}
