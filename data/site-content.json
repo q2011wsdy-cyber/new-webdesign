@@ -344,10 +344,11 @@
               "label": "等待找车的交互转场",
               "nodeId": "410:54440",
               "alt": "等待找车的交互转场",
-              "src": "assets/uploads/1791267467127-e7efefc0.png",
+              "src": "assets/works/huolala-weather/waiting-experience.webp",
               "frame": false,
               "radius": 20,
-              "caption": ""
+              "caption": "",
+              "pngBackground": true
             }
           ]
         }
@@ -597,10 +598,11 @@
                 "label": "Vehicle search waiting transitions",
                 "nodeId": "410:54440",
                 "alt": "Vehicle search waiting transitions",
-                "src": "assets/uploads/1791267467127-e7efefc0.png",
+                "src": "assets/works/huolala-weather/waiting-experience.webp",
                 "frame": false,
                 "radius": 20,
-                "caption": ""
+                "caption": "",
+                "pngBackground": true
               }
             ]
           }
