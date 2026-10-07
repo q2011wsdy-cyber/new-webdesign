@@ -308,3 +308,16 @@
 /* The opening copy appears immediately; scrolling never scales the case. */
 .huolala-case .case-scroll-item { transform: translate3d(0, var(--case-scroll-y, 0px), 0); }
 .huolala-case .case-detail-grid.case-detail-arrival { animation: none; }
+
+/* Weather copy shares the interactive card with its controls and phone. */
+.case-weather-copy { position:absolute; left:8%; top:10%; width:32%; color:var(--case-heading); }
+.case-weather-copy h2 { margin:0; font:400 clamp(16px,2.3cqw,24px)/1.45 var(--font-family-mono),'PingFang SC',sans-serif; text-wrap:pretty; }
+.case-weather-copy p { margin:12px 0 0; color:var(--case-copy); font-size:clamp(12px,1.5cqw,16px); line-height:1.6; }
+.case-weather-stage--with-copy .case-weather-tabs { left:8%; top:auto; bottom:12%; }
+@media(max-width:600px) {
+  .case-weather-stage--with-copy {aspect-ratio:1200/1050;}
+  .case-weather-copy {left:6%;top:7%;width:88%;}
+  .case-weather-stage--with-copy .case-weather-phone {top:28%;height:130%;}
+  .case-weather-copy h2 {font-size:clamp(13px,3.6cqw,18px);line-height:1.4;}
+  .case-weather-stage--with-copy .case-weather-tabs {left:6%;top:auto;bottom:9%;gap:2cqw;}
+}

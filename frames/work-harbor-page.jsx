@@ -6,7 +6,8 @@ function CaseWeatherTabs({ media, lang }) {
   const labels = { snow: 'Snow', rain: 'Rain', dust: 'Dust' };
   const choose = id => setSelected(id);
   return <figure className="case-scroll-item case-weather" style={{margin:0}}>
-    <div className="case-weather-stage">
+    <div className={`case-weather-stage${media.copy ? ' case-weather-stage--with-copy' : ''}`}>
+      {media.copy && <div className="case-weather-copy"><h2>{media.copy.title}</h2>{media.copy.body && <p>{media.copy.body}</p>}</div>}
       <div className="case-weather-tabs" role="tablist" aria-label={english ? 'Weather conditions' : '天气场景'} aria-orientation="vertical">
         {options.map((option,index) => <button key={option.id} type="button" role="tab" id={`weather-tab-${option.id}`} aria-selected={active?.id === option.id} aria-controls="weather-panel" tabIndex={active?.id === option.id ? 0 : -1} onClick={() => choose(option.id)} onKeyDown={event => {
           let next;
@@ -745,7 +746,8 @@ function WorkHarborPage() {
         const sectionId = section.id || `section-${sectionIndex + 1}`;
         const sectionTitle = section.title || ui[section.id] || section.id || `section ${sectionIndex + 1}`;
         const blocks = section.blocks || [];
-        const displayBlocks = blocks;
+        const weatherCopy = sectionId === 'weather-particles' ? blocks.find(block => block.type === 'case-copy') : undefined;
+        const displayBlocks = weatherCopy ? blocks.filter(block => block !== weatherCopy).map(block => block.type === 'weather-tabs' ? {...block, copy: weatherCopy} : block) : blocks;
         return <section key={sectionId} id={sectionId} style={{ scrollMarginTop: 110 }}>
           {section.hideTitle !== true && <div style={{ ...s.sectionTitle, ...(section.accent ? { color: C.accent } : {}) }}>── {sectionTitle} ─────────────────────────────────────────────</div>}
           <div style={s.blockStack}>{displayBlocks.map((block, blockIndex) => renderBlock(block, `${sectionId}-${blockIndex}`))}</div>
