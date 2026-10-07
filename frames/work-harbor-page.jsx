@@ -726,13 +726,14 @@ function WorkHarborPage() {
         <h1 style={s.title}>
           {work.title}{work.accent && <> <span style={{ color: C.accent }}>{work.accent}</span></>}
         </h1>
-        <p style={s.lede}>{work.subtitle}</p>
+        {work.className !== 'huolala-case' && <p style={s.lede}>{work.subtitle}</p>}
       </div>
 
       {work.showMeta !== false && metadata.length > 0 && <div className={work.className === 'huolala-case' ? 'case-meta-grid' : 'case-scroll-item'} style={{ ...s.metaGrid, gridTemplateColumns: `repeat(${Math.min(metadata.length, 4)}, minmax(0, 1fr))` }}>
         {metadata.map((item, index) => <div key={`${item.label}-${index}`}><div style={s.metaLabel}>{item.label}</div><div style={s.metaVal}>{item.value}</div></div>)}
       </div>}
 
+      {work.className === 'huolala-case' && <p className="case-overview-intro" {...textProbe} style={s.lede}>{work.subtitle}</p>}
       {work.showCover !== false && work.coverPlacement !== 'before-title' && renderCover()}
       </div>
 
