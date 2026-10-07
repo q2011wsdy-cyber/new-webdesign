@@ -288,7 +288,7 @@ function WorkHarborPage() {
         // The transform is visual only, so the document's grid and gaps never move.
         const progress = Math.max(0, Math.min(1, (viewport * .93 - rect.top) / (viewport * .62)));
         const targetY = (1 - progress) * 20;
-        const targetScale = .96 + progress * .04;
+        const targetScale = work.className === 'huolala-case' ? 1 : .96 + progress * .04;
         const targetOpacity = .42 + progress * .58;
         state.y += (targetY - state.y) * .115;
         state.scale += (targetScale - state.scale) * .115;
@@ -717,7 +717,7 @@ function WorkHarborPage() {
         ))}
       </aside>}
       <main className="case-detail-main" style={s.main}>
-      <div id="overview" className="case-scroll-item" style={{ scrollMarginTop: 110 }}>
+      <div id="overview" className={work.className === 'huolala-case' ? undefined : 'case-scroll-item'} style={{ scrollMarginTop: 110 }}>
       {work.showCover !== false && work.coverPlacement === 'before-title' && renderCover()}
       <div {...textProbe}>
         <h1 style={s.title}>

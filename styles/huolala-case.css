@@ -304,3 +304,7 @@
   .huolala-case .case-editorial-copy--feature p,
   .huolala-case .case-editorial-copy--closing p { font-size:16px !important; }
 }
+
+/* The opening copy appears immediately; scrolling never scales the case. */
+.huolala-case .case-scroll-item { transform: translate3d(0, var(--case-scroll-y, 0px), 0); }
+.huolala-case .case-detail-grid.case-detail-arrival { animation: none; }
