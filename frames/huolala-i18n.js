@@ -1,6 +1,6 @@
 // Media and layout are shared; translations override only editable text fields.
 (() => {
-  const fields = new Set(['title', 'subtitle', 'body', 'intro', 'caption', 'alt', 'label']);
+  const fields = new Set(['title', 'subtitle', 'body', 'intro', 'caption', 'alt', 'label', 'value']);
   function entries(root) {
     const result = [];
     function walk(node, path) {

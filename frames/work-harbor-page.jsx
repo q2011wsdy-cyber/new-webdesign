@@ -729,7 +729,7 @@ function WorkHarborPage() {
         <p style={s.lede}>{work.subtitle}</p>
       </div>
 
-      {work.showMeta !== false && metadata.length > 0 && <div className="case-scroll-item" style={{ ...s.metaGrid, gridTemplateColumns: `repeat(${Math.min(metadata.length, 4)}, minmax(0, 1fr))` }}>
+      {work.showMeta !== false && metadata.length > 0 && <div className={work.className === 'huolala-case' ? 'case-meta-grid' : 'case-scroll-item'} style={{ ...s.metaGrid, gridTemplateColumns: `repeat(${Math.min(metadata.length, 4)}, minmax(0, 1fr))` }}>
         {metadata.map((item, index) => <div key={`${item.label}-${index}`}><div style={s.metaLabel}>{item.label}</div><div style={s.metaVal}>{item.value}</div></div>)}
       </div>}
 

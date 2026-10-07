@@ -321,3 +321,5 @@
   .case-weather-copy h2 {font-size:clamp(13px,3.6cqw,18px);line-height:1.4;}
   .case-weather-stage--with-copy .case-weather-tabs {left:6%;top:auto;bottom:9%;gap:2cqw;}
 }
+
+@media(max-width:600px) { .huolala-case .case-meta-grid {grid-template-columns:1fr !important;gap:20px !important;} }

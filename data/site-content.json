@@ -88,7 +88,7 @@
       "className": "huolala-case",
       "hideIndex": true,
       "compactCaseLayout": true,
-      "showMeta": false,
+      "showMeta": true,
       "showCover": false,
       "hideNextNav": true,
       "hideFooter": true,
@@ -352,6 +352,20 @@
             }
           ]
         }
+      ],
+      "meta": [
+        {
+          "label": "我的角色",
+          "value": "资深 UX 设计师"
+        },
+        {
+          "label": "时间",
+          "value": "2024–2026"
+        },
+        {
+          "label": "技能",
+          "value": "产品设计、动态设计、用户调研"
+        }
       ]
     },
     "huolalaEnglish": {
@@ -359,7 +373,13 @@
         "case.sections.background.blocks.background.title": "Project background",
         "case.sections.background.blocks.background.body": "The framework had remained unchanged for nearly three years. Its dated structure made it difficult to support new business needs. As the product evolved, features accumulated without a clear way to organize them or help users quickly find what mattered. Different services also grew increasingly divergent in structure, limiting reuse across the platform.",
         "case.subtitle": "The matching journey has one central goal: helping shippers find the right vehicle faster. I led its design, balancing business growth with the needs of both shippers and drivers. As the design owner, I drove a redesign of the overall framework, partnered with engineering to build a weather particle system, and explored emotional design and AI in freight services.",
-        "case.title": "huolala"
+        "case.title": "huolala",
+        "case.meta.0.label": "My role",
+        "case.meta.0.value": "Senior UX Designer",
+        "case.meta.1.label": "Timeline",
+        "case.meta.1.value": "2024–2026",
+        "case.meta.2.label": "Skills",
+        "case.meta.2.value": "Product design, motion design, user research"
       },
       "content": {
         "title": "huolala",
@@ -375,7 +395,7 @@
         "className": "huolala-case",
         "hideIndex": true,
         "compactCaseLayout": true,
-        "showMeta": false,
+        "showMeta": true,
         "showCover": false,
         "hideNextNav": true,
         "hideFooter": true,
@@ -606,6 +626,20 @@
                 "pngBackground": true
               }
             ]
+          }
+        ],
+        "meta": [
+          {
+            "label": "My role",
+            "value": "Senior UX Designer"
+          },
+          {
+            "label": "Timeline",
+            "value": "2024–2026"
+          },
+          {
+            "label": "Skills",
+            "value": "Product design, motion design, user research"
           }
         ]
       }
