@@ -479,6 +479,7 @@ function AsciiTile({ pat, t, img, n, cover }) {
     aspectRatio: '521/605', position: 'relative', overflow: 'hidden',
   }}>
     <WorkCover n={n} img={img} t={t} cover={cover} />
+    <window.WorkGlassLens key={cover?.src || img || n} />
   </div>;
 }
 
@@ -1245,11 +1246,7 @@ function AsciiTerminal() {
 
       {/* Custom block cursor */}
       <div style={{ ...cursorBlock, opacity: cur.mode === 'case' ? 0 : cursorBlock.opacity }} />
-      <GlassSurface className="case-glass-cursor" borderRadius={39} distortionScale={-52} mapBlur={3.5} smoothRefraction
-        style={{ position: 'fixed', left: cur.x, top: cur.y, width: 78, height: 78,
-          padding: 0, borderRadius: '50%', pointerEvents: 'none', zIndex: 201,
-          transform: 'translate(-50%, -50%)',
-          opacity: cur.visible && cur.mode === 'case' ? 1 : 0 }} />
+
     </div>
   );
 }
