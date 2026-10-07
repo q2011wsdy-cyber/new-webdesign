@@ -1,7 +1,7 @@
 // Default bilingual content.
 (() => {
  const content = {
-  "title": "货拉拉 · 司货匹配体验改版",
+  "title": "huolala",
   "subtitle": "帮助货主更快找到合适的车，是司货匹配主链路的核心目标。我负责这条链路的设计，在业务增长与货主、司机双方的体验之间寻找平衡。\n\n作为模块的设计负责人，我推动了整体框架改版，并与研发共创天气粒子系统，探索情感化设计与 AI 在货运场景中的应用。",
   "bannerCover": {
     "src": "",
@@ -205,7 +205,7 @@
   ]
 };
  const english = {
-  "title": "Huolala · Redesigning the shipper–driver matching experience",
+  "title": "huolala",
   "subtitle": "The matching journey has one central goal: helping shippers find the right vehicle faster. I led its design, balancing business growth with the needs of both shippers and drivers.\n\nAs the design owner, I drove a redesign of the overall framework, partnered with engineering to build a weather particle system, and explored emotional design and AI in freight services.",
   "bannerCover": {
     "src": "",
