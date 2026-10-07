@@ -11,7 +11,20 @@
   "hideIndex": true,
   "compactCaseLayout": true,
   "showMeta": true,
-  "meta": [{"label": "我的角色", "value": "资深 UX 设计师"}, {"label": "时间", "value": "2024–2026"}, {"label": "技能", "value": "产品设计、动态设计、用户调研"}],
+  "meta": [
+    {
+      "label": "我的角色",
+      "value": "资深 UX 设计师"
+    },
+    {
+      "label": "时间",
+      "value": "2024–2026"
+    },
+    {
+      "label": "技能",
+      "value": "产品设计、动态设计、用户调研"
+    }
+  ],
   "showCover": false,
   "hideNextNav": true,
   "hideFooter": true,
@@ -70,28 +83,6 @@
             "label": "After / 改版后",
             "imageOnly": true
           }
-        },
-        {
-          "type": "gallery",
-          "columns": 2,
-          "gap": 26,
-          "frame": false,
-          "items": [
-            {
-              "type": "placeholder",
-              "id": "03-driver-avatars",
-              "label": "司机头像设计",
-              "aspectRatio": "587.234/594.894",
-              "nodeId": "410:41288"
-            },
-            {
-              "type": "placeholder",
-              "id": "04-icon-system",
-              "label": "图标设计系统",
-              "aspectRatio": "587.234/594.894",
-              "nodeId": "411:58595"
-            }
-          ]
         },
         {
           "type": "placeholder",
@@ -216,7 +207,20 @@
   "hideIndex": true,
   "compactCaseLayout": true,
   "showMeta": true,
-  "meta": [{"label": "My role", "value": "Senior UX Designer"}, {"label": "Timeline", "value": "2024–2026"}, {"label": "Skills", "value": "Product design, motion design, user research"}],
+  "meta": [
+    {
+      "label": "My role",
+      "value": "Senior UX Designer"
+    },
+    {
+      "label": "Timeline",
+      "value": "2024–2026"
+    },
+    {
+      "label": "Skills",
+      "value": "Product design, motion design, user research"
+    }
+  ],
   "showCover": false,
   "hideNextNav": true,
   "hideFooter": true,
@@ -276,30 +280,6 @@
             "label": "After / 改版后",
             "imageOnly": true
           }
-        },
-        {
-          "type": "gallery",
-          "columns": 2,
-          "gap": 26,
-          "frame": false,
-          "items": [
-            {
-              "type": "placeholder",
-              "id": "03-driver-avatars",
-              "label": "Driver avatar design",
-              "aspectRatio": "587.234/594.894",
-              "nodeId": "410:41288",
-              "alt": "Driver avatar design"
-            },
-            {
-              "type": "placeholder",
-              "id": "04-icon-system",
-              "label": "Icon design system",
-              "aspectRatio": "587.234/594.894",
-              "nodeId": "411:58595",
-              "alt": "Icon design system"
-            }
-          ]
         },
         {
           "type": "placeholder",

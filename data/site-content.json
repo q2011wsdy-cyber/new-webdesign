@@ -163,36 +163,6 @@
               },
               "caption": "",
               "aspectRatio": "2400 / 1188"
-            },
-            {
-              "type": "gallery",
-              "columns": 2,
-              "gap": 26,
-              "frame": false,
-              "items": [
-                {
-                  "type": "image",
-                  "id": "03-driver-avatars",
-                  "label": "司机头像设计",
-                  "nodeId": "410:41288",
-                  "alt": "司机头像设计",
-                  "src": "assets/uploads/1791267289887-5d6c99cd.png",
-                  "frame": false,
-                  "radius": 20,
-                  "caption": ""
-                },
-                {
-                  "type": "image",
-                  "id": "04-icon-system",
-                  "label": "图标设计系统",
-                  "nodeId": "411:58595",
-                  "alt": "图标设计系统",
-                  "src": "assets/uploads/1791267289898-9ac21002.png",
-                  "frame": false,
-                  "radius": 20,
-                  "caption": ""
-                }
-              ]
             }
           ]
         },
@@ -471,36 +441,6 @@
                 },
                 "caption": "",
                 "aspectRatio": "2400 / 1188"
-              },
-              {
-                "type": "gallery",
-                "columns": 2,
-                "gap": 26,
-                "frame": false,
-                "items": [
-                  {
-                    "type": "image",
-                    "id": "03-driver-avatars",
-                    "label": "Driver avatar design",
-                    "nodeId": "410:41288",
-                    "alt": "Driver avatar design",
-                    "src": "assets/uploads/1791267289887-5d6c99cd.png",
-                    "frame": false,
-                    "radius": 20,
-                    "caption": ""
-                  },
-                  {
-                    "type": "image",
-                    "id": "04-icon-system",
-                    "label": "Icon design system",
-                    "nodeId": "411:58595",
-                    "alt": "Icon design system",
-                    "src": "assets/uploads/1791267289898-9ac21002.png",
-                    "frame": false,
-                    "radius": 20,
-                    "caption": ""
-                  }
-                ]
               }
             ]
           },
