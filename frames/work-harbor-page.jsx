@@ -21,6 +21,7 @@ function CaseWeatherTabs({ media, lang }) {
         <img className="case-weather-hardware" src={media.phoneFrame} alt="" />
         <div className="case-weather-screen" key={active?.id}>
           {active?.media?.src ? (active.media.type === 'video' ? <video src={active.media.src} poster={active.media.poster} autoPlay={active.media.autoplay !== false} muted={active.media.muted !== false} loop={active.media.loop !== false} controls={active.media.controls === true} playsInline /> : <img src={active.media.src} alt={active.media.alt || active.label} />) : <div className="case-weather-empty">{english ? `${labels[active?.id]} media` : `${active?.label}素材待上传`}</div>}
+          {active?.media?.src && active.media.type !== 'video' && <window.WorkGlassLens key={active.media.src} fit="contain" />}
         </div>
       </div>
     </div>
@@ -491,6 +492,7 @@ function WorkHarborPage() {
           ? { overflow: 'hidden', background: 'transparent', border: 'none', borderRadius: radius, '--case-media-radius': `${radius}px` }
           : { ...s.mediaFrame, borderRadius: radius, '--case-media-radius': `${radius}px` }}>
           {content}
+          {type === 'image' && <window.WorkGlassLens key={media.src} fit={media.fit || 'contain'} />}
         </div>
         {media.caption && <figcaption className="case-media-caption" {...textProbe} style={{ ...s.caption, margin: '10px 0 0' }}>{media.caption}</figcaption>}
       </figure>
@@ -775,11 +777,7 @@ function WorkHarborPage() {
       <div className={`case-return-veil${leavingCase ? ' is-visible' : ''}`} aria-hidden="true" />
 
       <div style={{ ...cursorBlock, opacity: cur.mode === 'case' ? 0 : cursorBlock.opacity }} />
-      <window.GlassSurface className="case-glass-cursor" borderRadius={39} distortionScale={-52} mapBlur={3.5} smoothRefraction
-        style={{ position: 'fixed', left: cur.x, top: cur.y, width: 78, height: 78,
-          padding: 0, borderRadius: '50%', pointerEvents: 'none', zIndex: 201,
-          transform: 'translate(-50%, -50%)',
-          opacity: cur.visible && cur.mode === 'case' ? 1 : 0 }} />
+
     </div>
   );
 }

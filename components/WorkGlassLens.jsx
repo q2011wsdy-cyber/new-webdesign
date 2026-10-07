@@ -1,5 +1,5 @@
 /** A local image-backed refractive lens. No remote models or rendering dependencies. */
-function WorkGlassLens() {
+function WorkGlassLens({ fit = 'cover' }) {
   const ref = React.useRef(null);
   React.useEffect(() => {
     const canvas = ref.current;
@@ -14,9 +14,9 @@ function WorkGlassLens() {
     const vertex = 'attribute vec2 position; varying vec2 uv; void main(){ uv=position*.5+.5; gl_Position=vec4(position,0.,1.); }';
     const fragment = `precision mediump float;
       varying vec2 uv; uniform sampler2D artwork;
-      uniform vec2 size, imageSize, pointer; uniform float radius;
+      uniform vec2 size, imageSize, pointer; uniform float radius, fitMode;
       vec2 imageUV(vec2 p) {
-        float fit=max(size.x/imageSize.x,size.y/imageSize.y);
+        float fit=mix(max(size.x/imageSize.x,size.y/imageSize.y),min(size.x/imageSize.x,size.y/imageSize.y),fitMode);
         return (p-size*.5)/(imageSize*fit)+.5;
       }
       void main(){
@@ -34,7 +34,9 @@ function WorkGlassLens() {
         float highlight=pow(rim,7.)*(.10+.28*max(0.,dot(normalize(delta+vec2(.001)),normalize(vec2(-.65,-1.)))));
         color=mix(color,vec3(1.),highlight);
         float alpha=1.-smoothstep(1.-1.5/max(radius,1.),1.,d);
-        gl_FragColor=vec4(color,alpha);
+        vec2 sourceUV=imageUV(samplePoint);
+        if(any(lessThan(sourceUV,vec2(0.)))||any(greaterThan(sourceUV,vec2(1.)))) discard;
+        gl_FragColor=vec4(color,alpha*texture2D(artwork,sourceUV).a);
       }`;
     const shader = (type, source) => {
       const s = gl.createShader(type); gl.shaderSource(s, source); gl.compileShader(s);
@@ -52,7 +54,7 @@ function WorkGlassLens() {
     const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
-    const locations=Object.fromEntries(['size','imageSize','pointer','radius'].map(k=>[k,gl.getUniformLocation(program,k)]));
+    const locations=Object.fromEntries(['size','imageSize','pointer','radius','fitMode'].map(k=>[k,gl.getUniformLocation(program,k)]));
     let ready=false, active=false, frame=0, previous=0, x=0,y=0,tx=0,ty=0,r=0,width=1,height=1;
     const measure=()=>{width=tile.clientWidth;height=tile.clientHeight;const dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);gl.viewport(0,0,canvas.width,canvas.height);};
     const upload=()=>{if(!image.naturalWidth)return;try{gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);ready=true;request();}catch{ready=false;}};
@@ -62,7 +64,7 @@ function WorkGlassLens() {
       x+=(tx-x)*follow;y+=(ty-y)*follow;
       const target=active?Math.min(86,width*.18):0;r+=(target-r)*ease;
       gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
-      if(ready&&r>.2){gl.uniform2f(locations.size,width,height);gl.uniform2f(locations.imageSize,image.naturalWidth,image.naturalHeight);gl.uniform2f(locations.pointer,x,y);gl.uniform1f(locations.radius,r);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);}
+      if(ready&&r>.2){canvas.style.filter=getComputedStyle(image).filter;gl.uniform1f(locations.fitMode,fit==='contain'?1:0);gl.uniform2f(locations.size,width,height);gl.uniform2f(locations.imageSize,image.naturalWidth,image.naturalHeight);gl.uniform2f(locations.pointer,x,y);gl.uniform1f(locations.radius,r);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);}
       if(Math.abs(tx-x)>.05||Math.abs(ty-y)>.05||Math.abs(target-r)>.05)frame=requestAnimationFrame(tick);
     };
     function request(){if(!frame){previous=0;frame=requestAnimationFrame(tick);}}
@@ -73,7 +75,7 @@ function WorkGlassLens() {
     tile.addEventListener('pointerenter',enter);tile.addEventListener('pointermove',move);tile.addEventListener('pointerleave',leave);tile.addEventListener('pointercancel',leave);
     window.addEventListener('blur',leave);reduced.addEventListener('change',leave);
     return()=>{cancelAnimationFrame(frame);resize.disconnect();image.removeEventListener('load',upload);tile.removeEventListener('pointerenter',enter);tile.removeEventListener('pointermove',move);tile.removeEventListener('pointerleave',leave);tile.removeEventListener('pointercancel',leave);window.removeEventListener('blur',leave);reduced.removeEventListener('change',leave);gl.deleteTexture(texture);gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);};
-  }, []);
-  return <canvas ref={ref} className="work-glass-lens" aria-hidden="true" />;
+  }, [fit]);
+  return <canvas ref={ref} className="work-glass-lens" style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',borderRadius:'inherit',zIndex:3}} aria-hidden="true" />;
 }
 window.WorkGlassLens=WorkGlassLens;
