@@ -325,9 +325,9 @@
 @media(max-width:600px) { .huolala-case .case-meta-grid {grid-template-columns:1fr !important;gap:20px !important;} }
 
 /* Compact opening details followed by a readable, left-aligned introduction. */
-.huolala-case #overview .case-meta-grid {display:flex;flex-wrap:wrap;gap:16px 28px;padding:0;border:0;margin:8px 0 28px;}
+.huolala-case #overview .case-meta-grid {display:flex !important;flex-wrap:wrap;gap:16px 28px !important;width:min(100%,680px);max-width:680px !important;padding:0 !important;border:0 !important;margin:8px 0 28px !important;}
 .huolala-case .case-meta-grid > div {display:flex;gap:8px;align-items:baseline;}
-.huolala-case .case-meta-grid > div > div {font-size:14px;margin:0;letter-spacing:0;text-transform:none;}
+.huolala-case .case-meta-grid > div > div {font-size:14px !important;margin:0 !important;letter-spacing:0 !important;text-transform:none !important;}
 .huolala-case #overview .case-overview-intro {width:min(100%,680px);max-width:680px !important;font-size:16px;line-height:1.75;margin:0 0 48px;color:var(--case-copy);text-wrap:pretty;}
 .huolala-case .case-detail-main > #weather-particles {margin-top:32px;}
 @media(max-width:720px) {
