@@ -1,3 +1,31 @@
+function CaseImageCarousel({ media, lang }) {
+  const track = React.useRef(null);
+  const [active, setActive] = React.useState(0);
+  const items = media.items || [];
+  const [visible,setVisible]=React.useState(innerWidth<=720?1:3);
+  React.useEffect(()=>{const update=()=>setVisible(innerWidth<=720?1:3);window.addEventListener('resize',update);return()=>window.removeEventListener('resize',update);},[]);
+  const pages=Math.max(1,items.length-visible+1);
+  const go = index => {
+    const node=track.current, card=node?.children[index];
+    if(card) node.scrollTo({left:card.offsetLeft-node.children[0].offsetLeft,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
+  };
+  return <div className="case-story-carousel">
+    <div ref={track} className="case-story-track" onScroll={event=>{
+      const node=event.currentTarget,step=node.children[1]?.offsetLeft-node.children[0]?.offsetLeft;
+      if(step)setActive(Math.round(node.scrollLeft/step));
+    }}>
+      {items.map((item,index)=><figure className="case-story-card" key={item.id}>
+        <div className="case-media-frame"><img className="case-media-content" src={item.src} alt={item.alt || ''} loading="lazy" draggable={false} /><window.WorkGlassLens key={item.src} fit="contain" /></div>
+        <figcaption><span>{String(index+1).padStart(2,'0')}</span><p>{item.caption}</p></figcaption>
+      </figure>)}
+    </div>
+    <div className="case-story-controls">
+      <div className="case-story-dots">{items.slice(0,pages).map((item,index)=><button key={item.id} onClick={()=>go(index)} aria-label={`${lang==='en'?'View image':'查看图片'} ${index+1}`} aria-current={active===index?'true':undefined} />)}</div>
+      <div><button onClick={()=>go(Math.max(0,active-1))} disabled={active===0} aria-label={lang==='en'?'Previous':'上一张'}>←</button><button onClick={()=>go(Math.min(pages-1,active+1))} disabled={active>=pages-1} aria-label={lang==='en'?'Next':'下一张'}>→</button></div>
+    </div>
+  </div>;
+}
+
 function CaseWeatherTabs({ media, lang }) {
   const options = media.options || [];
   const [selected, setSelected] = React.useState(media.defaultOption || 'snow');
@@ -512,6 +540,7 @@ function WorkHarborPage() {
     if (!block) return null;
     const type = block.type || 'text';
 
+    if (type === 'image-carousel') return <CaseImageCarousel key={key} media={block} lang={lang} />;
     if (type === 'weather-tabs') return <CaseWeatherTabs key={key} media={block} lang={lang} />;
     if (type === 'comparison') return <CaseComparison key={key} media={block} lang={lang} />;
     if (type === 'case-copy') {
