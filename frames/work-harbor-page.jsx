@@ -807,7 +807,10 @@ function WorkHarborPage() {
         const background = work.sections.find(section => section.id === 'background');
         if (!background) return work.sections;
         const media = background.blocks.filter(block => block.type !== 'case-copy');
-        return work.sections.flatMap(section => section.id === 'background' ? [{...section, id:'background-media', blocks:media}] : [section]);
+        return [
+          {...background, id:'background-media', blocks:media},
+          ...work.sections.filter(section => section.id !== 'background'),
+        ];
       })() : work.sections).map((section, sectionIndex) => {
         const sectionId = section.id || `section-${sectionIndex + 1}`;
         const sectionTitle = section.title || ui[section.id] || section.id || `section ${sectionIndex + 1}`;
