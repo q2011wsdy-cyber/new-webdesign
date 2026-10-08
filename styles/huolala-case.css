@@ -389,3 +389,20 @@
 .huolala-case .case-editorial-copy--story-intro {width:min(100%,680px);max-width:680px !important;margin:0 0 8px;}
 .huolala-case .case-editorial-copy--story-intro h2 {font-size:24px !important;line-height:1.4;margin-bottom:18px;}
 .huolala-case .case-editorial-copy--story-intro p {font-size:16px;line-height:1.75;}
+/* Theme-aware comparison canvas, with a faint square grid. */
+:root[data-theme] .huolala-case .case-comparison-stage {
+ --compare-background:color-mix(in srgb,var(--color-bg) 95%,white 5%);
+ --compare-grid:rgba(255,255,255,.035);
+ aspect-ratio:16/10 !important;
+ background:var(--compare-background);
+}
+:root[data-theme='light'] .huolala-case .case-comparison-stage {
+ --compare-background:color-mix(in srgb,var(--color-bg) 95%,black 5%);
+ --compare-grid:rgba(0,0,0,.035);
+}
+.huolala-case .case-comparison-layer {
+ background-color:var(--compare-background);
+ background-image:linear-gradient(var(--compare-grid) 1px,transparent 1px),linear-gradient(90deg,var(--compare-grid) 1px,transparent 1px);
+ background-size:32px 32px;
+}
+:root[data-theme='light'] .huolala-case .case-compare-label {color:rgba(0,0,0,.55);border-color:rgba(0,0,0,.12);}
