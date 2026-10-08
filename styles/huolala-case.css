@@ -406,3 +406,5 @@
  background-size:32px 32px;
 }
 :root[data-theme='light'] .huolala-case .case-compare-label {color:rgba(0,0,0,.55);border-color:rgba(0,0,0,.12);}
+.huolala-case #overview .case-overview-intro {margin-bottom:88px;}
+@media(max-width:720px) {.huolala-case #overview .case-overview-intro {margin-bottom:64px;}}
