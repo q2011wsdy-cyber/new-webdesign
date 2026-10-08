@@ -1,5 +1,6 @@
 function CaseImageCarousel({ media, lang }) {
   const track = React.useRef(null);
+  const drag = React.useRef(null);
   const [active, setActive] = React.useState(0);
   const items = media.items || [];
   const [visible,setVisible]=React.useState(innerWidth<=720?1:3);
@@ -10,7 +11,30 @@ function CaseImageCarousel({ media, lang }) {
     if(card) node.scrollTo({left:card.offsetLeft-node.children[0].offsetLeft,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
   };
   return <div className="case-story-carousel">
-    <div ref={track} className="case-story-track" onScroll={event=>{
+    <div ref={track} className="case-story-track"
+      onPointerDown={event=>{
+        if(event.pointerType!=='mouse'||event.button!==0)return;
+        const node=event.currentTarget;
+        drag.current={id:event.pointerId,x:event.clientX,left:node.scrollLeft};
+        node.setPointerCapture(event.pointerId);
+        node.classList.add('is-dragging');
+        event.preventDefault();
+      }}
+      onPointerMove={event=>{
+        const state=drag.current;
+        if(state&&state.id===event.pointerId)event.currentTarget.scrollLeft=state.left+state.x-event.clientX;
+      }}
+      onPointerUp={event=>{
+        if(!drag.current)return;
+        const node=event.currentTarget;
+        drag.current=null;node.classList.remove('is-dragging');
+        if(node.hasPointerCapture(event.pointerId))node.releasePointerCapture(event.pointerId);
+        const step=node.children[1]?.offsetLeft-node.children[0]?.offsetLeft;
+        if(step)go(Math.max(0,Math.min(pages-1,Math.round(node.scrollLeft/step))));
+      }}
+      onLostPointerCapture={event=>{drag.current=null;event.currentTarget.classList.remove('is-dragging');}}
+      onPointerCancel={event=>{drag.current=null;event.currentTarget.classList.remove('is-dragging');}}
+      onScroll={event=>{
       const node=event.currentTarget,step=node.children[1]?.offsetLeft-node.children[0]?.offsetLeft;
       if(step)setActive(Math.round(node.scrollLeft/step));
     }}>

@@ -365,3 +365,6 @@
  .huolala-case .case-story-card {flex-basis:92%;border-radius:16px;}
  .huolala-case .case-story-card .case-media-frame {border-radius:16px;--case-media-radius:16px;}
 }
+
+.case-story-track {user-select:none;touch-action:pan-x pan-y;overscroll-behavior-x:contain;}
+.case-story-track.is-dragging {scroll-snap-type:none;scroll-behavior:auto;}
