@@ -166,7 +166,9 @@ function CaseComparison({ media, lang }) {
       <div className="case-comparison-layer case-comparison-before" style={{clipPath:`inset(0 ${100-position}% 0 0)`}}>{image(before, 'Before')}</div>
       <span className="case-compare-label case-compare-label-before">Before</span>
       <span className="case-compare-label case-compare-label-after">After</span>
-      <div className="case-comparison-divider" aria-hidden="true" />
+      <div className="case-comparison-divider" aria-hidden="true">
+        <span><svg width="22" height="16" viewBox="0 0 22 16" fill="none"><path d="M8 4 4 8l4 4M14 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+      </div>
       <input className="case-comparison-range" type="range" min="0" max="100" step="0.1" value={position}
         aria-label={lang === 'zh' ? '左右移动查看改版前后对比' : 'Move left and right to compare before and after'}
         aria-valuetext={`${position}% Before`} onChange={event => setPosition(Number(event.target.value))} />

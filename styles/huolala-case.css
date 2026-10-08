@@ -423,3 +423,19 @@
 :root[data-theme] .huolala-case .case-comparison-stage {--compare-grid:rgba(255,255,255,.018);--compare-outline:rgba(255,255,255,.12);}
 :root[data-theme='light'] .huolala-case .case-comparison-stage {--compare-grid:rgba(0,0,0,.016);--compare-outline:rgba(0,0,0,.10);}
 .huolala-case .case-comparison-layer img {filter:drop-shadow(.5px 0 0 var(--compare-outline)) drop-shadow(-.5px 0 0 var(--compare-outline)) drop-shadow(0 .5px 0 var(--compare-outline)) drop-shadow(0 -.5px 0 var(--compare-outline));}
+
+.huolala-case .case-comparison-divider {opacity:1;}
+.huolala-case .case-comparison-divider span,
+.huolala-case .case-comparison-stage:hover .case-comparison-divider span,
+.huolala-case .case-comparison-stage:focus-within .case-comparison-divider span {
+  width:36px;
+  height:36px;
+  padding:0;
+  opacity:1;
+  color:#333;
+  background:#fff;
+  border:1px solid rgba(0,0,0,.06);
+  box-shadow:0 2px 8px rgba(0,0,0,.12);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+}
