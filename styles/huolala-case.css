@@ -370,7 +370,7 @@
 .case-story-track.is-dragging {scroll-snap-type:none;scroll-behavior:auto;}
 
 /* Centre every slide, including the first and last, across the available viewport. */
-.huolala-case .case-story-carousel {width:calc(100vw - 32px);--story-card-width:min(626px,calc(100vw - 64px));}
+.huolala-case .case-story-carousel {width:calc(100vw - 32px);--story-card-width:min(864px,calc(100vw - 64px));}
 .huolala-case .case-story-track {box-sizing:border-box;padding-inline:calc((100% - var(--story-card-width))/2);scroll-padding-inline:calc((100% - var(--story-card-width))/2);}
 .huolala-case .case-story-card {flex:0 0 var(--story-card-width);scroll-snap-align:center;}
 .huolala-case .case-story-controls {width:min(100%,940px);margin-inline:auto;}
