@@ -1,6 +1,8 @@
 function CaseImageCarousel({ media, lang }) {
   const track = React.useRef(null);
   const drag = React.useRef(null);
+  const coast = React.useRef(0);
+  React.useEffect(()=>()=>cancelAnimationFrame(coast.current),[]);
   const [active, setActive] = React.useState(0);
   const items = media.items || [];
   const pages=items.length;
@@ -13,22 +15,35 @@ function CaseImageCarousel({ media, lang }) {
       onPointerDown={event=>{
         if(event.pointerType!=='mouse'||event.button!==0)return;
         const node=event.currentTarget;
-        drag.current={id:event.pointerId,x:event.clientX,left:node.scrollLeft};
+        cancelAnimationFrame(coast.current);
+        drag.current={id:event.pointerId,x:event.clientX,left:node.scrollLeft,lastX:event.clientX,time:performance.now(),velocity:0};
         node.setPointerCapture(event.pointerId);
         node.classList.add('is-dragging');
         event.preventDefault();
       }}
       onPointerMove={event=>{
         const state=drag.current;
-        if(state&&state.id===event.pointerId)event.currentTarget.scrollLeft=state.left+state.x-event.clientX;
+        if(state&&state.id===event.pointerId){
+          const now=performance.now(),dt=Math.max(1,now-state.time);
+          state.velocity=state.velocity*.4+(state.lastX-event.clientX)/dt*.6;
+          state.lastX=event.clientX;state.time=now;
+          event.currentTarget.scrollLeft=state.left+state.x-event.clientX;
+        }
       }}
       onPointerUp={event=>{
         if(!drag.current)return;
         const node=event.currentTarget;
+        const state=drag.current;
         drag.current=null;node.classList.remove('is-dragging');
         if(node.hasPointerCapture(event.pointerId))node.releasePointerCapture(event.pointerId);
-        const step=node.children[1]?.offsetLeft-node.children[0]?.offsetLeft;
-        if(step)go(Math.max(0,Math.min(pages-1,Math.round(node.scrollLeft/step))));
+        let velocity=performance.now()-state.time>90?0:Math.max(-2.5,Math.min(2.5,state.velocity)),previous=performance.now();
+        const glide=now=>{
+          const dt=Math.min(32,now-previous);previous=now;
+          const before=node.scrollLeft;node.scrollLeft+=velocity*dt;
+          velocity*=Math.exp(-dt/180);
+          if(Math.abs(velocity)>.02&&Math.abs(node.scrollLeft-before)>.1)coast.current=requestAnimationFrame(glide);
+        };
+        coast.current=requestAnimationFrame(glide);
       }}
       onLostPointerCapture={event=>{drag.current=null;event.currentTarget.classList.remove('is-dragging');}}
       onPointerCancel={event=>{drag.current=null;event.currentTarget.classList.remove('is-dragging');}}
@@ -37,7 +52,7 @@ function CaseImageCarousel({ media, lang }) {
       if(step)setActive(Math.round(node.scrollLeft/step));
     }}>
       {items.map((item,index)=><figure className="case-story-card" key={item.id}>
-        <div className="case-media-frame"><img className="case-media-content" src={item.src} alt={item.alt || ''} loading="lazy" draggable={false} /><window.WorkGlassLens key={item.src} fit="contain" /></div>
+        <div className="case-media-frame"><img className="case-media-content" src={item.src} alt={item.alt || ''} loading="lazy" draggable={false} /></div>
 
       </figure>)}
     </div>

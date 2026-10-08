@@ -46,6 +46,16 @@
           "items": [
             {
               "type": "image",
+              "id": "story-4",
+              "src": "assets/works/huolala-story/846390.webp",
+              "alt": "统一视觉与情感化体验",
+              "caption": "统一视觉与情感化体验",
+              "scrollMotion": false,
+              "frame": false,
+              "radius": 0
+            },
+            {
+              "type": "image",
               "id": "story-1",
               "src": "assets/works/huolala-story/846387.webp",
               "alt": "信息重构：抓大放小，解决功能堆叠",
@@ -70,16 +80,6 @@
               "src": "assets/works/huolala-story/846389.webp",
               "alt": "设计目标：面向未来的框架",
               "caption": "设计目标：面向未来的框架",
-              "scrollMotion": false,
-              "frame": false,
-              "radius": 0
-            },
-            {
-              "type": "image",
-              "id": "story-4",
-              "src": "assets/works/huolala-story/846390.webp",
-              "alt": "统一视觉与情感化体验",
-              "caption": "统一视觉与情感化体验",
               "scrollMotion": false,
               "frame": false,
               "radius": 0
@@ -288,6 +288,16 @@
           "items": [
             {
               "type": "image",
+              "id": "story-4",
+              "src": "assets/works/huolala-story/846390.webp",
+              "alt": "A unified visual and emotional experience",
+              "caption": "A unified visual and emotional experience",
+              "scrollMotion": false,
+              "frame": false,
+              "radius": 0
+            },
+            {
+              "type": "image",
               "id": "story-1",
               "src": "assets/works/huolala-story/846387.webp",
               "alt": "Information hierarchy: prioritize what matters",
@@ -312,16 +322,6 @@
               "src": "assets/works/huolala-story/846389.webp",
               "alt": "Design goals: a framework for the future",
               "caption": "Design goals: a framework for the future",
-              "scrollMotion": false,
-              "frame": false,
-              "radius": 0
-            },
-            {
-              "type": "image",
-              "id": "story-4",
-              "src": "assets/works/huolala-story/846390.webp",
-              "alt": "A unified visual and emotional experience",
-              "caption": "A unified visual and emotional experience",
               "scrollMotion": false,
               "frame": false,
               "radius": 0

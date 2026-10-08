@@ -378,3 +378,6 @@
 .case-story-track.is-dragging,.case-story-track.is-dragging * {cursor:grabbing !important;}
 .huolala-case .case-detail-main > section > div {grid-template-columns:minmax(0,1fr);min-width:0;}
 .huolala-case .case-story-carousel {left:auto;transform:none;margin-inline:calc(50% - 50vw + 16px);}
+
+.huolala-case .case-story-track {padding-left:0;padding-right:calc(100% - var(--story-card-width));scroll-padding-inline:0;scroll-snap-type:none;}
+.huolala-case .case-story-card {scroll-snap-align:none;}
