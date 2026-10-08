@@ -49,7 +49,7 @@ function CaseImageCarousel({ media, lang }) {
       onPointerCancel={event=>{drag.current=null;event.currentTarget.classList.remove('is-dragging');}}
       onScroll={event=>{
       const node=event.currentTarget,step=node.children[1]?.offsetLeft-node.children[0]?.offsetLeft;
-      if(step)setActive(Math.round(node.scrollLeft/step));
+      if(step)setActive(node.scrollLeft >= node.scrollWidth-node.clientWidth-2 ? pages-1 : Math.min(pages-1,Math.round(node.scrollLeft/step)));
     }}>
       {items.map((item,index)=><figure className="case-story-card" key={item.id}>
         <div className="case-media-frame"><img className="case-media-content" src={item.src} alt={item.alt || ''} loading="lazy" draggable={false} /></div>
