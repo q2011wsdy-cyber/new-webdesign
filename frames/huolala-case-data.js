@@ -164,6 +164,27 @@
           "nodeId": "410:51452"
         },
         {
+          "type": "phone-loop",
+          "id": "emotional-phone-loop",
+          "items": [
+            {
+              "id": "night",
+              "src": "assets/works/huolala-weather/night-phone.webp",
+              "alt": "深夜找车场景"
+            },
+            {
+              "id": "holiday",
+              "src": "assets/works/huolala-weather/holiday-phone.webp",
+              "alt": "假期找车场景"
+            },
+            {
+              "id": "reservation",
+              "src": "assets/works/huolala-weather/reservation-phone.webp",
+              "alt": "预约找车场景"
+            }
+          ]
+        },
+        {
           "type": "gallery",
           "id": "pricing-details",
           "columns": 2,
@@ -229,7 +250,7 @@
           "radius": 20,
           "caption": "",
           "alt": "地图扩播动效"
-}
+        }
       ]
     },
     {
@@ -419,6 +440,27 @@
           "alt": "Emotional pricing scenarios"
         },
         {
+          "type": "phone-loop",
+          "id": "emotional-phone-loop",
+          "items": [
+            {
+              "id": "night",
+              "src": "assets/works/huolala-weather/night-phone.webp",
+              "alt": "深夜找车场景"
+            },
+            {
+              "id": "holiday",
+              "src": "assets/works/huolala-weather/holiday-phone.webp",
+              "alt": "假期找车场景"
+            },
+            {
+              "id": "reservation",
+              "src": "assets/works/huolala-weather/reservation-phone.webp",
+              "alt": "预约找车场景"
+            }
+          ]
+        },
+        {
           "type": "gallery",
           "id": "pricing-details",
           "columns": 2,
@@ -485,7 +527,7 @@
           "frame": false,
           "radius": 20,
           "caption": ""
-}
+        }
       ]
     },
     {

@@ -579,6 +579,9 @@ function WorkHarborPage() {
     if (!block) return null;
     const type = block.type || 'text';
 
+    if (type === 'phone-loop') return <div key={key} className="case-scroll-item case-phone-loop" role="group" aria-label={lang === 'zh' ? '不同场景下的找车体验' : 'Matching experiences across scenarios'}>
+      {(block.items || []).map((item, index) => <img key={item.id} src={item.src} alt={item.alt} draggable={false} style={{'--phone-delay':`${-index * 2.8}s`, '--phone-static-x':`${(index - 1) * 28}cqw`}} />)}
+    </div>;
     if (type === 'image-carousel') return <CaseImageCarousel key={key} media={block} lang={lang} />;
     if (type === 'weather-tabs') return <CaseWeatherTabs key={key} media={block} lang={lang} />;
     if (type === 'comparison') return <CaseComparison key={key} media={block} lang={lang} />;
