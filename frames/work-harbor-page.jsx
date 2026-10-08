@@ -16,7 +16,7 @@ function CaseImageCarousel({ media, lang }) {
     }}>
       {items.map((item,index)=><figure className="case-story-card" key={item.id}>
         <div className="case-media-frame"><img className="case-media-content" src={item.src} alt={item.alt || ''} loading="lazy" draggable={false} /><window.WorkGlassLens key={item.src} fit="contain" /></div>
-        <figcaption><span>{String(index+1).padStart(2,'0')}</span><p>{item.caption}</p></figcaption>
+
       </figure>)}
     </div>
     <div className="case-story-controls">

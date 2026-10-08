@@ -353,3 +353,15 @@
 .case-story-dots button::after {content:'';position:absolute;width:6px;height:6px;border-radius:50%;background:var(--case-heading);opacity:.2;left:11px;top:17px;}
 .case-story-dots button[aria-current='true']::after {opacity:1;}
 @media(max-width:720px) {.case-story-card {flex-basis:85%;}.case-story-track {gap:12px;}}
+
+/* Let the image collection extend beyond the reading column. */
+.huolala-case .case-story-carousel {width:min(1440px,calc(100vw - 64px));position:relative;left:50%;transform:translateX(-50%);}
+.huolala-case .case-story-track {gap:24px;}
+.huolala-case .case-story-card {flex-basis:calc((100% - 48px)/3);border-radius:24px;}
+.huolala-case .case-story-card .case-media-frame {border-radius:24px;--case-media-radius:24px;}
+@media(max-width:720px) {
+ .huolala-case .case-story-carousel {width:calc(100vw - 40px);}
+ .huolala-case .case-story-track {gap:16px;}
+ .huolala-case .case-story-card {flex-basis:92%;border-radius:16px;}
+ .huolala-case .case-story-card .case-media-frame {border-radius:16px;--case-media-radius:16px;}
+}
