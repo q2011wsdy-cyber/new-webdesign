@@ -42,6 +42,12 @@
       "hideTitle": true,
       "blocks": [
         {
+          "type": "case-copy",
+          "variant": "story-intro",
+          "title": "推动改版设计",
+          "body": "构建面向未来的可扩展设计框架，通过架构重构减少页面冗余、统一多业务体验并降低开发成本，同时融入情感化设计，提升用户决策意愿，驱动业务持续增长。"
+        },
+        {
           "type": "image-carousel",
           "id": "redesign-story",
           "items": [
@@ -284,6 +290,12 @@
       "id": "redesign-story",
       "hideTitle": true,
       "blocks": [
+        {
+          "type": "case-copy",
+          "variant": "story-intro",
+          "title": "Driving the redesign",
+          "body": "Build a scalable design framework for the future. Restructure the architecture to reduce page clutter, unify the experience across services, and lower development costs. Bring emotional design into the journey to help users make decisions and support sustained business growth."
+        },
         {
           "type": "image-carousel",
           "id": "redesign-story",
