@@ -374,7 +374,8 @@
           "label": "技能",
           "value": "产品设计、动态设计、用户调研"
         }
-      ]
+      ],
+      "showBanner": false
     },
     "huolalaEnglish": {
       "overrides": {
@@ -665,7 +666,8 @@
             "label": "Skills",
             "value": "Product design, motion design, user research"
           }
-        ]
+        ],
+        "showBanner": false
       }
     }
   }

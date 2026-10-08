@@ -760,7 +760,7 @@ function WorkHarborPage() {
           .case-scroll-item { opacity: 1 !important; transform: none !important; transition: none !important; }
         }
       `}</style>
-      {work.bannerCover && <div className="case-banner-cover" role="img" aria-label={work.bannerCover.alt || '通栏封面，图片待补充'} style={work.bannerCover.src ? {backgroundImage: `url(${work.bannerCover.src})`} : undefined}>
+      {work.bannerCover && work.showBanner !== false && <div className="case-banner-cover" role="img" aria-label={work.bannerCover.alt || '通栏封面，图片待补充'} style={work.bannerCover.src ? {backgroundImage: `url(${work.bannerCover.src})`} : undefined}>
         {!work.bannerCover.src && <span>封面图片待补充</span>}
       </div>}
       <SiteTopbar

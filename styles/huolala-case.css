@@ -381,3 +381,5 @@
 
 .huolala-case .case-story-track {padding-left:0;padding-right:calc(100% - var(--story-card-width));scroll-padding-inline:0;scroll-snap-type:none;}
 .huolala-case .case-story-card {scroll-snap-align:none;}
+
+.huolala-case:not(:has(.case-banner-cover)) {padding-top:20px !important;}

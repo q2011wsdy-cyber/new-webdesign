@@ -33,6 +33,7 @@
     }
   ],
   "showCover": false,
+  "showBanner": false,
   "hideNextNav": true,
   "hideFooter": true,
   "sections": [
@@ -275,6 +276,7 @@
     }
   ],
   "showCover": false,
+  "showBanner": false,
   "hideNextNav": true,
   "hideFooter": true,
   "sections": [
