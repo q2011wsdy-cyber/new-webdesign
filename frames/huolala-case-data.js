@@ -220,12 +220,16 @@
           "title": "地图扩播：表达找车的速度与范围"
         },
         {
-          "type": "placeholder",
+          "type": "image",
           "id": "08-broadcast-motion",
           "label": "地图扩播动效",
-          "aspectRatio": "1200/1099",
-          "nodeId": "410:51798"
-        }
+          "nodeId": "410:51798",
+          "src": "assets/works/huolala-weather/broadcast-container.webp",
+          "frame": false,
+          "radius": 20,
+          "caption": "",
+          "alt": "地图扩播动效"
+}
       ]
     },
     {
@@ -472,13 +476,16 @@
           "title": "A faster search that reaches further"
         },
         {
-          "type": "placeholder",
+          "type": "image",
           "id": "08-broadcast-motion",
           "label": "Map search expansion motion",
-          "aspectRatio": "1200/1099",
           "nodeId": "410:51798",
-          "alt": "Map search expansion motion"
-        }
+          "alt": "Map search expansion motion",
+          "src": "assets/works/huolala-weather/broadcast-container.webp",
+          "frame": false,
+          "radius": 20,
+          "caption": ""
+}
       ]
     },
     {
