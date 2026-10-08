@@ -3,9 +3,7 @@ function CaseImageCarousel({ media, lang }) {
   const drag = React.useRef(null);
   const [active, setActive] = React.useState(0);
   const items = media.items || [];
-  const [visible,setVisible]=React.useState(innerWidth<=720?1:3);
-  React.useEffect(()=>{const update=()=>setVisible(innerWidth<=720?1:3);window.addEventListener('resize',update);return()=>window.removeEventListener('resize',update);},[]);
-  const pages=Math.max(1,items.length-visible+1);
+  const pages=items.length;
   const go = index => {
     const node=track.current, card=node?.children[index];
     if(card) node.scrollTo({left:card.offsetLeft-node.children[0].offsetLeft,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
@@ -304,7 +302,7 @@ function WorkHarborPage() {
     const el = rootRef.current;
     if (!el) return;
     const onMove = (e) => {
-      setCur((c) => ({ ...c, x: e.clientX, y: e.clientY, visible: true, mode: e.target.closest('.case-media-frame, .case-banner-cover') ? 'case' : (c.mode === 'case' ? 'default' : c.mode) }));
+      setCur((c) => ({ ...c, x: e.clientX, y: e.clientY, visible: true, mode: e.target.closest('.case-story-track') ? 'drag' : e.target.closest('.case-media-frame, .case-banner-cover') ? 'case' : (['case','drag'].includes(c.mode) ? 'default' : c.mode) }));
     };
     const onLeave = () => setCur((c) => ({ ...c, visible: false }));
     el.addEventListener('mousemove', onMove);
@@ -831,7 +829,7 @@ function WorkHarborPage() {
       </div>
       <div className={`case-return-veil${leavingCase ? ' is-visible' : ''}`} aria-hidden="true" />
 
-      <div style={{ ...cursorBlock, opacity: cur.mode === 'case' ? 0 : cursorBlock.opacity }} />
+      <div style={{ ...cursorBlock, opacity: ['case','drag'].includes(cur.mode) ? 0 : cursorBlock.opacity }} />
 
     </div>
   );
