@@ -8,7 +8,7 @@ function CasePhoneLoop({ media, lang }) {
     if (busy.current || items.length < 2) return;
     busy.current = true;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const frames = slot => ({transform:`translateX(-50%) translateX(calc(${slot} * var(--phone-step))) scale(${slot === 0 ? 1 : .42})`, opacity:slot === 0 ? 1 : Math.abs(slot) === 1 ? .08 : 0});
+    const frames = slot => ({transform:`translateX(-50%) translateX(calc(${slot} * var(--phone-step)))`, opacity:1});
     const animations = Array.from(root.current.querySelectorAll('img')).map(img => {
       const slot = Number(img.dataset.slot);
       return img.animate([frames(slot), frames(slot - direction)], {duration:reduced ? 0 : 700, easing:'cubic-bezier(.4,0,.2,1)', fill:'forwards'});
@@ -29,7 +29,7 @@ function CasePhoneLoop({ media, lang }) {
     onPointerDown={event => {start.current = {x:event.clientX,y:event.clientY};event.currentTarget.setPointerCapture(event.pointerId);}}
     onPointerUp={event => {const from = start.current;start.current = null;if (from && Math.abs(event.clientX-from.x)>30 && Math.abs(event.clientX-from.x)>Math.abs(event.clientY-from.y)) move(event.clientX<from.x?1:-1);}}
     onPointerCancel={() => {start.current = null;}}>
-    {items.length > 0 && [-2,-1,0,1,2].map(slot => {const item=items[(active+slot+items.length*2)%items.length];return <img key={`${active}-${slot}`} data-slot={slot} src={item.src} alt={slot === 0 ? item.alt : ''} aria-hidden={slot !== 0} draggable={false} style={{transform:`translateX(-50%) translateX(calc(${slot} * var(--phone-step))) scale(${slot===0?1:.42})`,opacity:slot===0?1:Math.abs(slot)===1?.08:0}} />;})}
+    {items.length > 0 && [-1,0,1].map(slot => {const item=items[(active+slot+items.length*2)%items.length];return <img key={`${active}-${slot}`} data-slot={slot} src={item.src} alt={slot === 0 ? item.alt : ''} aria-hidden={slot !== 0} draggable={false} style={{transform:`translateX(-50%) translateX(calc(${slot} * var(--phone-step)))`,opacity:1}} />;})}
   </div>;
 }
 

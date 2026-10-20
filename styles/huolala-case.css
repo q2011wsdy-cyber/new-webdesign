@@ -442,11 +442,11 @@
 
 .case-phone-loop {position:relative;container-type:inline-size;aspect-ratio:940/650;overflow:hidden;border-radius:20px;background:color-mix(in srgb,var(--color-bg) 95%,white 5%);}
 :root[data-theme='light'] .case-phone-loop {background:color-mix(in srgb,var(--color-bg) 95%,black 5%);}
- .case-phone-loop {--phone-step:49cqw;aspect-ratio:940/580;touch-action:pan-y;cursor:grab;}
+ .case-phone-loop {--phone-step:100cqw;aspect-ratio:940/580;touch-action:pan-y;cursor:grab;}
 .case-phone-loop:active {cursor:grabbing;}
 .case-phone-loop:focus-visible {outline:2px solid #ff6600;outline-offset:4px;}
 .case-phone-loop img {position:absolute;left:50%;top:8%;width:64%;height:auto;max-width:none;object-fit:contain;transform-origin:50% 12%;pointer-events:none;user-select:none;will-change:transform,opacity;}
-@media(max-width:720px) {.case-phone-loop {--phone-step:64cqw;aspect-ratio:1/1;}.case-phone-loop img {width:84%;top:10%;}}
+@media(max-width:720px) {.case-phone-loop {--phone-step:100cqw;aspect-ratio:1/1;}.case-phone-loop img {width:84%;top:10%;}}
 
 .huolala-case .case-comparison-stage,
 .huolala-case .case-comparison-stage * {cursor:default !important;}
