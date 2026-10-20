@@ -447,3 +447,6 @@
 .case-phone-loop:focus-visible {outline:2px solid #ff6600;outline-offset:4px;}
 .case-phone-loop img {position:absolute;left:50%;top:8%;width:64%;height:auto;max-width:none;object-fit:contain;transform-origin:50% 12%;pointer-events:none;user-select:none;will-change:transform,opacity;}
 @media(max-width:720px) {.case-phone-loop {aspect-ratio:1/1;}.case-phone-loop img {width:84%;top:10%;}}
+
+.huolala-case .case-comparison-stage,
+.huolala-case .case-comparison-stage * {cursor:default !important;}

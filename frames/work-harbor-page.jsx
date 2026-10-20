@@ -354,7 +354,7 @@ function WorkHarborPage() {
     const el = rootRef.current;
     if (!el) return;
     const onMove = (e) => {
-      setCur((c) => ({ ...c, x: e.clientX, y: e.clientY, visible: true, mode: e.target.closest('.case-story-track') ? 'drag' : e.target.closest('.case-media-frame, .case-banner-cover') ? 'case' : (['case','drag'].includes(c.mode) ? 'default' : c.mode) }));
+      setCur((c) => ({ ...c, x: e.clientX, y: e.clientY, visible: true, mode: e.target.closest('.case-comparison-stage') ? 'native' : e.target.closest('.case-story-track') ? 'drag' : e.target.closest('.case-media-frame, .case-banner-cover') ? 'case' : (['case','drag','native'].includes(c.mode) ? 'default' : c.mode) }));
     };
     const onLeave = () => setCur((c) => ({ ...c, visible: false }));
     el.addEventListener('mousemove', onMove);
@@ -885,7 +885,7 @@ function WorkHarborPage() {
       </div>
       <div className={`case-return-veil${leavingCase ? ' is-visible' : ''}`} aria-hidden="true" />
 
-      <div style={{ ...cursorBlock, opacity: ['case','drag'].includes(cur.mode) ? 0 : cursorBlock.opacity }} />
+      <div style={{ ...cursorBlock, opacity: ['case','drag','native'].includes(cur.mode) ? 0 : cursorBlock.opacity }} />
 
     </div>
   );
