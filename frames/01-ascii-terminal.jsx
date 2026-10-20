@@ -252,7 +252,12 @@ function AsciiHeroSection({ lang, children }) {
       copy.style.visibility = copyOpacity === 0 ? 'hidden' : 'visible';
       const arrow = root.querySelector('.hero-stack-arrow');
       const lastBounds = cards[cards.length - 1].getBoundingClientRect();
-      const arrowOpacity = 1 - ease(clamp((32 - lastBounds.bottom) / 64));
+      const works = document.getElementById('works');
+      const worksGap = works ? works.getBoundingClientRect().top - arrow.getBoundingClientRect().bottom : Infinity;
+      const arrowOpacity = Math.min(
+        1 - ease(clamp((32 - lastBounds.bottom) / 64)),
+        ease(clamp((worksGap - 32) / 64))
+      );
       arrow.style.opacity = String(arrowOpacity);
       arrow.style.visibility = arrowOpacity === 0 ? 'hidden' : 'visible';
 
