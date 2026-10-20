@@ -1,3 +1,38 @@
+function CasePhoneLoop({ media, lang }) {
+  const [active, setActive] = React.useState(0);
+  const root = React.useRef(null);
+  const start = React.useRef(null);
+  const busy = React.useRef(false);
+  const items = media.items || [];
+  const move = React.useCallback(direction => {
+    if (busy.current || items.length < 2) return;
+    busy.current = true;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const frames = slot => ({transform:`translateX(-50%) translateX(${slot * 33}cqw) scale(${slot === 0 ? 1 : .78})`, opacity:slot === 0 ? 1 : Math.abs(slot) === 1 ? .08 : 0});
+    const animations = Array.from(root.current.querySelectorAll('img')).map(img => {
+      const slot = Number(img.dataset.slot);
+      return img.animate([frames(slot), frames(slot - direction)], {duration:reduced ? 0 : 700, easing:'cubic-bezier(.22,1,.36,1)'});
+    });
+    Promise.all(animations.map(animation => animation.finished.catch(() => {}))).then(() => {
+      setActive(value => (value + direction + items.length) % items.length);
+      busy.current = false;
+    });
+  }, [items.length]);
+  React.useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const timer = setTimeout(() => { if (!start.current) move(1); }, 2000);
+    return () => clearTimeout(timer);
+  }, [active, move]);
+  return <div ref={root} className="case-scroll-item case-phone-loop" role="group" tabIndex={0}
+    aria-label={lang === 'zh' ? '不同场景下的找车体验，左右滑动切换' : 'Matching scenarios. Swipe left or right to change'}
+    onKeyDown={event => { if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {event.preventDefault();move(event.key === 'ArrowRight' ? 1 : -1);} }}
+    onPointerDown={event => {start.current = {x:event.clientX,y:event.clientY};event.currentTarget.setPointerCapture(event.pointerId);}}
+    onPointerUp={event => {const from = start.current;start.current = null;if (from && Math.abs(event.clientX-from.x)>30 && Math.abs(event.clientX-from.x)>Math.abs(event.clientY-from.y)) move(event.clientX<from.x?1:-1);}}
+    onPointerCancel={() => {start.current = null;}}>
+    {items.length > 0 && [-2,-1,0,1,2].map(slot => {const item=items[(active+slot+items.length*2)%items.length];return <img key={`${active}-${slot}`} data-slot={slot} src={item.src} alt={slot === 0 ? item.alt : ''} aria-hidden={slot !== 0} draggable={false} style={{transform:`translateX(-50%) translateX(${slot*33}cqw) scale(${slot===0?1:.78})`,opacity:slot===0?1:Math.abs(slot)===1?.08:0}} />;})}
+  </div>;
+}
+
 function CaseImageCarousel({ media, lang }) {
   const track = React.useRef(null);
   const drag = React.useRef(null);
@@ -579,9 +614,7 @@ function WorkHarborPage() {
     if (!block) return null;
     const type = block.type || 'text';
 
-    if (type === 'phone-loop') return <div key={key} className="case-scroll-item case-phone-loop" role="group" aria-label={lang === 'zh' ? '不同场景下的找车体验' : 'Matching experiences across scenarios'}>
-      {(block.items || []).map((item, index) => <img key={item.id} src={item.src} alt={item.alt} draggable={false} style={{'--phone-delay':`${-index * 2.8}s`, '--phone-static-x':`${(index - 1) * 28}cqw`}} />)}
-    </div>;
+    if (type === 'phone-loop') return <CasePhoneLoop key={key} media={block} lang={lang} />;
     if (type === 'image-carousel') return <CaseImageCarousel key={key} media={block} lang={lang} />;
     if (type === 'weather-tabs') return <CaseWeatherTabs key={key} media={block} lang={lang} />;
     if (type === 'comparison') return <CaseComparison key={key} media={block} lang={lang} />;
