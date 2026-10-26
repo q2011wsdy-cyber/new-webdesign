@@ -102,6 +102,12 @@ function CaseWeatherTabs({ media, lang }) {
   const options = media.options || [];
   const [selected, setSelected] = React.useState(media.defaultOption || 'snow');
   const active = options.find(option => option.id === selected) || options[0];
+  const [visible, setVisible] = React.useState(null);
+  const videoNodes = React.useRef({});
+  React.useEffect(() => {
+    const video = videoNodes.current[selected];
+    if (video && video.readyState >= 3 && !video.paused) setVisible(selected);
+  }, [selected]);
   const english = lang === 'en';
   const labels = { snow: 'Snow', rain: 'Rain', dust: 'Dust' };
   const choose = id => setSelected(id);
@@ -120,8 +126,17 @@ function CaseWeatherTabs({ media, lang }) {
       </div>
       <div className="case-weather-phone" id="weather-panel" role="tabpanel" aria-labelledby={`weather-tab-${active?.id}`}>
         <img className="case-weather-hardware" src={media.phoneFrame} alt="" />
-        <div className="case-weather-screen" key={active?.id}>
-          {active?.media?.src ? (active.media.type === 'video' ? <video src={active.media.src} poster={active.media.poster} autoPlay={active.media.autoplay !== false} muted={active.media.muted !== false} loop={active.media.loop !== false} controls={active.media.controls === true} playsInline /> : <img src={active.media.src} alt={active.media.alt || active.label} />) : <div className="case-weather-empty">{english ? `${labels[active?.id]} media` : `${active?.label}素材待上传`}</div>}
+        <div className="case-weather-screen">
+          {options.filter(option => option.media?.type === 'video' && option.media.src).map(option => <video
+            key={option.id}
+            ref={node => { videoNodes.current[option.id] = node; }}
+            className={`case-weather-video${visible === option.id ? ' is-visible' : ''}`}
+            src={option.media.src}
+            preload="auto" autoPlay muted loop playsInline
+            aria-hidden={visible !== option.id}
+            onPlaying={() => { if (selected === option.id) setVisible(option.id); }}
+          />)}
+          {active?.media?.type !== 'video' && (active?.media?.src ? <img src={active.media.src} alt={active.media.alt || active.label} /> : <div className="case-weather-empty">{english ? `${labels[active?.id]} media` : `${active?.label}素材待上传`}</div>)}
           {active?.media?.src && active.media.type !== 'video' && <window.WorkGlassLens key={active.media.src} fit="contain" />}
         </div>
       </div>
