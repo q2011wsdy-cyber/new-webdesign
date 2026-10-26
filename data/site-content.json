@@ -305,11 +305,16 @@
                   "label": "下雪天",
                   "icon": "assets/works/huolala-weather/snow.svg",
                   "media": {
-                    "type": "image",
+                    "type": "video",
                     "id": "weather-snow",
                     "label": "下雪天界面",
-                    "src": "assets/works/huolala-weather/snow.webp",
-                    "alt": "下雪天接单界面"
+                    "src": "assets/works/huolala-weather/snow.mp4",
+                    "alt": "下雪天接单界面",
+                    "autoplay": true,
+                    "muted": true,
+                    "loop": true,
+                    "controls": false,
+                    "poster": "assets/works/huolala-weather/snow.webp"
                   }
                 },
                 {
@@ -317,11 +322,15 @@
                   "label": "下雨天",
                   "icon": "assets/works/huolala-weather/rain.svg",
                   "media": {
-                    "type": "image",
+                    "type": "video",
                     "id": "weather-rain",
                     "label": "下雨天界面",
-                    "src": "",
-                    "alt": "下雨天接单界面"
+                    "src": "assets/works/huolala-weather/rain.mp4",
+                    "alt": "下雨天接单界面",
+                    "autoplay": true,
+                    "muted": true,
+                    "loop": true,
+                    "controls": false
                   }
                 },
                 {
@@ -329,11 +338,15 @@
                   "label": "沙尘天",
                   "icon": "assets/works/huolala-weather/dust.svg",
                   "media": {
-                    "type": "image",
+                    "type": "video",
                     "id": "weather-dust",
                     "label": "沙尘天界面",
-                    "src": "",
-                    "alt": "沙尘天接单界面"
+                    "src": "assets/works/huolala-weather/dust.mp4",
+                    "alt": "沙尘天接单界面",
+                    "autoplay": true,
+                    "muted": true,
+                    "loop": true,
+                    "controls": false
                   }
                 }
               ]
