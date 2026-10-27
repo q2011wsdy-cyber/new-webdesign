@@ -180,6 +180,8 @@
 }
 .huolala-case #broadcast-motion .case-media-frame {
   background: #fff !important;
+  outline: 1px solid #e5e7eb;
+  outline-offset: -1px;
 }
 
 /* Reverse neutral tones only; saturated illustration colors stay intact. */
