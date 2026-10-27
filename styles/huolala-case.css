@@ -265,17 +265,15 @@
 /* Weather study: the Figma phone crop and chips share one responsive canvas. */
 .case-weather-stage { position:relative; aspect-ratio:1200/594; overflow:hidden; border-radius:20px; background:rgba(255,255,255,.05); container-type:inline-size; }
 :root[data-theme='light'] .case-weather-stage { background:rgba(0,0,0,.05); }
-.case-weather-tabs { position:absolute; left:10%; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:8px; width:clamp(148px,19cqw,200px); }
-.case-weather-tab { position:relative; display:flex; align-items:center; gap:12px; width:100%; min-height:52px; padding:12px 18px; border:0; border-radius:12px; background:transparent; color:var(--case-copy); font:inherit; font-size:clamp(13px,1.6cqw,16px); font-weight:400; text-align:left; cursor:pointer; transition:background-color 180ms ease,color 180ms ease,box-shadow 180ms ease; }
-.case-weather-tab img { width:22px; height:22px; flex:none; }
-.case-weather-tab:hover { background:rgba(255,255,255,.06); }
-:root[data-theme='light'] .case-weather-tab:hover { background:rgba(255,255,255,.5); }
-.case-weather-tab[aria-selected='true'] { background:rgba(255,255,255,.1); color:var(--case-heading); box-shadow:0 1px 3px rgba(0,0,0,.06); }
-:root[data-theme='light'] .case-weather-tab[aria-selected='true'] { background:#fff; }
-.case-weather-tab::after {content:'';width:5px;height:5px;border-radius:50%;background:#ff6600;margin-left:auto;opacity:0;transition:opacity 180ms ease;}
-.case-weather-tab[aria-selected='true']::after {opacity:1;}
+.case-weather-tabs { position:absolute; z-index:2; left:50%; top:6%; transform:translateX(-50%); display:flex; gap:12px; }
+.case-weather-tab { display:grid; place-items:center; width:44px; height:44px; padding:0; border:0; border-radius:50%; background:rgba(128,128,128,.12); cursor:pointer; transition:background-color 180ms ease,box-shadow 180ms ease; }
+.case-weather-tab img { width:22px; height:22px; filter:grayscale(1); opacity:.45; transition:filter 180ms ease,opacity 180ms ease; }
+.case-weather-tab:hover { background:rgba(128,128,128,.2); }
+.case-weather-tab[aria-selected='true'] { background:rgba(255,255,255,.15); box-shadow:0 0 0 1px rgba(255,255,255,.15),0 2px 8px rgba(0,0,0,.06); }
+:root[data-theme='light'] .case-weather-tab[aria-selected='true'] { background:#fff; box-shadow:0 0 0 1px rgba(0,0,0,.03),0 2px 8px rgba(0,0,0,.06); }
+.case-weather-tab[aria-selected='true'] img { filter:grayscale(0); opacity:1; }
 .case-weather-tab:focus-visible { outline:2px solid var(--case-heading); outline-offset:4px; }
-.case-weather-phone { position:absolute; width:41.417%; height:153.367%; left:44.917%; top:6.734%; overflow:hidden; }
+.case-weather-phone { position:absolute; width:41.417%; height:153.367%; left:29.2915%; top:23%; overflow:hidden; }
 .case-weather-hardware { position:absolute; width:200.804%; max-width:none; height:91.363%; left:-50.503%; top:-10.885%; pointer-events:none; }
 .case-weather-screen { position:absolute; left:10.06%; right:8.39%; top:3.868%; bottom:-.043%; border-radius:5.012cqw; overflow:hidden; background:var(--color-bg); }
 .case-weather-screen > img,.case-weather-screen > video { display:block; width:100%; height:100%; object-fit:contain; }
@@ -286,10 +284,9 @@
 @media(prefers-reduced-motion:reduce) { .case-weather-tab,.case-weather-tab img {transition:none} .case-weather-screen {animation:none} }
 @media(max-width:600px) {
   .case-weather-stage {aspect-ratio:1200/1300;}
-  .case-weather-tabs {left:6%;top:6%;transform:none;width:88%;flex-direction:row;gap:6px;}
-  .case-weather-tab {flex:1;min-width:0;min-height:44px;justify-content:center;padding:10px 6px;gap:6px;font-size:12px;border-radius:10px;}
-  .case-weather-tab img {width:18px;height:18px;}
-  .case-weather-tab::after {display:none;}
+  .case-weather-tabs {left:50%;top:5%;transform:translateX(-50%);gap:10px;}
+  .case-weather-tab {width:40px;height:40px;}
+  .case-weather-tab img {width:20px;height:20px;}
   .case-weather-phone {width:70%;left:15%;height:153%;top:23%;}
   .case-weather-screen {border-radius:8.5cqw;}
 }

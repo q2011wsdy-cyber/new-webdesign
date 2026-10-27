@@ -105,8 +105,14 @@ function CaseWeatherTabs({ media, lang }) {
   const [visible, setVisible] = React.useState(null);
   const videoNodes = React.useRef({});
   React.useEffect(() => {
+    Object.entries(videoNodes.current).forEach(([id, node]) => {
+      if (node && id !== selected) node.pause();
+    });
     const video = videoNodes.current[selected];
-    if (video && video.readyState >= 3 && !video.paused) setVisible(selected);
+    if (video) {
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    }
   }, [selected]);
   const english = lang === 'en';
   const labels = { snow: 'Snow', rain: 'Rain', dust: 'Dust' };
@@ -114,15 +120,15 @@ function CaseWeatherTabs({ media, lang }) {
   return <figure className="case-scroll-item case-weather" style={{margin:0}}>
     <div className={`case-weather-stage${media.copy ? ' case-weather-stage--with-copy' : ''}`}>
       {media.copy && <div className="case-weather-copy"><h2>{media.copy.title}</h2>{media.copy.body && <p>{media.copy.body}</p>}</div>}
-      <div className="case-weather-tabs" role="tablist" aria-label={english ? 'Weather conditions' : '天气场景'} aria-orientation="vertical">
-        {options.map((option,index) => <button key={option.id} type="button" role="tab" id={`weather-tab-${option.id}`} aria-selected={active?.id === option.id} aria-controls="weather-panel" tabIndex={active?.id === option.id ? 0 : -1} onClick={() => choose(option.id)} onKeyDown={event => {
+      <div className="case-weather-tabs" role="tablist" aria-label={english ? 'Weather conditions' : '天气场景'} aria-orientation="horizontal">
+        {options.map((option,index) => <button key={option.id} type="button" role="tab" id={`weather-tab-${option.id}`} aria-label={english ? labels[option.id] || option.label : option.label} title={english ? labels[option.id] || option.label : option.label} aria-selected={active?.id === option.id} aria-controls="weather-panel" tabIndex={active?.id === option.id ? 0 : -1} onClick={() => choose(option.id)} onKeyDown={event => {
           let next;
           if (['ArrowDown','ArrowRight'].includes(event.key)) next=(index+1)%options.length;
           if (['ArrowUp','ArrowLeft'].includes(event.key)) next=(index+options.length-1)%options.length;
           if (event.key==='Home') next=0;
           if (event.key==='End') next=options.length-1;
           if(next!==undefined){event.preventDefault();choose(options[next].id);document.getElementById(`weather-tab-${options[next].id}`)?.focus();}
-        }} className="case-weather-tab"><img src={option.icon} alt="" /><span>{english ? labels[option.id] || option.label : option.label}</span></button>)}
+        }} className="case-weather-tab"><img src={option.icon} alt="" /></button>)}
       </div>
       <div className="case-weather-phone" id="weather-panel" role="tabpanel" aria-labelledby={`weather-tab-${active?.id}`}>
         <img className="case-weather-hardware" src={media.phoneFrame} alt="" />
@@ -132,9 +138,14 @@ function CaseWeatherTabs({ media, lang }) {
             ref={node => { videoNodes.current[option.id] = node; }}
             className={`case-weather-video${visible === option.id ? ' is-visible' : ''}`}
             src={option.media.src}
-            preload="auto" autoPlay muted loop playsInline
+            preload="auto" muted playsInline
             aria-hidden={visible !== option.id}
             onPlaying={() => { if (selected === option.id) setVisible(option.id); }}
+            onEnded={() => {
+              if (selected !== option.id) return;
+              const index = options.findIndex(item => item.id === option.id);
+              choose(options[(index + 1) % options.length].id);
+            }}
           />)}
           {active?.media?.type !== 'video' && (active?.media?.src ? <img src={active.media.src} alt={active.media.alt || active.label} /> : <div className="case-weather-empty">{english ? `${labels[active?.id]} media` : `${active?.label}素材待上传`}</div>)}
           {active?.media?.src && active.media.type !== 'video' && <window.WorkGlassLens key={active.media.src} fit="contain" />}
