@@ -178,6 +178,9 @@
 :root[data-theme='light'] .huolala-case .case-media-frame {
   background: rgba(0, 0, 0, .1) !important;
 }
+.huolala-case #broadcast-motion .case-media-frame {
+  background: #fff !important;
+}
 
 /* Reverse neutral tones only; saturated illustration colors stay intact. */
 :root[data-theme='dark'] .huolala-case [data-invert-on-theme='dark'] img,
