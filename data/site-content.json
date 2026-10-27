@@ -232,25 +232,13 @@
               "caption": ""
             },
             {
-              "type": "phone-loop",
+              "type": "image",
               "id": "emotional-phone-loop",
-              "items": [
-                {
-                  "id": "night",
-                  "src": "assets/works/huolala-weather/night-phone.webp",
-                  "alt": "深夜找车场景"
-                },
-                {
-                  "id": "holiday",
-                  "src": "assets/works/huolala-weather/holiday-phone.webp",
-                  "alt": "假期找车场景"
-                },
-                {
-                  "id": "reservation",
-                  "src": "assets/works/huolala-weather/reservation-phone.webp",
-                  "alt": "预约找车场景"
-                }
-              ]
+              "src": "assets/works/huolala-weather/emotional-scenarios.webp",
+              "alt": "预约单、深夜与中秋假期的找车场景",
+              "frame": false,
+              "radius": 20,
+              "caption": ""
             },
             {
               "type": "gallery",
@@ -606,25 +594,13 @@
                 "caption": ""
               },
               {
-                "type": "phone-loop",
+                "type": "image",
                 "id": "emotional-phone-loop",
-                "items": [
-                  {
-                    "id": "night",
-                    "src": "assets/works/huolala-weather/night-phone.webp",
-                    "alt": "深夜找车场景"
-                  },
-                  {
-                    "id": "holiday",
-                    "src": "assets/works/huolala-weather/holiday-phone.webp",
-                    "alt": "假期找车场景"
-                  },
-                  {
-                    "id": "reservation",
-                    "src": "assets/works/huolala-weather/reservation-phone.webp",
-                    "alt": "预约找车场景"
-                  }
-                ]
+                "src": "assets/works/huolala-weather/emotional-scenarios.webp",
+                "alt": "预约单、深夜与中秋假期的找车场景",
+                "frame": false,
+                "radius": 20,
+                "caption": ""
               },
               {
                 "type": "gallery",
