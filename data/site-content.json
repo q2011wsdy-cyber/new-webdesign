@@ -280,7 +280,9 @@
             {
               "type": "case-copy",
               "variant": "feature",
-              "title": "“呼风唤雨”的天气粒子 让恶劣天气更沉浸"
+              "title": "呼风唤雨的天气粒子，让恶劣天气更生动",
+              "eyebrow": "设计自驱",
+              "body": "此外，我补充了天气场景，并跟研发同学共创天气粒子系统，让动态的表达与信息相结合，增强沉浸感跟可信度。"
             },
             {
               "type": "weather-tabs",
@@ -642,7 +644,9 @@
               {
                 "type": "case-copy",
                 "variant": "feature",
-                "title": "Bringing weather to life: a more immersive experience in harsh conditions"
+                "title": "Weather particles that bring harsh conditions to life",
+                "eyebrow": "Design initiative",
+                "body": "I also expanded the weather scenarios and co-created a weather particle system with the engineering team, combining motion with information to strengthen immersion and credibility."
               },
               {
                 "type": "image",

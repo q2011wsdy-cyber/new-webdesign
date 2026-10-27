@@ -296,6 +296,7 @@
 .huolala-case #waiting-experience .case-media-caption { margin-left:clamp(20px,5vw,64px); margin-right:clamp(20px,5vw,64px); text-align:left; }
 
 /* Centered reading column, with left-aligned text as in the editorial reference. */
+.huolala-case .case-editorial-copy .case-editorial-eyebrow {font-size:12px;line-height:1.5;color:var(--case-muted);margin:0 0 12px;}
 .huolala-case .case-editorial-copy--feature,
 .huolala-case .case-editorial-copy--closing {
   width:min(100%,640px); max-width:640px; margin:32px auto 40px;

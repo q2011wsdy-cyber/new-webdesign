@@ -646,6 +646,7 @@ function WorkHarborPage() {
       });
       const icons = ['M4 19v-4m5 4v-8m5 8V7m5 12V3', 'M4 5h16M4 12h10M4 19h6', 'M4 17l6-6 4 3 6-9M15 5h5v5'];
       return <div key={key} className={`case-editorial-copy case-editorial-copy--${block.variant || 'body'}`} {...textProbe}>
+        {block.eyebrow && <p className="case-editorial-eyebrow">{block.eyebrow}</p>}
         {block.title && <h2>{splitHeading ? <>
           <span className="case-heading-primary">{heading.slice(0, separator).trim()}</span>
           <span className="case-heading-secondary">{heading.slice(separator + 1).trim()}</span>
@@ -868,8 +869,7 @@ function WorkHarborPage() {
         const sectionId = section.id || `section-${sectionIndex + 1}`;
         const sectionTitle = section.title || ui[section.id] || section.id || `section ${sectionIndex + 1}`;
         const blocks = section.blocks || [];
-        const weatherCopy = sectionId === 'weather-particles' ? blocks.find(block => block.type === 'case-copy') : undefined;
-        const displayBlocks = weatherCopy ? blocks.filter(block => block !== weatherCopy).map(block => block.type === 'weather-tabs' ? {...block, copy: weatherCopy} : block) : blocks;
+        const displayBlocks = blocks;
         return <section key={sectionId} id={sectionId} style={{ scrollMarginTop: 110 }}>
           {section.hideTitle !== true && <div style={{ ...s.sectionTitle, ...(section.accent ? { color: C.accent } : {}) }}>── {sectionTitle} ─────────────────────────────────────────────</div>}
           <div style={s.blockStack}>{displayBlocks.map((block, blockIndex) => renderBlock(block, `${sectionId}-${blockIndex}`))}</div>
