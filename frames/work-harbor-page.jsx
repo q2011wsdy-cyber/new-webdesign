@@ -98,6 +98,25 @@ function CaseImageCarousel({ media, lang }) {
   </div>;
 }
 
+function CaseBroadcastVideo({ media, lang }) {
+  const [stage, setStage] = React.useState(0);
+  const labels = lang === 'en'
+    ? ['Within 1 minute', 'After 5 minutes', 'After 10 minutes']
+    : ['1 分钟内', '5 分钟后', '10分钟之后'];
+  const syncStage = event => {
+    const time = event.currentTarget.currentTime;
+    setStage(time >= 2.64 ? 2 : time >= 2 ? 1 : 0);
+  };
+  return <>
+    <video className="case-media-content" src={media.src}
+      autoPlay muted loop playsInline preload="auto"
+      aria-label={media.alt || media.label}
+      onTimeUpdate={syncStage} onSeeking={syncStage} onLoadedData={syncStage}
+      style={{display:'block',width:'100%',height:'auto',aspectRatio:media.aspectRatio,objectFit:media.fit || 'contain'}} />
+    <span className="case-broadcast-time" aria-label={lang === 'en' ? 'Elapsed waiting time' : '已等待时间'}>{labels[stage]}</span>
+  </>;
+}
+
 function CaseWeatherTabs({ media, lang }) {
   const options = media.options || [];
   const [selected, setSelected] = React.useState(media.defaultOption || 'snow');
@@ -580,6 +599,8 @@ function WorkHarborPage() {
         <span>{media.label}</span>
         <span className="case-placeholder-hint">{lang === 'en' ? 'Media coming soon' : '图片待补充'}</span>
       </div>;
+    } else if (type === 'video' && media.id === '08-broadcast-motion') {
+      content = <CaseBroadcastVideo media={media} lang={lang} />;
     } else if (type === 'video') {
       content = (
         <video

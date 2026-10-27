@@ -191,6 +191,8 @@
   border-radius: inherit;
   pointer-events: none;
 }
+.case-broadcast-time {position:absolute;z-index:3;left:50%;top:clamp(8px,1.5vw,20px);transform:translateX(-50%);padding:6px 14px;border-radius:999px;background:#f2f2f2;color:#555;font-size:12px;line-height:1.5;white-space:nowrap;pointer-events:none;font-variant-numeric:tabular-nums;}
+@media(max-width:600px) {.case-broadcast-time {top:6px;padding:3px 10px;font-size:10px;}}
 
 /* Reverse neutral tones only; saturated illustration colors stay intact. */
 :root[data-theme='dark'] .huolala-case [data-invert-on-theme='dark'] img,
