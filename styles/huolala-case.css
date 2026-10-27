@@ -179,9 +179,17 @@
   background: rgba(0, 0, 0, .1) !important;
 }
 .huolala-case #broadcast-motion .case-media-frame {
+  position: relative;
   background: #fff !important;
-  outline: 1px solid #e5e7eb;
-  outline-offset: -1px;
+}
+.huolala-case #broadcast-motion .case-media-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border: 1px solid #e5e7eb;
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 /* Reverse neutral tones only; saturated illustration colors stay intact. */
