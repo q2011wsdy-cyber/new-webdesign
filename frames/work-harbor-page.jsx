@@ -642,7 +642,7 @@ function WorkHarborPage() {
           ? { overflow: 'hidden', background: 'transparent', border: 'none', borderRadius: radius, '--case-media-radius': `${radius}px` }
           : { ...s.mediaFrame, borderRadius: radius, '--case-media-radius': `${radius}px` }}>
           {content}
-          {type === 'image' && <window.WorkGlassLens key={media.src} fit={media.fit || 'contain'} />}
+          {(type === 'image' || type === 'video') && <window.WorkGlassLens key={media.src} fit={media.fit || 'contain'} sourceType={type} />}
         </div>
         {media.caption && <figcaption className="case-media-caption" {...textProbe} style={{ ...s.caption, margin: '10px 0 0' }}>{media.caption}</figcaption>}
       </figure>
@@ -831,7 +831,7 @@ function WorkHarborPage() {
           transform-origin: center;
           backface-visibility: hidden;
         }
-        img, a, button { cursor: none !important; }
+        img, video, a, button { cursor: none !important; }
         .case-glass-cursor { overflow: hidden; transition: opacity 120ms ease; }
         @media (hover: none), (pointer: coarse) { .case-glass-cursor { display: none; } }
         @media (max-width: 720px) {

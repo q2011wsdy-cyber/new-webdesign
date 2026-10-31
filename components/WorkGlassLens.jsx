@@ -1,5 +1,5 @@
-/** A local image-backed refractive lens. No remote models or rendering dependencies. */
-function WorkGlassLens({ fit = 'cover' }) {
+/** A local image/video-backed refractive lens. No remote rendering dependencies. */
+function WorkGlassLens({ fit = 'cover', sourceType = 'image' }) {
   const ref = React.useRef(null);
   React.useEffect(() => {
     const canvas = ref.current;
@@ -7,8 +7,11 @@ function WorkGlassLens({ fit = 'cover' }) {
     const fine = matchMedia('(hover: hover) and (pointer: fine)');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
     if (!fine.matches || reduced.matches) return;
-    const image = tile.querySelector('img');
+    const image = tile.querySelector(sourceType === 'video' ? 'video' : 'img');
     if (!image) return;
+    const video = image.tagName === 'VIDEO';
+    const sourceWidth = () => video ? image.videoWidth : image.naturalWidth;
+    const sourceHeight = () => video ? image.videoHeight : image.naturalHeight;
     const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false, antialias: true });
     if (!gl) return;
     const vertex = 'attribute vec2 position; varying vec2 uv; void main(){ uv=position*.5+.5; gl_Position=vec4(position,0.,1.); }';
@@ -55,27 +58,30 @@ function WorkGlassLens({ fit = 'cover' }) {
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
     const locations=Object.fromEntries(['size','imageSize','pointer','radius','fitMode'].map(k=>[k,gl.getUniformLocation(program,k)]));
-    let ready=false, active=false, frame=0, previous=0, x=0,y=0,tx=0,ty=0,r=0,width=1,height=1;
+    let ready=false, active=false, frame=0, previous=0, uploadedTime=-1, x=0,y=0,tx=0,ty=0,r=0,width=1,height=1;
     const measure=()=>{width=tile.clientWidth;height=tile.clientHeight;const dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);gl.viewport(0,0,canvas.width,canvas.height);};
-    const upload=()=>{if(!image.naturalWidth)return;try{gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);ready=true;request();}catch{ready=false;}};
+    const upload=()=>{if(!sourceWidth()||(video&&image.readyState<2))return;try{gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);uploadedTime=video?image.currentTime:-1;ready=true;}catch{ready=false;}};
+    const sourceReady=()=>{upload();if(ready&&tile.matches(':hover')&&fine.matches&&!reduced.matches)active=true;request();};
     const tick=now=>{
       frame=0;const dt=Math.min((now-(previous||now-16))/1000,.05);previous=now;
       const follow=1-Math.exp(-dt/.14), ease=1-Math.exp(-dt/.09);
       x+=(tx-x)*follow;y+=(ty-y)*follow;
       const target=active?Math.min(86,width*.18):0;r+=(target-r)*ease;
       gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
-      if(ready&&r>.2){canvas.style.filter=getComputedStyle(image).filter;gl.uniform1f(locations.fitMode,fit==='contain'?1:0);gl.uniform2f(locations.size,width,height);gl.uniform2f(locations.imageSize,image.naturalWidth,image.naturalHeight);gl.uniform2f(locations.pointer,x,y);gl.uniform1f(locations.radius,r);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);}
-      if(Math.abs(tx-x)>.05||Math.abs(ty-y)>.05||Math.abs(target-r)>.05)frame=requestAnimationFrame(tick);
+      if(video&&r>.2&&image.currentTime!==uploadedTime)upload();
+      if(ready&&r>.2){canvas.style.filter=getComputedStyle(image).filter;gl.uniform1f(locations.fitMode,fit==='contain'?1:0);gl.uniform2f(locations.size,width,height);gl.uniform2f(locations.imageSize,sourceWidth(),sourceHeight());gl.uniform2f(locations.pointer,x,y);gl.uniform1f(locations.radius,r);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);}
+      if((video&&active&&!image.paused&&!image.ended)||Math.abs(tx-x)>.05||Math.abs(ty-y)>.05||Math.abs(target-r)>.05)frame=requestAnimationFrame(tick);
     };
     function request(){if(!frame){previous=0;frame=requestAnimationFrame(tick);}}
     const move=e=>{const rect=tile.getBoundingClientRect();tx=(e.clientX-rect.left)*width/rect.width;ty=(e.clientY-rect.top)*height/rect.height;request();};
-    const enter=e=>{if(e.pointerType==='touch'||reduced.matches||!fine.matches||!ready)return;move(e);x=tx;y=ty;active=true;request();};
+    const enter=e=>{if(e.pointerType==='touch'||reduced.matches||!fine.matches)return;move(e);x=tx;y=ty;active=ready;request();};
     const leave=()=>{active=false;request();};
-    const resize=new ResizeObserver(()=>{measure();request();});resize.observe(tile);measure();upload();image.addEventListener('load',upload);
+    const sourceEvents=video?['loadeddata','seeked','playing','pause']:['load'];
+    const resize=new ResizeObserver(()=>{measure();request();});resize.observe(tile);measure();sourceReady();sourceEvents.forEach(event=>image.addEventListener(event,sourceReady));
     tile.addEventListener('pointerenter',enter);tile.addEventListener('pointermove',move);tile.addEventListener('pointerleave',leave);tile.addEventListener('pointercancel',leave);
     window.addEventListener('blur',leave);reduced.addEventListener('change',leave);
-    return()=>{cancelAnimationFrame(frame);resize.disconnect();image.removeEventListener('load',upload);tile.removeEventListener('pointerenter',enter);tile.removeEventListener('pointermove',move);tile.removeEventListener('pointerleave',leave);tile.removeEventListener('pointercancel',leave);window.removeEventListener('blur',leave);reduced.removeEventListener('change',leave);gl.deleteTexture(texture);gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);};
-  }, [fit]);
+    return()=>{cancelAnimationFrame(frame);resize.disconnect();sourceEvents.forEach(event=>image.removeEventListener(event,sourceReady));tile.removeEventListener('pointerenter',enter);tile.removeEventListener('pointermove',move);tile.removeEventListener('pointerleave',leave);tile.removeEventListener('pointercancel',leave);window.removeEventListener('blur',leave);reduced.removeEventListener('change',leave);gl.deleteTexture(texture);gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);};
+  }, [fit, sourceType]);
   return <canvas ref={ref} className="work-glass-lens" style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',borderRadius:'inherit',zIndex:3}} aria-hidden="true" />;
 }
 window.WorkGlassLens=WorkGlassLens;
