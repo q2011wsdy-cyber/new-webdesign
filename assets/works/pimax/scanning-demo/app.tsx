@@ -3,6 +3,7 @@ const { useEffect, useRef, useState } = React;
 type Stage = 'camera' | 'scanning' | 'resolving' | 'result' | 'openingTemplates' | 'templates'
 
 const assets = './assets'
+const manual = new URLSearchParams(location.search).has('manual');
 const scanDuration = 3200
 const resolveDuration = 700
 const templateTransitionDuration = 480
@@ -297,6 +298,7 @@ function App() {
   }
 
   useEffect(() => {
+    if (manual) return;
     let timer: number | undefined;
     if (stage === 'camera') timer = window.setTimeout(startScan, 1100);
     if (stage === 'result') timer = window.setTimeout(openTemplates, 1400);
@@ -310,6 +312,13 @@ function App() {
     }
     return () => window.clearTimeout(timer);
   }, [stage]);
+
+  useEffect(() => {
+    if (!manual) return;
+    const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') parent.postMessage('close-scanning-demo', location.origin); };
+    window.addEventListener('keydown', escape);
+    return () => window.removeEventListener('keydown', escape);
+  }, []);
 
   const isPhotoStage = stage === 'camera' || stage === 'scanning' || stage === 'resolving'
   const isRecognizing = stage === 'scanning' || stage === 'resolving'
