@@ -7,6 +7,7 @@ function WorkGlassLens({ fit = 'cover', sourceType = 'image' }) {
     const fine = matchMedia('(hover: hover) and (pointer: fine)');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
     if (!fine.matches || reduced.matches) return;
+    if (sourceType === 'iframe') return attachFrameGlassLens(canvas, tile);
     const image = tile.querySelector(sourceType === 'video' ? 'video' : 'img');
     if (!image) return;
     const video = image.tagName === 'VIDEO';
@@ -82,6 +83,61 @@ function WorkGlassLens({ fit = 'cover', sourceType = 'image' }) {
     window.addEventListener('blur',leave);reduced.addEventListener('change',leave);
     return()=>{cancelAnimationFrame(frame);resize.disconnect();sourceEvents.forEach(event=>image.removeEventListener(event,sourceReady));tile.removeEventListener('pointerenter',enter);tile.removeEventListener('pointermove',move);tile.removeEventListener('pointerleave',leave);tile.removeEventListener('pointercancel',leave);window.removeEventListener('blur',leave);reduced.removeEventListener('change',leave);gl.deleteTexture(texture);gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);};
   }, [fit, sourceType]);
+  if (sourceType === 'iframe') return <div ref={ref} className="work-glass-lens" aria-hidden="true" style={{position:'absolute',left:0,top:0,width:0,height:0,pointerEvents:'none',borderRadius:'50%',zIndex:3,opacity:0}} />;
   return <canvas ref={ref} className="work-glass-lens" style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',borderRadius:'inherit',zIndex:3}} aria-hidden="true" />;
 }
 window.WorkGlassLens=WorkGlassLens;
+
+// A DOM backdrop source uses the same lens profile and spring as image/video
+// sources, allowing the live iframe to stay in sync without copying its pixels.
+function attachFrameGlassLens(lens, tile) {
+  const ns='http://www.w3.org/2000/svg';
+  const svg=document.createElementNS(ns,'svg');
+  const id=`frame-lens-${Math.random().toString(36).slice(2)}`;
+  svg.setAttribute('aria-hidden','true');svg.setAttribute('width','0');svg.setAttribute('height','0');
+  svg.style.position='absolute';
+  const map=document.createElement('canvas');map.width=map.height=172;
+  const ctx=map.getContext('2d'),pixels=ctx.createImageData(172,172);
+  for(let y=0;y<172;y++)for(let x=0;x<172;x++){
+    const dx=x-86,dy=y-86,d=Math.hypot(dx,dy)/86;
+    const t=Math.max(0,Math.min(1,(d-.64)/.36)),rim=t*t*(3-2*t);
+    const bend=.10+.18*rim*rim,i=(y*172+x)*4;
+    pixels.data[i]=Math.max(0,Math.min(255,128-dx*bend/50*255));
+    pixels.data[i+1]=Math.max(0,Math.min(255,128-dy*bend/50*255));
+    pixels.data[i+2]=128;pixels.data[i+3]=255;
+  }
+  ctx.putImageData(pixels,0,0);
+  svg.innerHTML=`<defs><filter id="${id}" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB"><feImage href="${map.toDataURL()}" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="map"/><feDisplacementMap in="SourceGraphic" in2="map" scale="50" xChannelSelector="R" yChannelSelector="G"/></filter></defs>`;
+  tile.appendChild(svg);
+  lens.style.backdropFilter=`url(#${id})`;
+  lens.style.webkitBackdropFilter=`url(#${id})`;
+  const shine=ctx.createImageData(172,172);
+  for(let y=0;y<172;y++)for(let x=0;x<172;x++){
+    const dx=x-86,dy=y-86,length=Math.hypot(dx,dy),d=length/86;
+    if(d>1)continue;
+    const t=Math.max(0,Math.min(1,(d-.64)/.36)),rim=t*t*(3-2*t);
+    const light=Math.max(0,(-.65*dx-dy)/Math.max(length,1)/Math.hypot(.65,1));
+    const i=(y*172+x)*4;
+    shine.data[i]=shine.data[i+1]=shine.data[i+2]=255;
+    shine.data[i+3]=255*Math.pow(rim,7)*(.10+.28*light);
+  }
+  ctx.putImageData(shine,0,0);
+  lens.style.background=`url(${map.toDataURL()}) center / 100% 100%`;
+  let frame=0,previous=0,active=false,x=0,y=0,tx=0,ty=0,r=0;
+  const tick=now=>{
+    frame=0;const dt=Math.min((now-(previous||now-16))/1000,.05);previous=now;
+    const follow=1-Math.exp(-dt/.14),ease=1-Math.exp(-dt/.09);
+    x+=(tx-x)*follow;y+=(ty-y)*follow;
+    const target=active?Math.min(86,tile.clientWidth*.18):0;r+=(target-r)*ease;
+    lens.style.width=lens.style.height=`${r*2}px`;
+    lens.style.transform=`translate(${x-r}px,${y-r}px)`;
+    lens.style.opacity=r>.2?'1':'0';
+    if(Math.abs(tx-x)>.05||Math.abs(ty-y)>.05||Math.abs(target-r)>.05)frame=requestAnimationFrame(tick);
+  };
+  const request=()=>{if(!frame){previous=0;frame=requestAnimationFrame(tick);}};
+  const move=e=>{const rect=tile.getBoundingClientRect();tx=(e.clientX-rect.left)*tile.clientWidth/rect.width;ty=(e.clientY-rect.top)*tile.clientHeight/rect.height;request();};
+  const enter=e=>{if(e.pointerType==='touch')return;move(e);x=tx;y=ty;active=true;request();};
+  const leave=()=>{active=false;request();};
+  tile.addEventListener('pointerenter',enter);tile.addEventListener('pointermove',move);tile.addEventListener('pointerleave',leave);tile.addEventListener('pointercancel',leave);window.addEventListener('blur',leave);
+  return()=>{cancelAnimationFrame(frame);svg.remove();tile.removeEventListener('pointerenter',enter);tile.removeEventListener('pointermove',move);tile.removeEventListener('pointerleave',leave);tile.removeEventListener('pointercancel',leave);window.removeEventListener('blur',leave);};
+}

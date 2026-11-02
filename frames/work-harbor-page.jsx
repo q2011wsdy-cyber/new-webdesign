@@ -1,10 +1,8 @@
 function CaseInteractiveDemo({ media, lang }) {
   const host = React.useRef(null);
-  const lens = React.useRef(null);
   const dialog = React.useRef(null);
   const trigger = React.useRef(null);
   const [open, setOpen] = React.useState(false);
-  const [hover, setHover] = React.useState(false);
   const english = lang === 'en';
   React.useEffect(() => {
     if (!open) return;
@@ -23,17 +21,11 @@ function CaseInteractiveDemo({ media, lang }) {
       trigger.current?.focus({preventScroll:true});
     };
   }, [open]);
-  const move = event => {
-    if (event.pointerType === 'touch') return;
-    const rect = host.current.getBoundingClientRect();
-    if (lens.current) lens.current.style.transform = `translate(${event.clientX-rect.left}px, ${event.clientY-rect.top}px) translate(-50%,-50%)`;
-    setHover(!event.target.closest('button'));
-  };
   return <>
-    <div ref={host} className="case-demo-preview" onPointerMove={move} onPointerLeave={() => setHover(false)}>
+    <div ref={host} className="case-demo-preview">
       <iframe title={media.alt} src={media.src} loading="lazy" tabIndex={-1} inert="" style={{display:'block',width:'100%',aspectRatio:media.aspectRatio || '940 / 598',border:0,pointerEvents:'none'}} />
-      <div ref={lens} className={`case-demo-lens ${hover ? 'is-visible' : ''}`} aria-hidden="true"><window.GlassSurface smoothRefraction borderRadius={86} distortionScale={-40} mapBlur={5} style={{width:172,height:172,borderRadius:'50%',padding:0,background:'rgba(255,255,255,.025)'}} /></div>
-      <button ref={trigger} type="button" className="case-demo-launch" aria-label={english ? 'Try the interactive demo' : '打开可操作演示'} title={english ? 'Try it' : '亲手体验'} onClick={() => {setHover(false);setOpen(true);}}>
+      <window.WorkGlassLens sourceType="iframe" fit="contain" />
+      <button ref={trigger} type="button" className="case-demo-launch" aria-label={english ? 'Try the interactive demo' : '打开可操作演示'} title={english ? 'Try it' : '亲手体验'} onClick={() => setOpen(true)}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="3" stroke="currentColor" strokeWidth="1.5"/><path d="M10 18.5h4M10.5 8l4 3-4 3V8Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/></svg>
       </button>
     </div>
@@ -45,8 +37,6 @@ function CaseInteractiveDemo({ media, lang }) {
     </dialog>, document.body)}
     <style>{`
       .case-demo-preview{position:relative;background:#181818}
-      .case-demo-lens{position:absolute;left:0;top:0;z-index:4;width:172px;height:172px;pointer-events:none;opacity:0;transition:opacity 150ms ease,transform 90ms ease-out}
-      .case-demo-lens.is-visible{opacity:1}
       .case-demo-launch{position:absolute;left:22px;bottom:22px;z-index:5;display:grid;place-items:center;width:42px;height:42px;border:1px solid rgba(255,255,255,.18);border-radius:50%;background:rgba(255,255,255,.08);color:#fff;backdrop-filter:blur(12px);transition:background 180ms,transform 180ms}
       .case-demo-launch:hover{background:rgba(255,255,255,.18);transform:scale(1.06)}
       .case-demo-launch:focus-visible,.case-demo-close:focus-visible{outline:2px solid #8df74b;outline-offset:4px}
@@ -56,7 +46,6 @@ function CaseInteractiveDemo({ media, lang }) {
       .case-demo-modal-content iframe{width:100%;height:100%;border:1px solid rgba(255,255,255,.18);border-radius:32px;background:#000;box-shadow:0 24px 100px rgba(0,0,0,.5)}
       .case-demo-close{position:absolute;right:-18px;top:-18px;z-index:2;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:#272727;color:white;font:26px/1 Arial}
       .case-demo-dialog,.case-demo-dialog *{cursor:auto!important}.case-demo-dialog button{cursor:pointer!important}
-      @media(hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){.case-demo-lens{display:none}}
       @media(max-width:600px){.case-demo-launch{left:12px;bottom:12px;width:36px;height:36px}}
     `}</style>
   </>;
