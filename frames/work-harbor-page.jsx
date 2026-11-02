@@ -593,7 +593,9 @@ function WorkHarborPage() {
     const radius = media.radius == null ? 12 : media.radius;
     let content;
 
-    if (type === 'placeholder') {
+    if (type === 'iframe') {
+      content = <iframe title={media.alt || 'Interactive demo'} src={media.src} loading="lazy" style={{ display: 'block', width: '100%', aspectRatio: media.aspectRatio || '940 / 598', border: 0 }} />;
+    } else if (type === 'placeholder') {
       content = <div className="case-placeholder" role="img" aria-label={`${media.label}${lang === 'en' ? ', media pending' : '，图片待补充'}`} data-asset-slot={media.id} data-figma-node={media.nodeId} style={{ aspectRatio: media.aspectRatio }}>
         <span className="case-placeholder-number">{media.id.split('-')[0]}</span>
         <span>{media.label}</span>
