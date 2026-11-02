@@ -617,3 +617,14 @@
     bottom: 126px;
   }
 }
+
+/* Keep every animation stage inside the same phone silhouette. */
+html, body, #root { height: 100%; }
+html, body { background: transparent; }
+#root { border-radius: 34.2px; overflow: hidden; isolation: isolate; }
+.scanner-app {
+  height: 100dvh;
+  min-height: 0;
+  border-radius: inherit;
+  clip-path: inset(0 round 34.2px);
+}
