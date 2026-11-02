@@ -1,5 +1,7 @@
 function CaseInteractiveDemo({ media, lang }) {
   const host = React.useRef(null);
+  const capture = React.useRef(null);
+  const preview = React.useRef(null);
   const dialog = React.useRef(null);
   const trigger = React.useRef(null);
   const [open, setOpen] = React.useState(false);
@@ -21,10 +23,57 @@ function CaseInteractiveDemo({ media, lang }) {
       trigger.current?.focus({preventScroll:true});
     };
   }, [open]);
+  React.useEffect(() => {
+    const tile = host.current;
+    let active = false, timer = 0, disposed = false;
+    const asset = name => new Promise(resolve => {const img = new Image();img.onload=()=>resolve(img);img.src=`assets/works/pimax/scanning-demo/assets/${name}`;});
+    const maskPromise=asset('d070e.svg');
+    const takeFrame = async () => {
+      if (!active || disposed) return;
+      const doc = preview.current?.contentDocument?.querySelector('iframe')?.contentDocument;
+      if (doc?.querySelector('.scanner-app') && doc.defaultView.html2canvas) {
+        try {
+          const object=doc.querySelector('object');
+          let dots;
+          if(object?.contentDocument){
+            const original=object.contentDocument.documentElement,copy=original.cloneNode(true);
+            copy.querySelectorAll('style').forEach(n=>n.remove());
+            const source=original.querySelectorAll('path');
+            copy.querySelectorAll('path').forEach((n,i)=>{const c=object.contentWindow.getComputedStyle(source[i]);n.setAttribute('style',`opacity:${c.opacity};fill-opacity:${c.fillOpacity}`);});
+            dots='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(copy));
+          }
+          let rainbow;
+          const tree=doc.querySelector('.rainbow-tree');
+          if(tree){
+            const mask=await maskPromise,canvas=document.createElement('canvas');canvas.width=216;canvas.height=430;const c=canvas.getContext('2d');
+            const scale=Math.min(216/mask.naturalWidth,430/mask.naturalHeight);c.drawImage(mask,(216-mask.naturalWidth*scale)/2,(430-mask.naturalHeight*scale)/2,mask.naturalWidth*scale,mask.naturalHeight*scale);
+            c.globalCompositeOperation='source-in';
+            const shift=(parseFloat(doc.defaultView.getComputedStyle(tree).backgroundPositionY)||0)/100*430;
+            const g=c.createLinearGradient(0,-shift,0,860-shift),colors=['#ff3b30','#ff9500','#ffcc00','#34c759','#00c7be','#007aff','#af52de'];
+            for(let i=0;i<=14;i++)g.addColorStop(i/14,colors[i%7]);c.fillStyle=g;c.fillRect(0,0,216,430);const tinted=document.createElement('canvas');tinted.width=216;tinted.height=430;const tc=tinted.getContext('2d');tc.filter=doc.defaultView.getComputedStyle(tree).filter;tc.drawImage(canvas,0,0);rainbow=tinted.toDataURL();
+          }
+          const phone=await doc.defaultView.html2canvas(doc.querySelector('.scanner-app'),{scale:1,logging:false,backgroundColor:'#000',width:375,height:813,windowWidth:375,windowHeight:813,scrollX:0,scrollY:0,x:0,y:0,onclone:clone=>{
+            const obj=clone.querySelector('object');
+            if(obj&&dots){const img=clone.createElement('img');img.className=obj.className;img.style.opacity='1';img.src=dots;obj.replaceWith(img);}
+            const tree=clone.querySelector('.rainbow-tree');
+            if(tree&&rainbow){tree.style.background='none';tree.style.mask='none';tree.style.filter='none';tree.style.animation='none';const img=clone.createElement('img');img.src=rainbow;img.style.cssText='width:100%;height:100%;object-fit:contain';tree.appendChild(img);}
+          }});
+          if(disposed)return;
+          const output=capture.current,ctx=output.getContext('2d');ctx.fillStyle='#181818';ctx.fillRect(0,0,940,598);ctx.save();ctx.beginPath();ctx.roundRect(345.5,29,249,540,22.7);ctx.clip();ctx.drawImage(phone,345.5,29,249,540);ctx.restore();
+        } catch(error) { console.warn('Demo lens capture failed',error); }
+      }
+      if(active&&!disposed)timer=window.setTimeout(takeFrame,90);
+    };
+    const enter=()=>{if(!active){active=true;takeFrame();}};
+    const leave=()=>{active=false;clearTimeout(timer);};
+    tile.addEventListener('pointerenter',enter);tile.addEventListener('pointerleave',leave);
+    return()=>{disposed=true;leave();tile.removeEventListener('pointerenter',enter);tile.removeEventListener('pointerleave',leave);};
+  }, []);
   return <>
     <div ref={host} className="case-demo-preview">
-      <iframe title={media.alt} src={media.src} loading="lazy" tabIndex={-1} inert="" style={{display:'block',width:'100%',aspectRatio:media.aspectRatio || '940 / 598',border:0,pointerEvents:'none'}} />
-      <window.WorkGlassLens sourceType="iframe" fit="contain" />
+      <iframe ref={preview} title={media.alt} src={media.src} loading="lazy" tabIndex={-1} inert="" style={{display:'block',width:'100%',aspectRatio:media.aspectRatio || '940 / 598',border:0,pointerEvents:'none'}} />
+      <canvas ref={capture} data-lens-source="true" width="940" height="598" style={{display:'none'}} />
+      <window.WorkGlassLens sourceType="canvas" fit="contain" />
       <button ref={trigger} type="button" className="case-demo-launch" aria-label={english ? 'Try the interactive demo' : '打开可操作演示'} title={english ? 'Try it' : '亲手体验'} onClick={() => setOpen(true)}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="3" stroke="currentColor" strokeWidth="1.5"/><path d="M10 18.5h4M10.5 8l4 3-4 3V8Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/></svg>
       </button>
