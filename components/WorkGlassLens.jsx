@@ -11,6 +11,7 @@ function WorkGlassLens({ fit = 'cover', sourceType = 'image' }) {
     if (!image) return;
     const video = image.tagName === 'VIDEO';
     const liveCanvas = image.tagName === 'CANVAS';
+    const animatedSvg = !video && !liveCanvas && /device-cards-animated\.svg(?:[?#]|$)/.test(image.getAttribute('src') || '');
     const sourceWidth = () => liveCanvas ? image.width : video ? image.videoWidth : image.naturalWidth;
     const sourceHeight = () => liveCanvas ? image.height : video ? image.videoHeight : image.naturalHeight;
     const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false, antialias: true });
@@ -69,9 +70,9 @@ function WorkGlassLens({ fit = 'cover', sourceType = 'image' }) {
       x+=(tx-x)*follow;y+=(ty-y)*follow;
       const target=active?Math.min(86,width*.18):0;r+=(target-r)*ease;
       gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
-      if(r>.2&&(liveCanvas||(video&&image.currentTime!==uploadedTime)))upload();
+      if(r>.2&&(liveCanvas||animatedSvg||(video&&image.currentTime!==uploadedTime)))upload();
       if(ready&&r>.2){canvas.style.filter=getComputedStyle(image).filter;gl.uniform1f(locations.fitMode,fit==='contain'?1:0);gl.uniform2f(locations.size,width,height);gl.uniform2f(locations.imageSize,sourceWidth(),sourceHeight());gl.uniform2f(locations.pointer,x,y);gl.uniform1f(locations.radius,r);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);}
-      if((liveCanvas&&active)||(video&&active&&!image.paused&&!image.ended)||Math.abs(tx-x)>.05||Math.abs(ty-y)>.05||Math.abs(target-r)>.05)frame=requestAnimationFrame(tick);
+      if(((liveCanvas||animatedSvg)&&active)||(video&&active&&!image.paused&&!image.ended)||Math.abs(tx-x)>.05||Math.abs(ty-y)>.05||Math.abs(target-r)>.05)frame=requestAnimationFrame(tick);
     };
     function request(){if(!frame){previous=0;frame=requestAnimationFrame(tick);}}
     const move=e=>{const rect=tile.getBoundingClientRect();tx=(e.clientX-rect.left)*width/rect.width;ty=(e.clientY-rect.top)*height/rect.height;request();};
