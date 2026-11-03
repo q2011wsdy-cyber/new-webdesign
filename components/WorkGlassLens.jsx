@@ -60,7 +60,7 @@ function WorkGlassLens({ fit = 'cover', sourceType = 'image' }) {
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
     const locations=Object.fromEntries(['size','imageSize','pointer','radius','fitMode'].map(k=>[k,gl.getUniformLocation(program,k)]));
-    let ready=false, active=false, frame=0, previous=0, uploadedTime=-1, x=0,y=0,tx=0,ty=0,r=0,width=1,height=1;
+    let ready=false, active=false, frame=0, previous=0, uploadedTime=-1,uploadedAt=0, x=0,y=0,tx=0,ty=0,r=0,width=1,height=1;
     const measure=()=>{width=tile.clientWidth;height=tile.clientHeight;const dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);gl.viewport(0,0,canvas.width,canvas.height);};
     const upload=()=>{if(!sourceWidth()||(video&&image.readyState<2))return;try{gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);uploadedTime=video?image.currentTime:-1;ready=true;}catch{ready=false;}};
     const sourceReady=()=>{upload();if(ready&&tile.matches(':hover')&&fine.matches&&!reduced.matches)active=true;request();};
@@ -70,7 +70,7 @@ function WorkGlassLens({ fit = 'cover', sourceType = 'image' }) {
       x+=(tx-x)*follow;y+=(ty-y)*follow;
       const target=active?Math.min(86,width*.18):0;r+=(target-r)*ease;
       gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
-      if(r>.2&&(liveCanvas||animatedSvg||(video&&image.currentTime!==uploadedTime)))upload();
+      if(r>.2&&((liveCanvas||animatedSvg)?now-uploadedAt>=1000/30:(video&&image.currentTime!==uploadedTime))){upload();uploadedAt=now;}
       if(ready&&r>.2){canvas.style.filter=getComputedStyle(image).filter;gl.uniform1f(locations.fitMode,fit==='contain'?1:0);gl.uniform2f(locations.size,width,height);gl.uniform2f(locations.imageSize,sourceWidth(),sourceHeight());gl.uniform2f(locations.pointer,x,y);gl.uniform1f(locations.radius,r);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);}
       if(((liveCanvas||animatedSvg)&&active)||(video&&active&&!image.paused&&!image.ended)||Math.abs(tx-x)>.05||Math.abs(ty-y)>.05||Math.abs(target-r)>.05)frame=requestAnimationFrame(tick);
     };

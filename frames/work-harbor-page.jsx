@@ -1,3 +1,28 @@
+function CaseDotGallery() {
+  const canvas = React.useRef(null);
+  React.useEffect(() => {
+    const node=canvas.current,ctx=node.getContext('2d');
+    let disposed=false,active=false,frame=0,last=0,base,dots;
+    const start=performance.now();
+    const draw=now=>{
+      frame=0;if(!active||disposed||document.hidden||!base||!dots)return;
+      if(now-last>=1000/15){
+        last=now;ctx.clearRect(0,0,node.width,node.height);ctx.drawImage(base,0,0,node.width,node.height);
+        const scale=node.width/934,t=(now-start)/1000;ctx.save();ctx.scale(scale,scale);
+        for(const [x,y,r,duration,colors] of dots){ctx.fillStyle=colors[Math.floor((t%duration)/duration*colors.length)%colors.length];ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();}
+        ctx.restore();
+      }
+      frame=requestAnimationFrame(draw);
+    };
+    const resize=()=>{const scale=Math.min(devicePixelRatio||1,2);node.width=Math.round(934*scale);node.height=Math.round(465*scale);last=0;};resize();
+    const observer=new IntersectionObserver(entries=>{active=entries[0].isIntersecting;if(active&&!frame)frame=requestAnimationFrame(draw);else if(!active){cancelAnimationFrame(frame);frame=0;}},{rootMargin:'100px'});observer.observe(node);
+    const resume=()=>{if(active&&!document.hidden&&!frame)frame=requestAnimationFrame(draw);};document.addEventListener('visibilitychange',resume);
+    Promise.all([fetch('assets/works/pimax/artwork-gallery-dots.json').then(r=>r.json()),new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src='assets/works/pimax/artwork-gallery-base.svg';})]).then(([data,img])=>{if(disposed)return;dots=data;base=img;if(active&&!frame)frame=requestAnimationFrame(draw);});
+    return()=>{disposed=true;cancelAnimationFrame(frame);observer.disconnect();document.removeEventListener('visibilitychange',resume);};
+  },[]);
+  return <canvas ref={canvas} data-lens-source="true" role="img" aria-label="Animated dot artwork gallery" style={{display:'block',width:'100%',height:'auto',aspectRatio:'934 / 465'}} />;
+}
+
 function CaseInteractiveDemo({ media, lang }) {
   const host = React.useRef(null);
   const capture = React.useRef(null);
@@ -695,7 +720,9 @@ function WorkHarborPage() {
     const radius = media.radius == null ? 12 : media.radius;
     let content;
 
-    if (type === 'iframe') {
+    if (type === 'dot-gallery') {
+      content = <CaseDotGallery />;
+    } else if (type === 'iframe') {
       content = <CaseInteractiveDemo media={media} lang={lang} />;
     } else if (type === 'placeholder') {
       content = <div className="case-placeholder" role="img" aria-label={`${media.label}${lang === 'en' ? ', media pending' : '，图片待补充'}`} data-asset-slot={media.id} data-figma-node={media.nodeId} style={{ aspectRatio: media.aspectRatio }}>
@@ -746,6 +773,7 @@ function WorkHarborPage() {
           ? { overflow: 'hidden', background: 'transparent', border: 'none', borderRadius: radius, '--case-media-radius': `${radius}px` }
           : { ...s.mediaFrame, borderRadius: radius, '--case-media-radius': `${radius}px` }}>
           {content}
+          {type === 'dot-gallery' && <window.WorkGlassLens fit="contain" sourceType="canvas" />}
           {(type === 'image' || type === 'video') && <window.WorkGlassLens key={media.src} fit={media.fit || 'contain'} sourceType={type} />}
         </div>
         {media.caption && <figcaption className="case-media-caption" {...textProbe} style={{ ...s.caption, margin: '10px 0 0' }}>{media.caption}</figcaption>}
