@@ -44,7 +44,7 @@
             { type: 'gallery', columns: 1, radius: 20, frame: false, gap: 20, items: [
               'assets/works/pimax/img-6.png',
               {type:'dot-gallery'},
-              { type: 'iframe', src: 'assets/works/pimax/scanning-demo/index.html', alt: 'Automatic light recognition, save and effect switching', aspectRatio: '940 / 598', radius: 20, frame: false },
+              { type: 'iframe', src: 'assets/works/pimax/scanning-demo/index.html', previewSrc: 'assets/works/pimax/scanning-demo/preview.mp4', poster: 'assets/works/pimax/scanning-demo/preview-poster.png', alt: 'Automatic light recognition, save and effect switching', aspectRatio: '940 / 598', radius: 20, frame: false },
               'assets/works/pimax/img-9.png',
               { type: 'video', src: 'assets/works/pimax/color-relay.mp4', alt: '四配色斜向接力动态展示', autoplay: true, muted: true, loop: true, controls: false, preload: 'auto' },
             ] },
@@ -83,7 +83,7 @@
             { type: 'gallery', columns: 1, radius: 20, frame: false, gap: 20, items: [
               'assets/works/pimax/img-6.png',
               {type:'dot-gallery'},
-              { type: 'iframe', src: 'assets/works/pimax/scanning-demo/index.html', alt: 'Automatic light recognition, save and effect switching', aspectRatio: '940 / 598', radius: 20, frame: false },
+              { type: 'iframe', src: 'assets/works/pimax/scanning-demo/index.html', previewSrc: 'assets/works/pimax/scanning-demo/preview.mp4', poster: 'assets/works/pimax/scanning-demo/preview-poster.png', alt: 'Automatic light recognition, save and effect switching', aspectRatio: '940 / 598', radius: 20, frame: false },
               'assets/works/pimax/img-9.png',
               { type: 'video', src: 'assets/works/pimax/color-relay.mp4', alt: '四配色斜向接力动态展示', autoplay: true, muted: true, loop: true, controls: false, preload: 'auto' },
             ] },
@@ -107,7 +107,7 @@
   <script type="text/babel" src="frames/site-topbar.jsx?v=cursor-glass-2"></script>
   <script src="vendor/lottie.min.js"></script>
   <script type="text/babel" src="components/WorkGlassLens.jsx?v=gallery-canvas-27"></script>
-  <script type="text/babel" src="frames/work-harbor-page.jsx?v=site-background-1"></script>
+  <script type="text/babel" src="frames/work-harbor-page.jsx?v=demo-shared-lens-1"></script>
   <script type="text/babel" data-presets="react">
     (function boot() {
       if (!window.React || !window.ReactDOM || !window.WorkHarborPage || !window.SiteTopbar || !window.getAsciiThemePalette) {
