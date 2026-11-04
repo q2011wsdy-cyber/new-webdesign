@@ -1,0 +1,17 @@
+/* Shared compact opening for portfolio case studies. */
+#overview.case-overview .case-meta-grid {
+  display:flex !important; flex-wrap:wrap; gap:16px 28px !important;
+  width:min(100%,680px); max-width:680px !important;
+  padding:0 !important; border:0 !important; margin:8px 0 28px !important;
+  font-family:var(--font-family-mono),'PingFang SC','Microsoft YaHei',sans-serif;
+  font-size:16px; line-height:1.75;
+}
+.case-overview .case-meta-grid > div {display:flex; gap:8px; align-items:baseline;}
+.case-overview .case-meta-grid > div > div {
+  font-size:14px !important; margin:0 !important; letter-spacing:0 !important; text-transform:none !important;
+}
+.case-overview .case-overview-intro {
+  width:min(100%,680px); max-width:680px !important;
+  margin:0 0 40px; font-family:var(--font-family-mono),'PingFang SC','Microsoft YaHei',sans-serif;
+  font-size:16px; line-height:1.6; font-weight:400; text-wrap:pretty;
+}

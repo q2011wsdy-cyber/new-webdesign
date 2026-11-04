@@ -539,6 +539,7 @@ function WorkHarborPage() {
     work.role && { label: ui.role, value: work.role },
     work.team && { label: ui.team, value: work.team },
   ].filter(Boolean);
+  const compactOverview = work.className === 'huolala-case' || work.overviewLayout === 'compact';
   const [enteredFromCase, setEnteredFromCase] = React.useState(() => {
     try {
       const entered = sessionStorage.getItem('ascii-case-transition') === '1';
@@ -1063,20 +1064,20 @@ function WorkHarborPage() {
         ))}
       </aside>}
       <main className="case-detail-main" style={s.main}>
-      <div id="overview" className={work.className === 'huolala-case' ? undefined : 'case-scroll-item'} style={{ scrollMarginTop: 110 }}>
+      <div id="overview" className={compactOverview ? 'case-overview' : 'case-scroll-item'} style={{ scrollMarginTop: 110 }}>
       {work.showCover !== false && work.coverPlacement === 'before-title' && renderCover()}
       <div {...textProbe}>
         <h1 style={s.title}>
           {work.title}{work.accent && <> <span style={{ color: C.accent }}>{work.accent}</span></>}
         </h1>
-        {work.className !== 'huolala-case' && <p style={s.lede}>{work.subtitle}</p>}
+        {!compactOverview && <p style={s.lede}>{work.subtitle}</p>}
       </div>
 
-      {work.showMeta !== false && metadata.length > 0 && <div className={work.className === 'huolala-case' ? 'case-meta-grid' : 'case-scroll-item'} style={{ ...s.metaGrid, gridTemplateColumns: `repeat(${Math.min(metadata.length, 4)}, minmax(0, 1fr))` }}>
+      {work.showMeta !== false && metadata.length > 0 && <div className={compactOverview ? 'case-meta-grid' : 'case-scroll-item'} style={{ ...s.metaGrid, gridTemplateColumns: `repeat(${Math.min(metadata.length, 4)}, minmax(0, 1fr))` }}>
         {metadata.map((item, index) => <div key={`${item.label}-${index}`}><div style={s.metaLabel}>{item.label}</div><div style={s.metaVal}>{item.value}</div></div>)}
       </div>}
 
-      {work.className === 'huolala-case' && <p className="case-overview-intro" {...textProbe} style={s.lede}>{work.subtitle}</p>}
+      {compactOverview && <p className="case-overview-intro" {...textProbe} style={s.lede}>{work.subtitle}</p>}
       {work.showCover !== false && work.coverPlacement !== 'before-title' && renderCover()}
       </div>
 

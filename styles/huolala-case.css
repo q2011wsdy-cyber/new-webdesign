@@ -348,17 +348,8 @@
   .case-weather-stage--with-copy .case-weather-tabs {left:6%;top:auto;bottom:9%;gap:2cqw;}
 }
 
-@media(max-width:600px) { .huolala-case .case-meta-grid {grid-template-columns:1fr !important;gap:20px !important;} }
-
-/* Compact opening details followed by a readable, left-aligned introduction. */
-.huolala-case #overview .case-meta-grid {display:flex !important;flex-wrap:wrap;gap:16px 28px !important;width:min(100%,680px);max-width:680px !important;padding:0 !important;border:0 !important;margin:8px 0 28px !important;}
-.huolala-case .case-meta-grid > div {display:flex;gap:8px;align-items:baseline;}
-.huolala-case .case-meta-grid > div > div {font-size:14px !important;margin:0 !important;letter-spacing:0 !important;text-transform:none !important;}
-.huolala-case #overview .case-overview-intro {width:min(100%,680px);max-width:680px !important;font-size:16px;line-height:1.75;margin:0 0 48px;color:var(--case-copy);text-wrap:pretty;}
 .huolala-case .case-detail-main > #weather-particles {margin-top:32px;}
 @media(max-width:720px) {
-  .huolala-case #overview .case-meta-grid {gap:12px 24px;margin-bottom:24px;}
-  .huolala-case #overview .case-overview-intro {margin-bottom:32px;}
   .huolala-case .case-detail-main > #weather-particles {margin-top:24px;}
 }
 
@@ -483,8 +474,6 @@
  background-size:32px 32px;
 }
 :root[data-theme='light'] .huolala-case .case-compare-label {color:rgba(0,0,0,.55);border-color:rgba(0,0,0,.12);}
-.huolala-case #overview .case-overview-intro {margin-bottom:88px;}
-@media(max-width:720px) {.huolala-case #overview .case-overview-intro {margin-bottom:64px;}}
 :root[data-theme] .huolala-case .case-comparison-stage {--compare-grid:rgba(255,255,255,.018);--compare-outline:rgba(255,255,255,.12);}
 :root[data-theme='light'] .huolala-case .case-comparison-stage {--compare-grid:rgba(0,0,0,.016);--compare-outline:rgba(0,0,0,.10);}
 .huolala-case .case-comparison-layer img {filter:drop-shadow(.5px 0 0 var(--compare-outline)) drop-shadow(-.5px 0 0 var(--compare-outline)) drop-shadow(0 .5px 0 var(--compare-outline)) drop-shadow(0 -.5px 0 var(--compare-outline));}

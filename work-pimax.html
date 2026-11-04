@@ -9,6 +9,7 @@
   <script src="frames/theme-init.js?v=1"></script>
   <link href="styles/design-tokens.css?v=1" rel="stylesheet">
   <link rel="stylesheet" href="styles/site-background.css?v=1">
+  <link rel="stylesheet" href="styles/case-overview.css?v=1">
   <style>
     html, body, #root { margin: 0; padding: 0; width: 100%; min-height: 100%; }
     body { background: var(--color-bg); }
@@ -28,8 +29,9 @@
         title: 'Pimax', accent: '',
         subtitle: 'A smart light string project that brings hardware and software together in an easy-to-use, feature-rich, and playful experience.',
         cover: { src: 'assets/works/pimax/img-9.png', alt: 'Pimax creation interface', fit: 'contain' },
-        forceInitialTheme: 'dark', hideIndex: true, compactCaseLayout: true, showMeta: false, showCover: false,
+        forceInitialTheme: 'dark', hideIndex: true, compactCaseLayout: true, showMeta: true, overviewLayout: 'compact', showCover: false,
         client: 'Pimax', year: '2024', role: 'Product design', team: '1 designer, 2 engineers',
+        meta: [{label: 'My role', value: 'Product design'}, {label: 'Timeline', value: '2024'}, {label: 'Team', value: '1 designer, 2 engineers'}],
         sections: [
           { id: 'gallery', title: 'gallery', hideTitle: true, blocks: [
             { type: 'gallery', columns: 1, radius: 20, frame: false, gap: 20, items: [
@@ -67,8 +69,9 @@
         title: 'Pimax', accent: '',
         subtitle: 'Pimax 智能灯串项目通过软硬件的有机结合，为用户提供一个易于操作、功能丰富且具备可玩性的解决方案。',
         cover: { src: 'assets/works/pimax/img-9.png', alt: 'Pimax 创作界面', fit: 'contain' },
-        forceInitialTheme: 'dark', hideIndex: true, compactCaseLayout: true, showMeta: false, showCover: false,
+        forceInitialTheme: 'dark', hideIndex: true, compactCaseLayout: true, showMeta: true, overviewLayout: 'compact', showCover: false,
         client: 'Pimax', year: '2024', role: '产品设计', team: '1 位设计师，2 位工程师',
+        meta: [{label: '我的角色', value: '产品设计'}, {label: '时间', value: '2024'}, {label: '团队', value: '1 位设计师，2 位工程师'}],
         sections: [
           { id: 'gallery', title: '画廊', hideTitle: true, blocks: [
             { type: 'gallery', columns: 1, radius: 20, frame: false, gap: 20, items: [
@@ -107,7 +110,7 @@
   <script type="text/babel" src="frames/site-topbar.jsx?v=cursor-glass-2"></script>
   <script src="vendor/lottie.min.js"></script>
   <script type="text/babel" src="components/WorkGlassLens.jsx?v=huolala-composite-1"></script>
-  <script type="text/babel" src="frames/work-harbor-page.jsx?v=story-reliable-1"></script>
+  <script type="text/babel" src="frames/work-harbor-page.jsx?v=shared-overview-1"></script>
   <script type="text/babel" data-presets="react">
     (function boot() {
       if (!window.React || !window.ReactDOM || !window.WorkHarborPage || !window.SiteTopbar || !window.getAsciiThemePalette) {
