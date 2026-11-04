@@ -1077,7 +1077,7 @@ function WorkHarborPage() {
         {metadata.map((item, index) => <div key={`${item.label}-${index}`}><div style={s.metaLabel}>{item.label}</div><div style={s.metaVal}>{item.value}</div></div>)}
       </div>}
 
-      {compactOverview && <p className="case-overview-intro" {...textProbe} style={s.lede}>{work.subtitle}</p>}
+      {compactOverview && <p className="case-overview-intro" {...textProbe} style={{...s.lede, whiteSpace:'pre-line'}}>{work.subtitle}</p>}
       {work.showCover !== false && work.coverPlacement !== 'before-title' && renderCover()}
       </div>
 
