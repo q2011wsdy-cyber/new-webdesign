@@ -72,7 +72,7 @@ function WorkGlassLens({ fit = 'cover', sourceType = 'image' }) {
       gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
       if(r>.2&&((liveCanvas||animatedSvg)?now-uploadedAt>=1000/30:(video&&image.currentTime!==uploadedTime))){upload();uploadedAt=now;}
       if(ready&&r>.2){canvas.style.filter=getComputedStyle(image).filter;gl.uniform1f(locations.fitMode,fit==='contain'?1:0);gl.uniform2f(locations.size,width,height);gl.uniform2f(locations.imageSize,sourceWidth(),sourceHeight());gl.uniform2f(locations.pointer,x,y);gl.uniform1f(locations.radius,r);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);}
-      if(((liveCanvas||animatedSvg)&&active)||(video&&active&&!image.paused&&!image.ended)||Math.abs(tx-x)>.05||Math.abs(ty-y)>.05||Math.abs(target-r)>.05)frame=requestAnimationFrame(tick);
+      if(((liveCanvas||animatedSvg)&&active&&(r>.2||target>.2))||(video&&active&&!image.paused&&!image.ended)||Math.abs(tx-x)>.05||Math.abs(ty-y)>.05||Math.abs(target-r)>.05)frame=requestAnimationFrame(tick);
     };
     function request(){if(!frame){previous=0;frame=requestAnimationFrame(tick);}}
     const move=e=>{const rect=tile.getBoundingClientRect();tx=(e.clientX-rect.left)*width/rect.width;ty=(e.clientY-rect.top)*height/rect.height;request();};

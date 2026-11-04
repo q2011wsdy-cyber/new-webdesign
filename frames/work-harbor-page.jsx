@@ -1,26 +1,73 @@
 function CaseDotGallery() {
   const canvas = React.useRef(null);
   React.useEffect(() => {
-    const node=canvas.current,ctx=node.getContext('2d');
-    let disposed=false,active=false,frame=0,last=0,base,dots;
-    const start=performance.now();
-    const draw=now=>{
-      frame=0;if(!active||disposed||document.hidden||!base||!dots)return;
-      if(now-last>=1000/15){
-        last=now;ctx.clearRect(0,0,node.width,node.height);ctx.drawImage(base,0,0,node.width,node.height);
-        const scale=node.width/934,t=(now-start)/1000;ctx.save();ctx.scale(scale,scale);
-        for(const [x,y,r,duration,colors] of dots){ctx.fillStyle=colors[Math.floor((t%duration)/duration*colors.length)%colors.length];ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();}
-        ctx.restore();
-      }
-      frame=requestAnimationFrame(draw);
+    const node = canvas.current, ctx = node.getContext('2d', {alpha:false});
+    const tile = document.createElement('canvas'), tileCtx = tile.getContext('2d');
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    const controller = new AbortController();
+    let active=false, disposed=false, frame=0, lastTile=-Infinity, data, base, scale=1;
+    const start=performance.now(), W=1073.2, H=602.6493;
+    const color = value => {
+      if (!value.startsWith('#')) return Number(value);
+      let hex=value.slice(1);if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');
+      return [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16));
     };
-    const resize=()=>{const scale=Math.min(devicePixelRatio||1,2);node.width=Math.round(934*scale);node.height=Math.round(465*scale);last=0;};resize();
-    const observer=new IntersectionObserver(entries=>{active=entries[0].isIntersecting;if(active&&!frame)frame=requestAnimationFrame(draw);else if(!active){cancelAnimationFrame(frame);frame=0;}},{rootMargin:'100px'});observer.observe(node);
-    const resume=()=>{if(active&&!document.hidden&&!frame)frame=requestAnimationFrame(draw);};document.addEventListener('visibilitychange',resume);
-    Promise.all([fetch('assets/works/pimax/artwork-gallery-dots.json').then(r=>r.json()),new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src='assets/works/pimax/artwork-gallery-base.svg';})]).then(([data,img])=>{if(disposed)return;dots=data;base=img;if(active&&!frame)frame=requestAnimationFrame(draw);});
-    return()=>{disposed=true;cancelAnimationFrame(frame);observer.disconnect();document.removeEventListener('visibilitychange',resume);};
+    const sample = (frames,time) => {
+      let a=frames[0],b=frames[frames.length-1];
+      for(let i=1;i<frames.length;i++){if(time<frames[i][0]){a=frames[i-1];b=frames[i];break;}}
+      let u=a[2]||b[0]===a[0]?0:Math.max(0,Math.min(1,(time-a[0])/(b[0]-a[0])));
+      if(!a[2])u=u*u*(3-2*u);
+      return Array.isArray(a[1])?'rgb('+a[1].map((v,i)=>Math.round(v+(b[1][i]-v)*u)).join(',')+')':a[1]+(b[1]-a[1])*u;
+    };
+    const renderTile = t => {
+      tileCtx.setTransform(scale,0,0,scale,0,0);tileCtx.clearRect(0,0,W,H);tileCtx.drawImage(base,0,0,W,H);
+      // One gradient paints the full fixed Bliss dot path.
+      const shift=(t%10)/10*172.738, x=878.781, y=102.126, d=172.738;
+      const gradient=tileCtx.createLinearGradient(x-2*d+shift,y-2*d+shift,x+2*d+shift,y+2*d+shift);
+      for(let cycle=0;cycle<4;cycle++)for(const [offset,c] of data.stops)gradient.addColorStop((cycle+offset)/4,c);
+      tileCtx.fillStyle=gradient;tileCtx.fill(data.blissPath);
+      for(const shape of data.shapes){
+        const [kind,geometry,fill,opacity,name,duration,delay,fillOpacity]=shape;
+        const phase=(((t-delay)%duration)+duration)%duration/duration;
+        const value=sample(data.tracks[name],phase);
+        tileCtx.globalAlpha=(typeof value==='number'?value:opacity)*fillOpacity;
+        tileCtx.fillStyle=typeof value==='string'?value:fill;
+        tileCtx.fill(shape.path);
+      }
+      tileCtx.globalAlpha=1;
+    };
+    const draw = now => {
+      frame=0;if(disposed||!active||document.hidden||!data||!base)return;
+      const t=reduced.matches?0:(now-start)/1000;
+      // Dot changes are cached at 20 fps; scrolling composites the cached tile at display refresh rate.
+      if(now-lastTile>=50){renderTile(t);lastTile=now;}
+      ctx.setTransform(scale,0,0,scale,0,0);ctx.fillStyle='#181818';ctx.fillRect(0,0,934,465);
+      const x=reduced.matches?0:-(t*22%W),y=reduced.matches?0:-(t*22%H);
+      for(let row=0;row<2;row++)for(let col=0;col<2;col++)ctx.drawImage(tile,x+col*W,y+row*H,W,H);
+      if(!reduced.matches)frame=requestAnimationFrame(draw);
+    };
+    const resume=()=>{if(active&&!document.hidden&&!frame&&data&&base)frame=requestAnimationFrame(draw);};
+    const resize=()=>{
+      scale=Math.min(devicePixelRatio||1,1.5)*Math.min(1,node.clientWidth/934||1);
+      node.width=Math.round(934*scale);node.height=Math.round(465*scale);
+      tile.width=Math.ceil(W*scale);tile.height=Math.ceil(H*scale);lastTile=-Infinity;resume();
+    };
+    const observer=new IntersectionObserver(entries=>{active=entries[0].isIntersecting;if(active)resume();else{cancelAnimationFrame(frame);frame=0;}},{rootMargin:'80px'});
+    observer.observe(node);const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(node);
+    document.addEventListener('visibilitychange',resume);reduced.addEventListener('change',()=>{lastTile=-Infinity;resume();},{signal:controller.signal});
+    Promise.all([
+      fetch('assets/works/pimax/gallery-canvas-motion.json?v=19',{signal:controller.signal}).then(r=>{if(!r.ok)throw Error('Gallery data unavailable');return r.json();}),
+      new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;image.src='assets/works/pimax/gallery-canvas-base.svg?v=19';})
+    ]).then(([motion,image])=>{
+      if(disposed)return;data=motion;base=image;
+      for(const key in data.tracks)data.tracks[key]=data.tracks[key].map(([t,v,step])=>[t,color(v),step]);
+      for(const shape of data.shapes){const [kind,g]=shape;const path=new Path2D();if(kind==='circle')path.arc(g[0],g[1],g[2],0,Math.PI*2);else if(kind==='rect')path.roundRect(g[0],g[1],g[2],g[3],g[4]);else path.addPath(new Path2D(g));shape.path=path;}
+      data.blissPath=new Path2D();for(const g of data.bliss)data.blissPath.roundRect(g[0],g[1],g[2],g[3],g[4]);
+      resize();resume();
+    }).catch(error=>{if(disposed||error.name==='AbortError')return;const image=new Image();image.onload=()=>{if(disposed)return;resize();ctx.drawImage(image,0,0,node.width,node.height);};image.src='assets/works/pimax/img-7.png';});
+    return()=>{disposed=true;controller.abort();cancelAnimationFrame(frame);observer.disconnect();resizeObserver.disconnect();document.removeEventListener('visibilitychange',resume);};
   },[]);
-  return <canvas ref={canvas} data-lens-source="true" role="img" aria-label="Animated dot artwork gallery" style={{display:'block',width:'100%',height:'auto',aspectRatio:'934 / 465'}} />;
+  return <canvas ref={canvas} data-lens-source="true" role="img" aria-label="Animated dot artwork gallery" style={{display:'block',width:'100%',height:'auto',aspectRatio:'934 / 465',borderRadius:20}} />;
 }
 
 function CaseInteractiveDemo({ media, lang }) {
