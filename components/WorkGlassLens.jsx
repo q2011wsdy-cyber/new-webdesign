@@ -1,5 +1,5 @@
 /** A local image/video-backed refractive lens. No remote rendering dependencies. */
-function WorkGlassLens({ fit = 'cover', sourceType = 'image' }) {
+function WorkGlassLens({ fit = 'cover', sourceType = 'image', compositeBackground = false, sourceSelector }) {
   const ref = React.useRef(null);
   React.useEffect(() => {
     const canvas = ref.current;
@@ -7,7 +7,7 @@ function WorkGlassLens({ fit = 'cover', sourceType = 'image' }) {
     const fine = matchMedia('(hover: hover) and (pointer: fine)');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
     if (!fine.matches || reduced.matches) return;
-    const image = tile.querySelector(sourceType === 'canvas' ? 'canvas[data-lens-source]' : sourceType === 'video' ? 'video' : 'img');
+    const image = tile.querySelector(sourceSelector || (sourceType === 'canvas' ? 'canvas[data-lens-source]' : sourceType === 'video' ? 'video' : 'img'));
     if (!image) return;
     const video = image.tagName === 'VIDEO';
     const liveCanvas = image.tagName === 'CANVAS';
@@ -15,6 +15,43 @@ function WorkGlassLens({ fit = 'cover', sourceType = 'image' }) {
     const animatedSvg = !video && !liveCanvas && /-animated\.svg(?:[?#]|$)/i.test(image.getAttribute('src') || '');
     const sourceWidth = () => liveCanvas ? image.width : video ? image.videoWidth : image.naturalWidth;
     const sourceHeight = () => liveCanvas ? image.height : video ? image.videoHeight : image.naturalHeight;
+    const surface = compositeBackground ? document.createElement('canvas') : null;
+    const surfaceContext = surface?.getContext('2d');
+    const compositeSource = () => {
+      const bounds = tile.getBoundingClientRect();
+      const scale = Math.min(devicePixelRatio || 1, 2, 1800 / Math.max(width, height));
+      surface.width = Math.round(width * scale); surface.height = Math.round(height * scale);
+      const ctx = surfaceContext;
+      ctx.setTransform(surface.width / width, 0, 0, surface.height / height, 0, 0);
+      ctx.fillStyle = getComputedStyle(document.body).backgroundColor;
+      ctx.fillRect(0, 0, width, height);
+      // Transparent artwork reveals the fixed site dots below its card backing.
+      const dots = getComputedStyle(document.body, '::before');
+      const cell = parseFloat(dots.backgroundSize), inset = parseFloat(dots.left) + 1;
+      if (dots.backgroundImage !== 'none' && cell > 0) {
+        const dotColor = getComputedStyle(document.documentElement).getPropertyValue('--site-dot-color').trim();
+        for (let y = inset + Math.ceil((bounds.top - inset) / cell) * cell; y < Math.min(innerHeight - inset + 1, bounds.bottom); y += cell) {
+          if (y < inset) continue;
+          for (let x = inset + Math.ceil((bounds.left - inset) / cell) * cell; x < Math.min(innerWidth - inset + 1, bounds.right); x += cell) {
+            if (x < inset) continue;
+            const cx = x - bounds.left, cy = y - bounds.top;
+            const gradient = ctx.createRadialGradient(cx, cy, 1, cx, cy, 1.5);
+            gradient.addColorStop(0, dotColor); gradient.addColorStop(1, 'transparent');
+            ctx.fillStyle = gradient; ctx.fillRect(cx - 1.5, cy - 1.5, 3, 3);
+          }
+        }
+      }
+      const ancestors = [];
+      for (let node = tile; node && node !== document.body; node = node.parentElement) ancestors.unshift(node);
+      for (const node of ancestors) { ctx.fillStyle = getComputedStyle(node).backgroundColor; ctx.fillRect(0, 0, width, height); }
+      const ratio = fit === 'contain' ? Math.min(width / sourceWidth(), height / sourceHeight()) : Math.max(width / sourceWidth(), height / sourceHeight());
+      const w = sourceWidth() * ratio, h = sourceHeight() * ratio;
+      // Filter the artwork before adding the glass highlight, as on opaque cards.
+      ctx.filter = getComputedStyle(image).filter;
+      ctx.drawImage(image, (width - w) / 2, (height - h) / 2, w, h);
+      ctx.filter = 'none';
+      return surface;
+    };
     const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false, antialias: true });
     if (!gl) return;
     const vertex = 'attribute vec2 position; varying vec2 uv; void main(){ uv=position*.5+.5; gl_Position=vec4(position,0.,1.); }';
@@ -63,7 +100,7 @@ function WorkGlassLens({ fit = 'cover', sourceType = 'image' }) {
     const locations=Object.fromEntries(['size','imageSize','pointer','radius','fitMode'].map(k=>[k,gl.getUniformLocation(program,k)]));
     let ready=false, active=false, frame=0, previous=0, uploadedTime=-1,uploadedAt=0, x=0,y=0,tx=0,ty=0,r=0,width=1,height=1;
     const measure=()=>{width=tile.clientWidth;height=tile.clientHeight;const dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);gl.viewport(0,0,canvas.width,canvas.height);};
-    const upload=()=>{if(!sourceWidth()||(video&&image.readyState<2))return;try{gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);uploadedTime=video?image.currentTime:-1;ready=true;}catch{ready=false;}};
+    const upload=()=>{if(!sourceWidth()||(video&&image.readyState<2))return;try{gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,compositeBackground?compositeSource():image);uploadedTime=video?image.currentTime:-1;ready=true;}catch{ready=false;}};
     const sourceReady=()=>{upload();if(ready&&tile.matches(':hover')&&fine.matches&&!reduced.matches)active=true;request();};
     const tick=now=>{
       frame=0;const dt=Math.min((now-(previous||now-16))/1000,.05);previous=now;
@@ -72,19 +109,22 @@ function WorkGlassLens({ fit = 'cover', sourceType = 'image' }) {
       const target=active?Math.min(86,width*.18):0;r+=(target-r)*ease;
       gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
       if(r>.2&&((liveCanvas||animatedSvg)?now-uploadedAt>=1000/30:(video&&image.currentTime!==uploadedTime))){upload();uploadedAt=now;}
-      if(ready&&r>.2){canvas.style.filter=getComputedStyle(image).filter;gl.uniform1f(locations.fitMode,fit==='contain'?1:0);gl.uniform2f(locations.size,width,height);gl.uniform2f(locations.imageSize,sourceWidth(),sourceHeight());gl.uniform2f(locations.pointer,x,y);gl.uniform1f(locations.radius,r);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);}
+      if(ready&&r>.2){canvas.style.filter=compositeBackground?'none':getComputedStyle(image).filter;gl.uniform1f(locations.fitMode,fit==='contain'?1:0);gl.uniform2f(locations.size,width,height);gl.uniform2f(locations.imageSize,compositeBackground?width:sourceWidth(),compositeBackground?height:sourceHeight());gl.uniform2f(locations.pointer,x,y);gl.uniform1f(locations.radius,r);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);}
       if(((liveCanvas||animatedSvg)&&active&&(r>.2||target>.2))||(video&&active&&!image.paused&&!image.ended)||Math.abs(tx-x)>.05||Math.abs(ty-y)>.05||Math.abs(target-r)>.05)frame=requestAnimationFrame(tick);
     };
     function request(){if(!frame){previous=0;frame=requestAnimationFrame(tick);}}
     const move=e=>{const rect=tile.getBoundingClientRect();tx=(e.clientX-rect.left)*width/rect.width;ty=(e.clientY-rect.top)*height/rect.height;request();};
-    const enter=e=>{if(e.pointerType==='touch'||reduced.matches||!fine.matches)return;move(e);x=tx;y=ty;active=ready;request();};
+    const enter=e=>{if(e.pointerType==='touch'||reduced.matches||!fine.matches)return;if(compositeBackground)upload();move(e);x=tx;y=ty;active=ready;request();};
     const leave=()=>{active=false;request();};
     const sourceEvents=video?['loadeddata','seeked','playing','pause']:['load'];
-    const resize=new ResizeObserver(()=>{measure();request();});resize.observe(tile);measure();sourceReady();sourceEvents.forEach(event=>image.addEventListener(event,sourceReady));
+    const resize=new ResizeObserver(()=>{measure();if(compositeBackground)upload();request();});resize.observe(tile);measure();sourceReady();sourceEvents.forEach(event=>image.addEventListener(event,sourceReady));
+    const refreshBackground=()=>{if(active&&compositeBackground)sourceReady();};
+    const themeObserver=new MutationObserver(refreshBackground);if(compositeBackground)themeObserver.observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+    window.addEventListener('scroll',refreshBackground,{passive:true});
     tile.addEventListener('pointerenter',enter);tile.addEventListener('pointermove',move);tile.addEventListener('pointerleave',leave);tile.addEventListener('pointercancel',leave);
     window.addEventListener('blur',leave);reduced.addEventListener('change',leave);
-    return()=>{cancelAnimationFrame(frame);resize.disconnect();sourceEvents.forEach(event=>image.removeEventListener(event,sourceReady));tile.removeEventListener('pointerenter',enter);tile.removeEventListener('pointermove',move);tile.removeEventListener('pointerleave',leave);tile.removeEventListener('pointercancel',leave);window.removeEventListener('blur',leave);reduced.removeEventListener('change',leave);gl.deleteTexture(texture);gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);};
-  }, [fit, sourceType]);
+    return()=>{cancelAnimationFrame(frame);resize.disconnect();themeObserver.disconnect();window.removeEventListener('scroll',refreshBackground);sourceEvents.forEach(event=>image.removeEventListener(event,sourceReady));tile.removeEventListener('pointerenter',enter);tile.removeEventListener('pointermove',move);tile.removeEventListener('pointerleave',leave);tile.removeEventListener('pointercancel',leave);window.removeEventListener('blur',leave);reduced.removeEventListener('change',leave);gl.deleteTexture(texture);gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);};
+  }, [fit, sourceType, compositeBackground, sourceSelector]);
 
   return <canvas ref={ref} className="work-glass-lens" style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',borderRadius:'inherit',zIndex:3}} aria-hidden="true" />;
 }

@@ -212,7 +212,7 @@ function CaseImageCarousel({ media, lang }) {
       if(step)setActive(node.scrollLeft >= node.scrollWidth-node.clientWidth-2 ? pages-1 : Math.min(pages-1,Math.round(node.scrollLeft/step)));
     }}>
       {items.map((item,index)=><figure className="case-story-card" key={item.id}>
-        <div className="case-media-frame"><img className="case-media-content" src={item.src} alt={item.alt || ''} loading="lazy" draggable={false} /></div>
+        <div className="case-media-frame"><img className="case-media-content" src={item.src} alt={item.alt || ''} loading={index === 0 ? 'eager' : 'lazy'} draggable={false} /><window.WorkGlassLens fit="contain" compositeBackground /></div>
 
       </figure>)}
     </div>
@@ -293,6 +293,7 @@ function CaseWeatherTabs({ media, lang }) {
           />)}
           {active?.media?.type !== 'video' && (active?.media?.src ? <img src={active.media.src} alt={active.media.alt || active.label} /> : <div className="case-weather-empty">{english ? `${labels[active?.id]} media` : `${active?.label}素材待上传`}</div>)}
           {active?.media?.src && active.media.type !== 'video' && <window.WorkGlassLens key={active.media.src} fit="contain" />}
+          {visible && active?.media?.type === 'video' && <window.WorkGlassLens key={visible} fit="contain" sourceType="video" sourceSelector="video.is-visible" />}
         </div>
       </div>
     </div>
@@ -524,7 +525,7 @@ function WorkHarborPage() {
     const el = rootRef.current;
     if (!el) return;
     const onMove = (e) => {
-      setCur((c) => ({ ...c, x: e.clientX, y: e.clientY, visible: true, mode: e.target.closest('.case-comparison-stage') ? 'native' : e.target.closest('.case-story-track') ? 'drag' : e.target.closest('.case-media-frame, .case-banner-cover') ? 'case' : (['case','drag','native'].includes(c.mode) ? 'default' : c.mode) }));
+      setCur((c) => ({ ...c, x: e.clientX, y: e.clientY, visible: true, mode: e.target.closest('.case-comparison-stage') ? 'native' : e.target.closest('.case-story-track') ? 'drag' : e.target.closest('.case-media-frame, .case-banner-cover, .case-weather-screen') ? 'case' : (['case','drag','native'].includes(c.mode) ? 'default' : c.mode) }));
     };
     const onLeave = () => setCur((c) => ({ ...c, visible: false }));
     el.addEventListener('mousemove', onMove);
@@ -772,7 +773,7 @@ function WorkHarborPage() {
           : { ...s.mediaFrame, borderRadius: radius, '--case-media-radius': `${radius}px` }}>
           {content}
           {type === 'dot-gallery' && <window.WorkGlassLens fit="contain" sourceType="canvas" />}
-          {(type === 'image' || type === 'video' || type === 'iframe') && <window.WorkGlassLens key={media.src} fit={media.fit || 'contain'} sourceType={type === 'iframe' ? 'video' : type} />}
+          {(type === 'image' || type === 'video' || type === 'iframe') && <window.WorkGlassLens key={media.src} fit={media.fit || 'contain'} sourceType={type === 'iframe' ? 'video' : type} compositeBackground={work.className === 'huolala-case' && type === 'image'} />}
         </div>
         {media.caption && <figcaption className="case-media-caption" {...textProbe} style={{ ...s.caption, margin: '10px 0 0' }}>{media.caption}</figcaption>}
       </figure>
