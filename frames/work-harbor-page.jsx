@@ -652,7 +652,7 @@ function WorkHarborPage() {
 
   const s = {
     wrap: {
-      background: C.bg,
+      background: 'transparent',
       color: C.fg,
       fontFamily: 'var(--font-family-mono)',
       fontSize: 'var(--font-size-body)',

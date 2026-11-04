@@ -1,0 +1,26 @@
+/* Shared viewport dot matrix for every standalone site page. */
+:root {
+  --site-dot-color: rgba(255, 255, 255, .3);
+  --site-dot-inset: 32px;
+  --site-dot-cell: calc((100vw - 2 * var(--site-dot-inset)) / 12);
+}
+:root[data-theme='light'] { --site-dot-color: rgba(0, 0, 0, .3); }
+
+/* Keep the dots above the page color and below all content and controls. */
+body { isolation: isolate; }
+body::before {
+  content: '';
+  position: fixed;
+  inset: calc(var(--site-dot-inset) - 1px);
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(circle, var(--site-dot-color) 1px, transparent 1.5px);
+  background-size: var(--site-dot-cell) var(--site-dot-cell);
+  background-position: calc(1px - var(--site-dot-cell) / 2) calc(1px - var(--site-dot-cell) / 2);
+}
+@media (max-width: 720px) {
+  :root {
+    --site-dot-inset: 20px;
+    --site-dot-cell: calc((100vw - 2 * var(--site-dot-inset)) / 6);
+  }
+}
