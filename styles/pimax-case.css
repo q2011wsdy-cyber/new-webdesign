@@ -25,6 +25,7 @@
   text-wrap:pretty;
 }
 .pimax-case[lang='zh-CN'] .case-editorial-copy {letter-spacing:.005em; -webkit-font-smoothing:antialiased;}
+.pimax-case .case-editorial-copy--concept p {text-wrap:balance;}
 .pimax-case[lang='zh-CN'] .case-editorial-copy h2 {letter-spacing:-.0125em; margin-bottom:14px;}
 @media (max-width:720px) {
   .pimax-case .case-editorial-copy {width:calc(100% - 32px); margin:20px auto 24px;}
