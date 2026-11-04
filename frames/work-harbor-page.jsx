@@ -56,8 +56,8 @@ function CaseDotGallery() {
     observer.observe(node);const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(node);
     document.addEventListener('visibilitychange',resume);reduced.addEventListener('change',()=>{lastTile=-Infinity;resume();},{signal:controller.signal});
     Promise.all([
-      fetch('assets/works/pimax/gallery-canvas-motion.json?v=23',{signal:controller.signal}).then(r=>{if(!r.ok)throw Error('Gallery data unavailable');return r.json();}),
-      new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;image.src='assets/works/pimax/gallery-canvas-base.svg?v=23';})
+      fetch('assets/works/pimax/gallery-canvas-motion.json?v=24',{signal:controller.signal}).then(r=>{if(!r.ok)throw Error('Gallery data unavailable');return r.json();}),
+      new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;image.src='assets/works/pimax/gallery-canvas-base.svg?v=24';})
     ]).then(([motion,image])=>{
       if(disposed)return;data=motion;base=image;
       for(const key in data.tracks)data.tracks[key]=data.tracks[key].map(([t,v,step])=>[t,color(v),step]);
