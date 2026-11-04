@@ -11,6 +11,31 @@
   --font-size-brand: 16px;
 }
 :root[data-theme='dark'] { --color-bg: #000; }
+
+/* Nothing-inspired dot matrix, fixed behind the homepage content. */
+:root {
+  --home-dot-color: rgba(255, 255, 255, .3);
+  --home-dot-inset: 32px;
+  --home-dot-cell: calc((100vw - 2 * var(--home-dot-inset)) / 12);
+}
+:root[data-theme='light'] { --home-dot-color: rgba(0, 0, 0, .3); }
+body::before {
+  content: '';
+  position: fixed;
+  inset: calc(var(--home-dot-inset) - 1px);
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, var(--home-dot-color) 1px, transparent 1.5px);
+  background-size: var(--home-dot-cell) var(--home-dot-cell);
+  background-position: calc(1px - var(--home-dot-cell) / 2) calc(1px - var(--home-dot-cell) / 2);
+}
+#root { position: relative; z-index: 1; }
+@media (max-width: 720px) {
+  :root {
+    --home-dot-inset: 20px;
+    --home-dot-cell: calc((100vw - 2 * var(--home-dot-inset)) / 6);
+  }
+}
 .hero-decode { max-width: 100%; overflow: clip; }
 
 .home-hero {
