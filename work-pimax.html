@@ -10,6 +10,7 @@
   <link href="styles/design-tokens.css?v=1" rel="stylesheet">
   <link rel="stylesheet" href="styles/site-background.css?v=1">
   <link rel="stylesheet" href="styles/case-overview.css?v=1">
+  <link rel="stylesheet" href="styles/pimax-case.css?v=1">
   <style>
     html, body, #root { margin: 0; padding: 0; width: 100%; min-height: 100%; }
     body { background: var(--color-bg); }
@@ -26,7 +27,7 @@
   <script>
     window.__workCaseData = {
       en: {
-        title: 'Pimax', accent: '',
+        title: 'Pimax', accent: '', className: 'pimax-case',
         subtitle: 'The Pimax smart light string project aims to bring hardware and software together to offer an easy-to-use, feature-rich, and playful solution.\n\nAs the product designer, I worked closely with the client and development team, leading the definition of the visual direction and the complete delivery of UX and UI design from the ground up.',
         cover: { src: 'assets/works/pimax/img-9.png', alt: 'Pimax creation interface', fit: 'contain' },
         forceInitialTheme: 'dark', hideIndex: true, compactCaseLayout: true, showMeta: true, overviewLayout: 'compact', showCover: false,
@@ -36,6 +37,9 @@
           { id: 'gallery', title: 'gallery', hideTitle: true, blocks: [
             { type: 'gallery', columns: 1, radius: 20, frame: false, gap: 20, items: [
               'assets/works/pimax/brush-reality-animated.svg?v=progress-sync-2',
+            ] },
+            { type: 'case-copy', variant: 'concept', title: 'Born of light, becoming light', body: 'Inspired by the basic form of a light bulb, simple points of light combine into limitless patterns, sparking infinite imagination.' },
+            { type: 'gallery', columns: 1, radius: 20, frame: false, gap: 20, items: [
               'assets/works/pimax/img-2.png',
               'assets/works/pimax/img-3.png',
             ] },
@@ -66,7 +70,7 @@
         nextLabel: 'next · 03', nextTitle: 'AI OS Concept →'
       },
       zh: {
-        title: 'Pimax', accent: '',
+        title: 'Pimax', accent: '', className: 'pimax-case',
         subtitle: 'Pimax智能灯串项目希望通过软硬件的有机结合，为用户提供一个易于操作且功能丰富、具备可玩性的解决方案。\n\n我在其中作为产品设计师的角色，与委托人、开发团队密切合作，从0到1主导了视觉方向的定义、UX与UI设计的完整交付。',
         cover: { src: 'assets/works/pimax/img-9.png', alt: 'Pimax 创作界面', fit: 'contain' },
         forceInitialTheme: 'dark', hideIndex: true, compactCaseLayout: true, showMeta: true, overviewLayout: 'compact', showCover: false,
@@ -76,6 +80,9 @@
           { id: 'gallery', title: '画廊', hideTitle: true, blocks: [
             { type: 'gallery', columns: 1, radius: 20, frame: false, gap: 20, items: [
               'assets/works/pimax/brush-reality-animated.svg?v=progress-sync-2',
+            ] },
+            { type: 'case-copy', variant: 'concept', title: '源于光，成为光', body: '源自于灯泡的基本形态，通过排列组合成无限的图形，用简单的光点激发无限想象力。' },
+            { type: 'gallery', columns: 1, radius: 20, frame: false, gap: 20, items: [
               'assets/works/pimax/img-2.png',
               'assets/works/pimax/img-3.png',
             ] },
