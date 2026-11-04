@@ -118,7 +118,10 @@
                   "caption": "统一视觉与情感化体验",
                   "scrollMotion": false,
                   "frame": false,
-                  "radius": 0
+                  "radius": 0,
+                  "srcSet": "assets/works/huolala-story/responsive/846390-864.webp 864w, assets/works/huolala-story/responsive/846390-1728.webp 1728w",
+                  "sizes": "(max-width: 928px) calc(100vw - 64px), 864px",
+                  "fallbackSrc": "assets/works/huolala-story/responsive/846390-fallback.jpg"
                 },
                 {
                   "type": "image",
@@ -128,7 +131,10 @@
                   "caption": "信息重构：抓大放小，解决功能堆叠",
                   "scrollMotion": false,
                   "frame": false,
-                  "radius": 0
+                  "radius": 0,
+                  "srcSet": "assets/works/huolala-story/responsive/846387-864.webp 864w, assets/works/huolala-story/responsive/846387-1728.webp 1728w",
+                  "sizes": "(max-width: 928px) calc(100vw - 64px), 864px",
+                  "fallbackSrc": "assets/works/huolala-story/responsive/846387-fallback.jpg"
                 },
                 {
                   "type": "image",
@@ -138,7 +144,10 @@
                   "caption": "为什么需要改版：设计与产品视角",
                   "scrollMotion": false,
                   "frame": false,
-                  "radius": 0
+                  "radius": 0,
+                  "srcSet": "assets/works/huolala-story/responsive/846388-864.webp 864w, assets/works/huolala-story/responsive/846388-1728.webp 1728w",
+                  "sizes": "(max-width: 928px) calc(100vw - 64px), 864px",
+                  "fallbackSrc": "assets/works/huolala-story/responsive/846388-fallback.jpg"
                 },
                 {
                   "type": "image",
@@ -148,7 +157,10 @@
                   "caption": "设计目标：面向未来的框架",
                   "scrollMotion": false,
                   "frame": false,
-                  "radius": 0
+                  "radius": 0,
+                  "srcSet": "assets/works/huolala-story/responsive/846389-864.webp 864w, assets/works/huolala-story/responsive/846389-1728.webp 1728w",
+                  "sizes": "(max-width: 928px) calc(100vw - 64px), 864px",
+                  "fallbackSrc": "assets/works/huolala-story/responsive/846389-fallback.jpg"
                 }
               ]
             }
@@ -481,7 +493,10 @@
                     "caption": "A unified visual and emotional experience",
                     "scrollMotion": false,
                     "frame": false,
-                    "radius": 0
+                    "radius": 0,
+                    "srcSet": "assets/works/huolala-story/responsive/846390-864.webp 864w, assets/works/huolala-story/responsive/846390-1728.webp 1728w",
+                    "sizes": "(max-width: 928px) calc(100vw - 64px), 864px",
+                    "fallbackSrc": "assets/works/huolala-story/responsive/846390-fallback.jpg"
                   },
                   {
                     "type": "image",
@@ -491,7 +506,10 @@
                     "caption": "Information hierarchy: prioritize what matters",
                     "scrollMotion": false,
                     "frame": false,
-                    "radius": 0
+                    "radius": 0,
+                    "srcSet": "assets/works/huolala-story/responsive/846387-864.webp 864w, assets/works/huolala-story/responsive/846387-1728.webp 1728w",
+                    "sizes": "(max-width: 928px) calc(100vw - 64px), 864px",
+                    "fallbackSrc": "assets/works/huolala-story/responsive/846387-fallback.jpg"
                   },
                   {
                     "type": "image",
@@ -501,7 +519,10 @@
                     "caption": "Why redesign: design and product perspectives",
                     "scrollMotion": false,
                     "frame": false,
-                    "radius": 0
+                    "radius": 0,
+                    "srcSet": "assets/works/huolala-story/responsive/846388-864.webp 864w, assets/works/huolala-story/responsive/846388-1728.webp 1728w",
+                    "sizes": "(max-width: 928px) calc(100vw - 64px), 864px",
+                    "fallbackSrc": "assets/works/huolala-story/responsive/846388-fallback.jpg"
                   },
                   {
                     "type": "image",
@@ -511,7 +532,10 @@
                     "caption": "Design goals: a framework for the future",
                     "scrollMotion": false,
                     "frame": false,
-                    "radius": 0
+                    "radius": 0,
+                    "srcSet": "assets/works/huolala-story/responsive/846389-864.webp 864w, assets/works/huolala-story/responsive/846389-1728.webp 1728w",
+                    "sizes": "(max-width: 928px) calc(100vw - 64px), 864px",
+                    "fallbackSrc": "assets/works/huolala-story/responsive/846389-fallback.jpg"
                   }
                 ]
               }

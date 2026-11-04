@@ -158,6 +158,66 @@ function CasePhoneLoop({ media, lang }) {
   </div>;
 }
 
+function CaseStoryImage({ item, index, total, lang, active }) {
+  const image = React.useRef(null);
+  const failedSource = React.useRef(item.src);
+  const [attempt, setAttempt] = React.useState(0);
+  const [reload, setReload] = React.useState(0);
+  const [status, setStatus] = React.useState('loading');
+  const english = lang === 'en';
+  const retry = React.useCallback(() => { setStatus('loading'); setAttempt(0); setReload(value => value + 1); }, []);
+  let src = attempt >= 2 && item.fallbackSrc ? item.fallbackSrc : attempt ? failedSource.current : item.src;
+  if (attempt || reload) src += `${src.includes('?') ? '&' : '?'}image_retry=${reload}-${attempt}`;
+
+  React.useEffect(() => {
+    const node = image.current;
+    let cancelled = false, settled = false, retryTimer;
+    setStatus('loading');
+    const failed = () => {
+      if (cancelled || settled) return;
+      settled = true; clearTimeout(timeout);
+      if (!attempt) failedSource.current = node.currentSrc || item.src;
+      if (attempt < 2) retryTimer = window.setTimeout(() => setAttempt(value => value + 1), 700 * (attempt + 1));
+      else setStatus('error');
+    };
+    const loaded = async () => {
+      try {
+        if (node.decode) await node.decode();
+        if (cancelled || settled) return;
+        if (!node.naturalWidth) { failed(); return; }
+        settled = true; clearTimeout(timeout); setStatus('ready');
+      } catch (_) { failed(); }
+    };
+    const timeout = window.setTimeout(failed, 15000);
+    node.addEventListener('load', loaded); node.addEventListener('error', failed);
+    if (node.complete) { if (node.naturalWidth) loaded(); else failed(); }
+    return () => { cancelled = true; clearTimeout(timeout); clearTimeout(retryTimer); node.removeEventListener('load', loaded); node.removeEventListener('error', failed); };
+  }, [item.src, item.srcSet, item.sizes, item.fallbackSrc, attempt, reload]);
+
+  React.useEffect(() => {
+    if (status !== 'error') return;
+    window.addEventListener('online', retry);
+    return () => window.removeEventListener('online', retry);
+  }, [status, retry]);
+
+  return <div className="case-media-frame case-story-media" data-image-state={status} aria-busy={status === 'loading'}>
+    <img key={`${reload}-${attempt}`} ref={image} className="case-media-content" src={src}
+      srcSet={attempt === 0 ? item.srcSet : undefined} sizes={item.sizes}
+      alt={item.alt || ''} loading="eager" decoding="async" fetchPriority={active ? 'high' : 'auto'} draggable={false}
+      aria-hidden={status !== 'ready'} />
+    {status !== 'ready' && <div className="case-story-loading" role={active ? 'status' : undefined}>
+      <span className="case-story-loading-index" aria-hidden="true">VISUAL / {String(index + 1).padStart(2, '0')} — {String(total).padStart(2, '0')}</span>
+      <div className="case-story-orbit" aria-hidden="true"><span /><span /><i /><b>+</b></div>
+      <div className="case-story-loading-copy">
+        <span className="case-story-loading-title">{status === 'error' ? (english ? 'Signal interrupted' : '暂时未能载入') : (english ? 'Loading visual' : '正在载入作品')}</span>
+        <span>{status === 'error' ? (english ? 'Reconnect and try again' : '请检查网络后重试') : attempt ? (english ? 'Reconnecting…' : '正在重新连接…') : (english ? 'A moment, please' : '稍候，画面即将呈现')}</span>
+        {status === 'error' && <button type="button" onPointerDown={event => event.stopPropagation()} onClick={retry}>{english ? 'Retry' : '重新加载'} <span aria-hidden="true">↗</span></button>}
+      </div>
+    </div>}
+    {status === 'ready' && <window.WorkGlassLens fit="contain" compositeBackground />}
+  </div>;
+}
+
 function CaseImageCarousel({ media, lang }) {
   const track = React.useRef(null);
   const drag = React.useRef(null);
@@ -173,6 +233,7 @@ function CaseImageCarousel({ media, lang }) {
   return <div className="case-story-carousel">
     <div ref={track} className="case-story-track"
       onPointerDown={event=>{
+        if(event.target.closest('button, a'))return;
         if(event.pointerType!=='mouse'||event.button!==0)return;
         const node=event.currentTarget;
         cancelAnimationFrame(coast.current);
@@ -211,9 +272,8 @@ function CaseImageCarousel({ media, lang }) {
       const node=event.currentTarget,step=node.children[1]?.offsetLeft-node.children[0]?.offsetLeft;
       if(step)setActive(node.scrollLeft >= node.scrollWidth-node.clientWidth-2 ? pages-1 : Math.min(pages-1,Math.round(node.scrollLeft/step)));
     }}>
-      {items.map((item,index)=><figure className="case-story-card" key={item.id}>
-        <div className="case-media-frame"><img className="case-media-content" src={item.src} alt={item.alt || ''} loading={index === 0 ? 'eager' : 'lazy'} draggable={false} /><window.WorkGlassLens fit="contain" compositeBackground /></div>
-
+      {items.map((item,index)=><figure className="case-story-card" key={`${item.id}-${item.src}`}>
+        <CaseStoryImage item={item} index={index} total={pages} lang={lang} active={active === index} />
       </figure>)}
     </div>
     <div className="case-story-controls">
