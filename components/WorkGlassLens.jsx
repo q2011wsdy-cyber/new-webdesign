@@ -11,7 +11,8 @@ function WorkGlassLens({ fit = 'cover', sourceType = 'image' }) {
     if (!image) return;
     const video = image.tagName === 'VIDEO';
     const liveCanvas = image.tagName === 'CANVAS';
-    const animatedSvg = !video && !liveCanvas && /(?:device-cards|brush-reality|bluetooth|artwork-gallery|artwork-gallery|artwork-gallery)-animated\.svg(?:[?#]|$)/.test(image.getAttribute('src') || '');
+    // Every animated SVG needs fresh frames while hovered, just like video.
+    const animatedSvg = !video && !liveCanvas && /-animated\.svg(?:[?#]|$)/i.test(image.getAttribute('src') || '');
     const sourceWidth = () => liveCanvas ? image.width : video ? image.videoWidth : image.naturalWidth;
     const sourceHeight = () => liveCanvas ? image.height : video ? image.videoHeight : image.naturalHeight;
     const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false, antialias: true });
