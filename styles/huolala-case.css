@@ -206,17 +206,17 @@
 
 /* PNG cards use a quieter backing in both themes. */
 .huolala-case [data-png-media='true'] .case-media-frame {
-  background: rgba(255, 255, 255, .05) !important;
+  background: #f2f2f2 !important;
 }
 :root[data-theme='light'] .huolala-case [data-png-media='true'] .case-media-frame {
-  background: rgba(0, 0, 0, .05) !important;
+  background: #f2f2f2 !important;
 }
-.case-comparison-stage { position:relative; overflow:hidden; border-radius:20px; background:rgba(255,255,255,.05); }
-:root[data-theme='light'] .case-comparison-stage { background:rgba(0,0,0,.05); }
+.case-comparison-stage { position:relative; overflow:hidden; border-radius:20px; background:#f2f2f2; }
+:root[data-theme='light'] .case-comparison-stage { background:#f2f2f2; }
 .case-comparison-layer { position:absolute; inset:0; }
 .case-comparison-layer img { display:block; width:100%; height:100%; object-fit:contain; }
 .case-comparison-before { background:var(--color-bg); }
-.case-compare-empty { height:100%; display:grid; place-items:center; color:var(--case-copy); font-size:14px; background:rgba(128,128,128,.05); }
+.case-compare-empty { height:100%; display:grid; place-items:center; color:var(--case-copy); font-size:14px; background:#f2f2f2; }
 .case-compare-label { position:absolute; top:20px; padding:6px 12px; border-radius:20px; background:rgba(0,0,0,.65); color:white; font:400 12px/1.4 var(--font-family-mono); pointer-events:none; }
 .case-compare-label-before { left:20px; }.case-compare-label-after { right:20px; }
 .case-comparison-divider { position:absolute; top:0; bottom:0; left:var(--compare-position); width:2px; transform:translateX(-50%); background:white; box-shadow:0 0 4px rgba(0,0,0,.3); pointer-events:none; }
@@ -234,8 +234,8 @@
 .case-comparison-stage { cursor: none; }
 .case-comparison-range { cursor: none; }
 .case-comparison-stage .case-compare-empty { background: transparent; }
-.case-comparison-stage { --compare-background: color-mix(in srgb, var(--color-bg) 95%, white 5%); background: var(--compare-background); }
-:root[data-theme='light'] .case-comparison-stage { --compare-background: color-mix(in srgb, var(--color-bg) 95%, black 5%); background: var(--compare-background); }
+.case-comparison-stage { --compare-background: #f2f2f2; background: var(--compare-background); }
+:root[data-theme='light'] .case-comparison-stage { --compare-background: #f2f2f2; background: var(--compare-background); }
 .case-comparison-layer, .case-comparison-before { background: var(--compare-background); }
 /* A quiet comparison guide that appears only during interaction. */
 .case-comparison-divider {
@@ -265,8 +265,8 @@
 @media(prefers-reduced-motion:reduce) { .case-comparison-divider, .case-comparison-divider span { transition: none; } }
 
 /* Weather study: the Figma phone crop and chips share one responsive canvas. */
-.case-weather-stage { position:relative; aspect-ratio:1200/594; overflow:hidden; border-radius:20px; background:rgba(255,255,255,.05); container-type:inline-size; }
-:root[data-theme='light'] .case-weather-stage { background:rgba(0,0,0,.05); }
+.case-weather-stage { position:relative; aspect-ratio:1200/594; overflow:hidden; border-radius:20px; background:#f2f2f2; container-type:inline-size; }
+:root[data-theme='light'] .case-weather-stage { background:#f2f2f2; }
 .case-weather-tabs { position:absolute; z-index:2; left:50%; top:6%; transform:translateX(-50%); display:flex; gap:12px; }
 .case-weather-tab { display:grid; place-items:center; width:44px; height:44px; padding:0; border:0; border-radius:50%; background:rgba(128,128,128,.12); cursor:pointer; transition:background-color 180ms ease,box-shadow 180ms ease; }
 .case-weather-tab img { width:22px; height:22px; filter:grayscale(1); opacity:.45; transition:filter 180ms ease,opacity 180ms ease; }
@@ -457,15 +457,15 @@
 .huolala-case .case-editorial-copy--story-intro {width:min(100%,680px);max-width:680px !important;margin:0 0 8px;}
 .huolala-case .case-editorial-copy--story-intro h2 {font-size:24px !important;line-height:1.4;margin-bottom:18px;}
 .huolala-case .case-editorial-copy--story-intro p {font-size:16px;line-height:1.75;}
-/* Theme-aware comparison canvas, with a faint square grid. */
+/* Fixed solid-gray comparison canvas, with a faint square grid. */
 :root[data-theme] .huolala-case .case-comparison-stage {
- --compare-background:color-mix(in srgb,var(--color-bg) 95%,white 5%);
+ --compare-background:#f2f2f2;
  --compare-grid:rgba(255,255,255,.035);
  aspect-ratio:16/10 !important;
  background:var(--compare-background);
 }
 :root[data-theme='light'] .huolala-case .case-comparison-stage {
- --compare-background:color-mix(in srgb,var(--color-bg) 95%,black 5%);
+ --compare-background:#f2f2f2;
  --compare-grid:rgba(0,0,0,.035);
 }
 .huolala-case .case-comparison-layer {
@@ -474,7 +474,8 @@
  background-size:32px 32px;
 }
 :root[data-theme='light'] .huolala-case .case-compare-label {color:rgba(0,0,0,.55);border-color:rgba(0,0,0,.12);}
-:root[data-theme] .huolala-case .case-comparison-stage {--compare-grid:rgba(255,255,255,.018);--compare-outline:rgba(255,255,255,.12);}
+:root[data-theme] .huolala-case .case-comparison-stage {--compare-grid:rgba(0,0,0,.016);--compare-outline:rgba(0,0,0,.10);}
+:root[data-theme] .huolala-case .case-compare-label {color:rgba(0,0,0,.55);border-color:rgba(0,0,0,.12);}
 :root[data-theme='light'] .huolala-case .case-comparison-stage {--compare-grid:rgba(0,0,0,.016);--compare-outline:rgba(0,0,0,.10);}
 .huolala-case .case-comparison-layer img {filter:drop-shadow(.5px 0 0 var(--compare-outline)) drop-shadow(-.5px 0 0 var(--compare-outline)) drop-shadow(0 .5px 0 var(--compare-outline)) drop-shadow(0 -.5px 0 var(--compare-outline));}
 
@@ -494,8 +495,8 @@
   -webkit-backdrop-filter:none;
 }
 
-.case-phone-loop {position:relative;container-type:inline-size;aspect-ratio:940/650;overflow:hidden;border-radius:20px;background:color-mix(in srgb,var(--color-bg) 95%,white 5%);}
-:root[data-theme='light'] .case-phone-loop {background:color-mix(in srgb,var(--color-bg) 95%,black 5%);}
+.case-phone-loop {position:relative;container-type:inline-size;aspect-ratio:940/650;overflow:hidden;border-radius:20px;background:#f2f2f2;}
+:root[data-theme='light'] .case-phone-loop {background:#f2f2f2;}
  .case-phone-loop {--phone-step:100cqw;aspect-ratio:940/580;touch-action:pan-y;cursor:grab;}
 .case-phone-loop:active {cursor:grabbing;}
 .case-phone-loop:focus-visible {outline:2px solid #ff6600;outline-offset:4px;}
