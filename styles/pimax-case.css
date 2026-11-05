@@ -5,6 +5,12 @@
   --pimax-copy-space-after:72px;
 }
 :root[data-theme='light'] .pimax-case {--pimax-copy:#5c5c5c; --pimax-heading:#181818;}
+/* Keep the opening copy neutral, matching the editorial text below. */
+.pimax-case #overview h1 {color:var(--pimax-heading) !important;}
+.pimax-case .case-overview-intro {color:var(--pimax-copy) !important;}
+.pimax-case .case-meta-grid > div > div:first-child {color:#888 !important;}
+.pimax-case .case-meta-grid > div > div:last-child {color:var(--pimax-heading) !important;}
+:root[data-theme='light'] .pimax-case .case-meta-grid > div > div:first-child {color:#777 !important;}
 .pimax-case #gallery > div {gap:var(--pimax-gallery-gap) !important;}
 /* Preserve media dimensions during scroll, matching the reference case. */
 .pimax-case .case-scroll-item {transform:translate3d(0,var(--case-scroll-y,0px),0);}
