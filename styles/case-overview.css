@@ -1,3 +1,14 @@
+/* Neutral typography across case studies, including the shared navigation. */
+:root, :root[data-theme='dark'] {
+  --color-fg:#f5f5f5; --color-display:#f5f5f5;
+  --color-heading:#b8b8b8; --color-dim:#b8b8b8;
+  --color-faint:#888; --color-muted:#888; --color-chip-text:#b8b8b8;
+}
+:root[data-theme='light'] {
+  --color-fg:#181818; --color-display:#181818;
+  --color-heading:#5c5c5c; --color-dim:#5c5c5c;
+  --color-faint:#777; --color-muted:#777; --color-chip-text:#5c5c5c;
+}
 /* Shared compact opening for portfolio case studies. */
 #overview.case-overview .case-meta-grid {
   display:flex !important; flex-wrap:wrap; gap:16px 28px !important;
