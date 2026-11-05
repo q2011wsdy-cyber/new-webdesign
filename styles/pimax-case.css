@@ -1,9 +1,16 @@
-.pimax-case {--pimax-copy:#b8b8b8; --pimax-heading:#f5f5f5;}
+.pimax-case {
+  --pimax-copy:#b8b8b8; --pimax-heading:#f5f5f5;
+  --pimax-gallery-gap:24px;
+  --pimax-copy-space-before:128px;
+  --pimax-copy-space-after:72px;
+}
 :root[data-theme='light'] .pimax-case {--pimax-copy:#5c5c5c; --pimax-heading:#181818;}
+.pimax-case #gallery > div {gap:var(--pimax-gallery-gap) !important;}
 .pimax-case .case-editorial-copy {
   width:min(100%,640px);
   max-width:640px;
-  margin:32px auto 40px;
+  /* Match Huolala's complete media-to-copy spacing, including the grid gap. */
+  margin:calc(var(--pimax-copy-space-before) - var(--pimax-gallery-gap)) auto calc(var(--pimax-copy-space-after) - var(--pimax-gallery-gap));
   padding:0;
   color:var(--pimax-copy);
   font-family:var(--font-family-mono),'PingFang SC','Microsoft YaHei',sans-serif;
@@ -28,7 +35,8 @@
 .pimax-case .case-editorial-copy--concept p {text-wrap:balance; white-space:pre-line;}
 .pimax-case[lang='zh-CN'] .case-editorial-copy h2 {letter-spacing:-.0125em; margin-bottom:14px;}
 @media (max-width:720px) {
-  .pimax-case .case-editorial-copy {width:calc(100% - 32px); margin:20px auto 24px;}
+  .pimax-case {--pimax-copy-space-before:84px; --pimax-copy-space-after:48px;}
+  .pimax-case .case-editorial-copy {width:calc(100% - 32px);}
   .pimax-case .case-editorial-copy h2 {font-size:22px; margin-bottom:18px;}
   .pimax-case .case-editorial-copy p {font-size:16px;}
 }
