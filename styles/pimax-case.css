@@ -6,6 +6,8 @@
 }
 :root[data-theme='light'] .pimax-case {--pimax-copy:#5c5c5c; --pimax-heading:#181818;}
 .pimax-case #gallery > div {gap:var(--pimax-gallery-gap) !important;}
+/* Preserve media dimensions during scroll, matching the reference case. */
+.pimax-case .case-scroll-item {transform:translate3d(0,var(--case-scroll-y,0px),0);}
 .pimax-case .case-editorial-copy {
   width:min(100%,640px);
   max-width:640px;
