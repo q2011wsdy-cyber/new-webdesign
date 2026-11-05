@@ -297,19 +297,19 @@
 :root[data-theme] .huolala-case .case-comparison-stage { --compare-background:#ff6600; background:var(--compare-background); }
 .huolala-case .case-compare-label { background:transparent; border:1px solid rgba(255,255,255,.4); color:rgba(255,255,255,.92); backdrop-filter:none; -webkit-backdrop-filter:none; }
 
-/* Later chapters: inset the copy slightly within the full-width media column. */
+/* Align chapter copy and captions with their media edge. */
 .huolala-case .case-editorial-copy--feature,
-.huolala-case .case-editorial-copy--closing { width:auto; margin-left:clamp(20px,5vw,64px); margin-right:clamp(20px,5vw,64px); text-align:left; }
+.huolala-case .case-editorial-copy--closing { width:auto; margin-left:0; margin-right:0; text-align:left; }
 .huolala-case #emotional-design .case-media-caption,
 .huolala-case #weather-particles .case-media-caption,
 .huolala-case #broadcast-motion .case-media-caption,
-.huolala-case #waiting-experience .case-media-caption { margin-left:clamp(20px,5vw,64px); margin-right:clamp(20px,5vw,64px); text-align:left; }
+.huolala-case #waiting-experience .case-media-caption { margin-left:0; margin-right:0; text-align:left; }
 
-/* Centered reading column, with left-aligned text as in the editorial reference. */
+/* Readable text measure anchored to the media's left edge. */
 .huolala-case .case-editorial-copy .case-editorial-eyebrow {font-size:12px;line-height:1.5;color:var(--case-muted);margin:0 0 12px;}
 .huolala-case .case-editorial-copy--feature,
 .huolala-case .case-editorial-copy--closing {
-  width:min(100%,640px); max-width:640px; margin:32px auto 40px;
+  width:min(100%,640px); max-width:640px; margin:32px 0 40px;
   padding:0; text-align:left;
 }
 .huolala-case .case-editorial-copy--feature h2,
@@ -324,7 +324,7 @@
 }
 @media(max-width:720px) {
   .huolala-case .case-editorial-copy--feature,
-  .huolala-case .case-editorial-copy--closing { width:calc(100% - 32px); margin:20px auto 24px; }
+  .huolala-case .case-editorial-copy--closing { width:min(100%,640px); margin:20px 0 24px; }
   .huolala-case .case-editorial-copy--feature h2,
   .huolala-case .case-editorial-copy--closing h2 { font-size:22px !important; margin-bottom:18px; }
   .huolala-case .case-editorial-copy--feature p,

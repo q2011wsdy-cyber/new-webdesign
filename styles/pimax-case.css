@@ -12,8 +12,9 @@
   width:min(100%,640px);
   max-width:640px;
   /* Match Huolala's complete media-to-copy spacing, including the grid gap. */
-  margin:calc(var(--pimax-copy-space-before) - var(--pimax-gallery-gap)) auto calc(var(--pimax-copy-space-after) - var(--pimax-gallery-gap));
+  margin:calc(var(--pimax-copy-space-before) - var(--pimax-gallery-gap)) 0 calc(var(--pimax-copy-space-after) - var(--pimax-gallery-gap));
   padding:0;
+  text-align:left;
   color:var(--pimax-copy);
   font-family:var(--font-family-mono),'PingFang SC','Microsoft YaHei',sans-serif;
 }
@@ -38,7 +39,7 @@
 .pimax-case[lang='zh-CN'] .case-editorial-copy h2 {letter-spacing:-.0125em; margin-bottom:14px;}
 @media (max-width:720px) {
   .pimax-case {--pimax-copy-space-before:84px; --pimax-copy-space-after:48px;}
-  .pimax-case .case-editorial-copy {width:calc(100% - 32px);}
+  .pimax-case .case-editorial-copy {width:min(100%,640px);}
   .pimax-case .case-editorial-copy h2 {font-size:22px; margin-bottom:18px;}
   .pimax-case .case-editorial-copy p {font-size:16px;}
 }
