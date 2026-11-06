@@ -195,7 +195,6 @@
 @media(max-width:600px) {.case-broadcast-time {top:6px;padding:3px 10px;font-size:10px;}}
 
 /* Reverse neutral tones only; saturated illustration colors stay intact. */
-:root[data-theme='dark'] .huolala-case [data-invert-on-theme='dark'] img,
 :root[data-theme='light'] .huolala-case [data-invert-on-theme='light'] img {
   filter: url(#case-neutral-invert);
 }
@@ -505,3 +504,6 @@
 
 .huolala-case .case-comparison-stage,
 .huolala-case .case-comparison-stage * {cursor:default !important;}
+
+/* Preserve the original artwork on fixed gray cards in both themes. */
+.huolala-case [data-invert-on-theme='dark'] img {filter:none;}
