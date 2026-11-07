@@ -1105,7 +1105,31 @@ function WorkHarborPage() {
         </section>;
       })}
 
-      {!work.hideNextNav && <div className="case-scroll-item" style={s.nextNav}>
+      {work.className === 'pimax-case' && !work.hideNextNav && (
+        <nav className="pimax-case-nav" aria-label={lang === 'zh' ? '案例导航' : 'Case navigation'}>
+          {[
+            { direction: 'prev', href: 'work-huolala.html', cover: 'assets/uploads/1789839484996-06489eae.png', title: lang === 'zh' ? '上一个 · 货拉拉' : 'Previous · Huolala' },
+            { direction: 'next', href: '/#works', cover: 'assets/works/03-zixiang.jpg', title: lang === 'zh' ? '下一个 · AI OS 概念探索' : 'Next · AI OS Concept' },
+          ].map(({direction, href, cover, title}) => (
+            <a key={direction} className={'pimax-case-nav-' + direction} href={href} aria-label={title}>
+              <img src={cover} alt="" loading="lazy" />
+              <svg viewBox="0 0 72 56" aria-hidden="true">
+                {[0, 1, 2, 3, 4, 5, 6, 7].map(column => <circle key={'shaft-' + column} cx={8 + column * 8} cy="28" r="2.7" />)}
+                {[1, 2, 3].flatMap(step => [-1, 1].map(side => (
+                  <circle key={step + ':' + side} cx={64 - step * 8} cy={28 + side * step * 7} r="2.7" />
+                )))}
+              </svg>
+            </a>
+          ))}
+          <div className="pimax-case-nav-label" aria-hidden="true">
+            <span>{lang === 'zh' ? '下一个案例' : 'Next case'}</span>
+            <span>{lang === 'zh' ? '上一个' : 'Previous'}</span>
+            <span>{lang === 'zh' ? '下一个' : 'Next'}</span>
+          </div>
+        </nav>
+      )}
+
+      {work.className !== 'pimax-case' && !work.hideNextNav && <div className="case-scroll-item" style={s.nextNav}>
         <a href="/" {...linkProbe} style={{ textDecoration: 'none', color: C.fg }}>
           <div style={s.nextBlock}>
             <span style={s.nextSmall}>{ui.back}</span>

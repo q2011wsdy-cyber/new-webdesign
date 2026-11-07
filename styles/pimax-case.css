@@ -49,3 +49,50 @@
   .pimax-case .case-editorial-copy h2 {font-size:22px; margin-bottom:18px;}
   .pimax-case .case-editorial-copy p {font-size:16px;}
 }
+
+.pimax-case-nav {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  min-height: clamp(152px, 23vw, 240px);
+  border-radius: 20px;
+  background: #000;
+  color: #fff;
+}
+.pimax-case-nav a {
+  position: relative;
+  display: grid;
+  align-items: center;
+  padding: clamp(16px, 5vw, 48px);
+  color: inherit;
+  isolation: isolate;
+}
+.pimax-case-nav-next { justify-items: end; }
+.pimax-case-nav img {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: .28;
+}
+.pimax-case-nav a:is(:hover, :focus-visible) img { opacity: .48; }
+.pimax-case-nav a:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }
+.pimax-case-nav svg { width: clamp(44px, 9vw, 88px); fill: currentColor; }
+.pimax-case-nav-prev svg { transform: scaleX(-1); }
+.pimax-case-nav-label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  font-size: clamp(16px, 3vw, 28px);
+  text-shadow: 0 1px 8px #000;
+}
+.pimax-case-nav-label span { grid-area: 1 / 1; }
+.pimax-case-nav-label span:not(:first-child),
+.pimax-case-nav:has(a:is(:hover, :focus-visible)) .pimax-case-nav-label span:first-child { visibility: hidden; }
+.pimax-case-nav:has(.pimax-case-nav-prev:is(:hover, :focus-visible)) .pimax-case-nav-label span:nth-child(2),
+.pimax-case-nav:has(.pimax-case-nav-next:is(:hover, :focus-visible)) .pimax-case-nav-label span:nth-child(3) { visibility: visible; }
