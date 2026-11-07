@@ -1151,6 +1151,11 @@ function WorkHarborPage() {
 
       </main>
       </div>
+      {work.className === 'pimax-case' && ['top', 'bottom'].map(edge => (
+        <div key={edge} className={'pimax-scroll-diffusion pimax-scroll-diffusion--' + edge} aria-hidden="true">
+          <span /><span /><span />
+        </div>
+      ))}
       <div className={`case-return-veil${leavingCase ? ' is-visible' : ''}`} aria-hidden="true" />
 
       <div style={{ ...cursorBlock, opacity: ['case','drag','native'].includes(cur.mode) ? 0 : cursorBlock.opacity }} />

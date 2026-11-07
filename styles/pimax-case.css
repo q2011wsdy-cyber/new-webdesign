@@ -96,3 +96,24 @@
 .pimax-case-nav:has(a:is(:hover, :focus-visible)) .pimax-case-nav-label span:first-child { visibility: hidden; }
 .pimax-case-nav:has(.pimax-case-nav-prev:is(:hover, :focus-visible)) .pimax-case-nav-label span:nth-child(2),
 .pimax-case-nav:has(.pimax-case-nav-next:is(:hover, :focus-visible)) .pimax-case-nav-label span:nth-child(3) { visibility: visible; }
+
+/* Blur the viewport edges without fading the artwork into the page. */
+.pimax-case .case-scroll-item { opacity: 1; }
+.pimax-scroll-diffusion {
+  position: fixed;
+  inset-inline: 0;
+  height: clamp(54px, 12vh, 112px);
+  z-index: 8;
+  pointer-events: none;
+}
+.pimax-scroll-diffusion--top { top: 0; --diffusion-direction: to top; }
+.pimax-scroll-diffusion--bottom { bottom: 0; --diffusion-direction: to bottom; }
+.pimax-scroll-diffusion span {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(var(--diffusion-radius));
+  mask-image: linear-gradient(var(--diffusion-direction), transparent var(--diffusion-start), #000);
+}
+.pimax-scroll-diffusion span:nth-child(1) { --diffusion-radius: 2px; --diffusion-start: 0%; }
+.pimax-scroll-diffusion span:nth-child(2) { --diffusion-radius: 4px; --diffusion-start: 35%; }
+.pimax-scroll-diffusion span:nth-child(3) { --diffusion-radius: 7px; --diffusion-start: 65%; }
