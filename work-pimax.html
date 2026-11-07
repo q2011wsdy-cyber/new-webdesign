@@ -36,7 +36,7 @@
         sections: [
           { id: 'gallery', title: 'gallery', hideTitle: true, blocks: [
             { type: 'gallery', columns: 1, radius: 20, frame: false, gap: 20, items: [
-              'assets/works/pimax/brush-reality-animated.svg?v=progress-sync-2',
+              { src: 'assets/works/pimax/brush-reality-animated.svg?v=hero-eager-3', fallbackSrc: 'assets/works/pimax/img-1.png', loading: 'eager', fetchPriority: 'high', alt: 'Pimax Reality' },
             ] },
             { type: 'case-copy', variant: 'concept', title: 'Born of light, becoming light', body: 'The brand’s visual language starts with the basic shape of a light bulb, drawing on retro-futuristic visions of the Space Age to create a distinctive visual identity through simple points of light. Dot arrays translate physical lighting devices into dot-matrix imagery, extending across empty-state illustrations, product icon templates, and UI Kit elements to form a complete digital brand system with a consistent visual language across devices, lighting effects, and interfaces.' },
             { type: 'gallery', columns: 1, radius: 20, frame: false, gap: 20, items: [
@@ -92,7 +92,7 @@
         sections: [
           { id: 'gallery', title: '画廊', hideTitle: true, blocks: [
             { type: 'gallery', columns: 1, radius: 20, frame: false, gap: 20, items: [
-              'assets/works/pimax/brush-reality-animated.svg?v=progress-sync-2',
+              { src: 'assets/works/pimax/brush-reality-animated.svg?v=hero-eager-3', fallbackSrc: 'assets/works/pimax/img-1.png', loading: 'eager', fetchPriority: 'high', alt: 'Pimax Reality' },
             ] },
             { type: 'case-copy', variant: 'concept', title: '源于光，成为光', body: '品牌视觉从灯泡的基本形态出发，融入对 Space Age（太空时代）的复古未来想象，以简单的光点构建鲜明的视觉记忆。通过圆点阵列，将现实灯光设备映射为点阵画，并将这一视觉语言延展至缺省插图、产品图标与 UI Kit 元素，构建完整的品牌数字设计系统，让设备、光效与界面形成一致的视觉表达。' },
             { type: 'gallery', columns: 1, radius: 20, frame: false, gap: 20, items: [
@@ -143,7 +143,7 @@
   <script type="text/babel" src="frames/site-topbar.jsx?v=cursor-glass-2"></script>
   <script src="vendor/lottie.min.js"></script>
   <script type="text/babel" src="components/WorkGlassLens.jsx?v=sharp-vector-2"></script>
-  <script type="text/babel" src="frames/work-harbor-page.jsx?v=intro-paragraphs-1"></script>
+  <script type="text/babel" src="frames/work-harbor-page.jsx?v=hero-fallback-2"></script>
   <script type="text/babel" data-presets="react">
     (function boot() {
       if (!window.React || !window.ReactDOM || !window.WorkHarborPage || !window.SiteTopbar || !window.getAsciiThemePalette) {

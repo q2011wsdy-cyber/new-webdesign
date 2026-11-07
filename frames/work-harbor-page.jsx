@@ -818,6 +818,11 @@ function WorkHarborPage() {
           src={media.src}
           alt={media.alt || media.title || ''}
           loading={media.loading || 'lazy'}
+          fetchPriority={media.fetchPriority}
+          onError={media.fallbackSrc ? (event) => {
+            const image = event.currentTarget;
+            if (image.getAttribute('src') !== media.fallbackSrc) image.src = media.fallbackSrc;
+          } : undefined}
           style={{ display: 'block', width: '100%', height: media.height || 'auto', aspectRatio: media.aspectRatio, objectFit: media.fit || 'contain' }}
         />
       );
