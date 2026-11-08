@@ -513,12 +513,18 @@ function WorkHarborPage() {
     try { return localStorage.getItem('ascii-lang') || 'en'; } catch { return 'en'; }
   });
   const [savedCase, setSavedCase] = React.useState(null);
+  const [footerCard, setFooterCard] = React.useState(null);
   React.useEffect(() => {
-    if (window.__workCaseData?.zh?.className !== 'huolala-case') return undefined;
+    const caseClass = window.__workCaseData?.zh?.className;
+    if (!['huolala-case', 'pimax-case'].includes(caseClass)) return undefined;
     let active = true;
     const load = () => fetch(window.__STATIC_CONTENT__ ? '/data/site-content.json' : '/api/content', { cache: window.__STATIC_CONTENT__ ? 'default' : 'no-store' })
       .then(response => response.ok ? response.json() : Promise.reject())
-      .then(data => { if (active) setSavedCase(data.cases || null); })
+      .then(data => {
+        if (!active) return;
+        if (caseClass === 'huolala-case') setSavedCase(data.cases || null);
+        else setFooterCard(data.works?.find(item => item.id === '01') || null);
+      })
       .catch(() => {});
     load();
     const timer = window.__STATIC_CONTENT__ ? null : window.setInterval(load, 3000);
@@ -532,6 +538,8 @@ function WorkHarborPage() {
   const ui = lang === 'zh'
     ? { overview: '概览', client: '客户', year: '年份', role: '角色', team: '团队', context: '背景', process: '过程', gallery: '画廊', outcome: '成果', credits: '鸣谢', back: '← 返回', allWork: '全部案例' }
     : { overview: 'overview', client: 'Client', year: 'Year', role: 'Role', team: 'Team', context: 'context', process: 'process', gallery: 'gallery', outcome: 'outcome', credits: 'credits', back: '← back', allWork: 'all work' };
+  const footerTitle = footerCard?.title || (lang === 'zh' ? '货拉拉' : 'Huolala');
+  const footerDescription = footerCard?.description || (lang === 'zh' ? '让货运出行更简单的产品设计' : 'A simpler way to move goods.');
   const legacySections = [
     rawWork.context && { id: 'context', title: ui.context, blocks: [{ type: 'text', body: rawWork.context }] },
     (rawWork.processIntro || rawWork.steps) && { id: 'process', title: ui.process, blocks: [{ type: 'steps', intro: rawWork.processIntro, command: rawWork.showHistory === false ? '' : '$ history | tail', items: rawWork.steps || [], specs: rawWork.showSpecs === false ? [] : (rawWork.specs || []) }] },
@@ -1152,11 +1160,11 @@ function WorkHarborPage() {
                 </svg>
               </a>
             ))}
-            <a className="pimax-home-card" href="work-huolala.html" {...linkProbe}>
-              <window.AsciiTile n="01" t="Huolala" pat={{ bg: '#151515' }}
-                cover={{ src: 'assets/uploads/1789839484996-06489eae.png', type: 'image' }} />
+            <a className="pimax-home-card" href={footerCard?.href || 'work-huolala.html'} {...linkProbe}>
+              <window.AsciiTile n="01" t={footerTitle} pat={{ bg: '#151515' }}
+                img="assets/home/huolala.webp" cover={footerCard?.cover} />
               <div className="work-caption">
-                <h3>Huolala</h3><p>A simpler way to move goods.</p>
+                <h3>{footerTitle}</h3><p>{footerDescription}</p>
               </div>
             </a>
           </nav>

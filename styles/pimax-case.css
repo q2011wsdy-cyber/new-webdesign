@@ -117,3 +117,11 @@
 @media (max-width: 720px) {
   .pimax-footer-cards { grid-template-columns: auto minmax(0, 1fr) auto; }
 }
+.pimax-home-card .huolala-cover {
+  position: absolute;
+  width: 171.79%;
+  height: 221.65%;
+  left: -36.47%;
+  top: -39.01%;
+  object-fit: cover;
+}
