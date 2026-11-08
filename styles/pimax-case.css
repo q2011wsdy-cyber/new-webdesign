@@ -112,8 +112,5 @@
   position: absolute;
   inset: 0;
   backdrop-filter: blur(var(--diffusion-radius));
-  mask-image: linear-gradient(var(--diffusion-direction), transparent var(--diffusion-start), #000);
+  mask-image: linear-gradient(var(--diffusion-direction), transparent var(--diffusion-start), #000 var(--diffusion-end));
 }
-.pimax-scroll-diffusion span:nth-child(1) { --diffusion-radius: 2px; --diffusion-start: 0%; }
-.pimax-scroll-diffusion span:nth-child(2) { --diffusion-radius: 4px; --diffusion-start: 35%; }
-.pimax-scroll-diffusion span:nth-child(3) { --diffusion-radius: 7px; --diffusion-start: 65%; }

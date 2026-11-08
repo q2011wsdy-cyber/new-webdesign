@@ -1153,7 +1153,14 @@ function WorkHarborPage() {
       </div>
       {work.className === 'pimax-case' && ['top', 'bottom'].map(edge => (
         <div key={edge} className={'pimax-scroll-diffusion pimax-scroll-diffusion--' + edge} aria-hidden="true">
-          <span /><span /><span />
+          {Array.from({ length: 6 }, (_, index) => {
+            const progress = (index + 1) / 6;
+            return <span key={index} style={{
+              '--diffusion-radius': `${7 * (2 ** (4 * progress) - 1) / 15}px`,
+              '--diffusion-start': `${index / 6 * 100}%`,
+              '--diffusion-end': `${progress * 100}%`,
+            }} />;
+          })}
         </div>
       ))}
       <div className={`case-return-veil${leavingCase ? ' is-visible' : ''}`} aria-hidden="true" />
