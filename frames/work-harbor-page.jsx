@@ -319,20 +319,21 @@ function CaseWeatherTabs({ media, lang }) {
     }
   }, [selected]);
   const english = lang === 'en';
-  const labels = { snow: 'Snow', rain: 'Rain', dust: 'Dust' };
+  const labels = english ? { snow: 'Snow', rain: 'Rain', dust: 'Dust' } : { snow: '下雪', rain: '下雨', dust: '沙尘' };
   const choose = id => setSelected(id);
   return <figure className="case-scroll-item case-weather" style={{margin:0}}>
     <div className={`case-weather-stage${media.copy ? ' case-weather-stage--with-copy' : ''}`}>
       {media.copy && <div className="case-weather-copy"><h2>{media.copy.title}</h2>{media.copy.body && <p>{media.copy.body}</p>}</div>}
-      <div className="case-weather-tabs" role="tablist" aria-label={english ? 'Weather conditions' : '天气场景'} aria-orientation="horizontal">
-        {options.map((option,index) => <button key={option.id} type="button" role="tab" id={`weather-tab-${option.id}`} aria-label={english ? labels[option.id] || option.label : option.label} title={english ? labels[option.id] || option.label : option.label} aria-selected={active?.id === option.id} aria-controls="weather-panel" tabIndex={active?.id === option.id ? 0 : -1} onClick={() => choose(option.id)} onKeyDown={event => {
+      <div className="case-weather-tabs" role="tablist" aria-label={english ? 'Weather conditions' : '天气场景'} aria-orientation="horizontal" style={{ '--weather-tab-index': Math.max(0, options.indexOf(active)), '--weather-tab-count': options.length }}>
+        <span className="case-weather-indicator" aria-hidden="true" />
+        {options.map((option,index) => <button key={option.id} type="button" role="tab" id={`weather-tab-${option.id}`} aria-label={labels[option.id] || option.label} title={labels[option.id] || option.label} aria-selected={active?.id === option.id} aria-controls="weather-panel" tabIndex={active?.id === option.id ? 0 : -1} onClick={() => choose(option.id)} onKeyDown={event => {
           let next;
           if (['ArrowDown','ArrowRight'].includes(event.key)) next=(index+1)%options.length;
           if (['ArrowUp','ArrowLeft'].includes(event.key)) next=(index+options.length-1)%options.length;
           if (event.key==='Home') next=0;
           if (event.key==='End') next=options.length-1;
           if(next!==undefined){event.preventDefault();choose(options[next].id);document.getElementById(`weather-tab-${options[next].id}`)?.focus();}
-        }} className="case-weather-tab"><img src={option.icon} alt="" /></button>)}
+        }} className="case-weather-tab">{labels[option.id] || option.label}</button>)}
       </div>
       <div className="case-weather-phone" id="weather-panel" role="tabpanel" aria-labelledby={`weather-tab-${active?.id}`}>
         <img className="case-weather-hardware" src={media.phoneFrame} alt="" />

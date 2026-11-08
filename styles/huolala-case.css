@@ -507,3 +507,45 @@
 
 /* Preserve the original artwork on fixed gray cards in both themes. */
 .huolala-case [data-invert-on-theme='dark'] img {filter:none;}
+
+.case-weather-stage { aspect-ratio: 1200 / 740; }
+.case-weather-phone { width: 48%; left: 26%; height: 142.7%; top: 19%; }
+.case-weather-tabs {
+  --weather-tab-width: clamp(66px, 9cqw, 94px);
+  isolation: isolate;
+  gap: 0;
+  padding: 4px;
+  border-radius: 999px;
+  background: #dedede;
+}
+.case-weather-tab,
+.case-weather-tab:hover,
+.case-weather-tab[aria-selected='true'],
+:root[data-theme='light'] .case-weather-tab[aria-selected='true'] {
+  width: var(--weather-tab-width);
+  height: 38px;
+  background: transparent;
+  box-shadow: none;
+  color: #454545;
+  font: inherit;
+  font-size: 14px;
+}
+.case-weather-tab:hover, .case-weather-tab[aria-selected='true'] { color: #111; }
+.case-weather-indicator {
+  position: absolute;
+  inset: 4px auto 4px 4px;
+  width: var(--weather-tab-width);
+  border-radius: inherit;
+  z-index: -1;
+  background: #fff;
+  box-shadow: 0 1px 5px rgb(0 0 0 / 12%);
+  transform: translateX(calc(var(--weather-tab-index) * 100%));
+  transition: transform 340ms cubic-bezier(.2,.85,.3,1.12);
+}
+@media (max-width: 720px) {
+  .case-weather-stage { aspect-ratio: 1200 / 1480; }
+  .case-weather-phone { width: 78%; left: 11%; height: 116%; top: 22%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .case-weather-indicator { transition: none; }
+}
