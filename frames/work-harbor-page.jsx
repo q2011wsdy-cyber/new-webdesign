@@ -819,11 +819,10 @@ function WorkHarborPage() {
           alt={media.alt || media.title || ''}
           loading={media.loading || 'lazy'}
           fetchPriority={media.fetchPriority}
-          onError={media.fallbackSrc ? (event) => {
-            const image = event.currentTarget;
-            if (image.getAttribute('src') !== media.fallbackSrc) image.src = media.fallbackSrc;
+          onLoad={media.fallbackSrc ? (event) => {
+            event.currentTarget.style.visibility = 'visible';
           } : undefined}
-          style={{ display: 'block', width: '100%', height: media.height || 'auto', aspectRatio: media.aspectRatio, objectFit: media.fit || 'contain' }}
+          style={{ display: 'block', width: '100%', height: media.height || 'auto', aspectRatio: media.aspectRatio, objectFit: media.fit || 'contain', visibility: media.fallbackSrc ? 'hidden' : undefined }}
         />
       );
     }
@@ -834,9 +833,10 @@ function WorkHarborPage() {
           {media.title && <div style={s.blockTitle}>{media.title}</div>}
           {media.subtitle && <div style={s.blockSubtitle}>{media.subtitle}</div>}
         </figcaption>}
-        <div className="case-media-frame" style={media.frame === false
+        <div className="case-media-frame" style={{ ...(media.frame === false
           ? { overflow: 'hidden', background: 'transparent', border: 'none', borderRadius: radius, '--case-media-radius': `${radius}px` }
-          : { ...s.mediaFrame, borderRadius: radius, '--case-media-radius': `${radius}px` }}>
+          : { ...s.mediaFrame, borderRadius: radius, '--case-media-radius': `${radius}px` }),
+          ...(media.fallbackSrc && { background: `#181818 url('${media.fallbackSrc}') center / contain no-repeat` }) }}>
           {content}
           {type === 'dot-gallery' && <window.WorkGlassLens fit="contain" sourceType="canvas" />}
           {(type === 'image' || type === 'video' || type === 'iframe') && <window.WorkGlassLens key={media.src} fit={media.fit || 'contain'} sourceType={type === 'iframe' ? 'video' : type} compositeBackground={work.className === 'huolala-case' && type === 'image'} />}
