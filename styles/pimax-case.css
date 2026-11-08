@@ -93,7 +93,7 @@
 .pimax-footer-arrow { grid-row: 1; display: grid; color: inherit; }
 .pimax-footer-arrow--prev { grid-column: 1; }
 .pimax-footer-arrow--next { grid-column: 3; }
-.pimax-footer-arrow svg { width: clamp(30px, 7vw, 72px); fill: currentColor; }
+.pimax-footer-arrow svg { width: clamp(30px, 7vw, 72px); fill: currentColor; overflow: visible; }
 .pimax-footer-arrow--prev .pimax-footer-dots { transform: scaleX(-1); }
 .pimax-footer-cards a:focus-visible { outline: 2px solid #fff; outline-offset: 6px; }
 @media (max-width: 720px) {
