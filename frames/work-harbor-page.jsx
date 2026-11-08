@@ -231,7 +231,13 @@ function CaseImageCarousel({ media, lang }) {
     if(card) node.scrollTo({left:card.offsetLeft-node.children[0].offsetLeft,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
   };
   return <div className="case-story-carousel">
-    <div ref={track} className="case-story-track"
+    <div ref={track} className="case-story-track" tabIndex={0}
+      aria-label={lang === 'en' ? 'Case study gallery' : '案例图片轮播'}
+      onKeyDown={event => {
+        if (event.target !== event.currentTarget || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+        event.preventDefault();
+        go(Math.max(0, Math.min(pages - 1, active + (event.key === 'ArrowRight' ? 1 : -1))));
+      }}
       onPointerDown={event=>{
         if(event.target.closest('button, a'))return;
         if(event.pointerType!=='mouse'||event.button!==0)return;
@@ -275,10 +281,6 @@ function CaseImageCarousel({ media, lang }) {
       {items.map((item,index)=><figure className="case-story-card" key={`${item.id}-${item.src}`}>
         <CaseStoryImage item={item} index={index} total={pages} lang={lang} active={active === index} />
       </figure>)}
-    </div>
-    <div className="case-story-controls">
-      <div className="case-story-dots">{items.slice(0,pages).map((item,index)=><button key={item.id} onClick={()=>go(index)} aria-label={`${lang==='en'?'View image':'查看图片'} ${index+1}`} aria-current={active===index?'true':undefined} />)}</div>
-      <div><button onClick={()=>go(Math.max(0,active-1))} disabled={active===0} aria-label={lang==='en'?'Previous':'上一张'}>←</button><button onClick={()=>go(Math.min(pages-1,active+1))} disabled={active>=pages-1} aria-label={lang==='en'?'Next':'下一张'}>→</button></div>
     </div>
   </div>;
 }
