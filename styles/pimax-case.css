@@ -114,3 +114,9 @@
   backdrop-filter: blur(var(--diffusion-radius));
   mask-image: linear-gradient(var(--diffusion-direction), transparent var(--diffusion-start), #000 var(--diffusion-end));
 }
+
+.pimax-case .case-inline-artwork > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}

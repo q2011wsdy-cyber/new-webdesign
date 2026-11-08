@@ -782,6 +782,10 @@ function WorkHarborPage() {
 
     if (type === 'dot-gallery') {
       content = <CaseDotGallery />;
+    } else if (type === 'inline-artwork') {
+      const artwork = document.getElementById(media.templateId);
+      content = <div className="case-inline-artwork" role="img" aria-label={media.alt}
+        dangerouslySetInnerHTML={{ __html: artwork.innerHTML }} />;
     } else if (type === 'iframe') {
       content = <CaseInteractiveDemo media={media} lang={lang} />;
     } else if (type === 'placeholder') {
