@@ -124,7 +124,7 @@ body {
 /* Theme snapshots crossfade while the new theme comes into focus. */
 @keyframes site-theme-blur-out {
   from { filter: blur(0); opacity: 1; }
-  to { filter: blur(16px); opacity: 0; }
+  to { filter: blur(16px); opacity: 1; }
 }
 @keyframes site-theme-blur-in {
   from { filter: blur(16px); opacity: 0; }
@@ -139,4 +139,12 @@ body {
 }
 :root[data-theme-transition]::view-transition-new(root) {
   animation: site-theme-blur-in 500ms ease-in-out both;
+}
+
+/* Keep snapshot geometry fixed and crossfade the incoming theme over an opaque base. */
+:root[data-theme-transition]::view-transition-group(root) {
+  animation: none;
+}
+:root[data-theme-transition]::view-transition-image-pair(root) {
+  isolation: isolate;
 }
