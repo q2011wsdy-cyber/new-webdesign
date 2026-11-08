@@ -443,6 +443,19 @@ function CaseComparison({ media, lang }) {
   </figure>;
 }
 
+function PimaxCaseNav({ children }) {
+  const anchor = React.useRef(null);
+  const [open, setOpen] = React.useState(false);
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => setOpen(entry.isIntersecting));
+    observer.observe(anchor.current);
+    return () => observer.disconnect();
+  }, []);
+  return <div ref={anchor} className="pimax-case-nav-anchor">
+    {open && <div className="pimax-case-nav-overlay">{children}</div>}
+  </div>;
+}
+
 function ViewportCaseLens(props) {
   const marker = React.useRef(null);
   const [nearViewport, setNearViewport] = React.useState(false);
@@ -1138,7 +1151,7 @@ function WorkHarborPage() {
       })}
 
       {work.className === 'pimax-case' && !work.hideNextNav && (
-        <nav className="pimax-case-nav" aria-label={lang === 'zh' ? '案例导航' : 'Case navigation'}>
+        <PimaxCaseNav><nav className="pimax-case-nav" aria-label={lang === 'zh' ? '案例导航' : 'Case navigation'}>
           {[
             { direction: 'prev', href: 'work-huolala.html', cover: 'assets/uploads/1789839484996-06489eae.png', title: lang === 'zh' ? '上一个 · 货拉拉' : 'Previous · Huolala' },
             { direction: 'next', href: '/#works', cover: 'assets/works/03-zixiang.jpg', title: lang === 'zh' ? '下一个 · AI OS 概念探索' : 'Next · AI OS Concept' },
@@ -1158,7 +1171,7 @@ function WorkHarborPage() {
             <span>{lang === 'zh' ? '上一个' : 'Previous'}</span>
             <span>{lang === 'zh' ? '下一个' : 'Next'}</span>
           </div>
-        </nav>
+        </nav></PimaxCaseNav>
       )}
 
       {work.className !== 'pimax-case' && !work.hideNextNav && <div className="case-scroll-item" style={s.nextNav}>

@@ -120,3 +120,31 @@
   width: 100%;
   height: auto;
 }
+
+.pimax-case-nav-anchor { height: clamp(150px, 24vw, 230px); }
+.pimax-case-nav-overlay {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 12;
+  padding: 18px clamp(12px, 4vw, 48px);
+  background: rgb(0 0 0 / 74%);
+  backdrop-filter: blur(12px);
+}
+.pimax-case-nav-overlay .pimax-case-nav {
+  isolation: isolate;
+  max-width: 740px;
+  min-height: clamp(110px, 20vw, 192px);
+  margin-inline: auto;
+  overflow: visible;
+  background: transparent;
+}
+.pimax-case-nav-overlay .pimax-case-nav a { position: static; isolation: auto; }
+.pimax-case-nav-overlay .pimax-case-nav img {
+  inset: 0 16%;
+  width: 68%;
+  border-radius: 18px;
+  opacity: .55;
+}
+.pimax-case-nav-overlay .pimax-case-nav-prev img { opacity: 0; }
+.pimax-case-nav-overlay .pimax-case-nav:has(.pimax-case-nav-prev:is(:hover, :focus-visible)) .pimax-case-nav-next img { opacity: 0; }
+.pimax-case-nav-overlay .pimax-case-nav-prev:is(:hover, :focus-visible) img { opacity: .55; }
