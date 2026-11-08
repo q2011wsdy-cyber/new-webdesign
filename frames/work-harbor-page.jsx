@@ -285,12 +285,15 @@ function CaseImageCarousel({ media, lang }) {
 
 function CaseBroadcastVideo({ media, lang }) {
   const [stage, setStage] = React.useState(0);
+  const timeline = React.useRef(null);
   const labels = lang === 'en'
     ? ['Within 1 minute', 'After 5 minutes', 'After 10 minutes']
     : ['1 分钟内', '5 分钟后', '10分钟之后'];
   const syncStage = event => {
     const time = event.currentTarget.currentTime;
     setStage(time >= 2.64 ? 2 : time >= 2 ? 1 : 0);
+    const progress = time < 2 ? time / 4 : .5 + Math.min(1, (time - 2) / .64) / 2;
+    timeline.current?.style.setProperty('--broadcast-progress', `${progress * 100}%`);
   };
   return <>
     <video className="case-media-content" src={media.src}
@@ -298,7 +301,11 @@ function CaseBroadcastVideo({ media, lang }) {
       aria-label={media.alt || media.label}
       onTimeUpdate={syncStage} onSeeking={syncStage} onLoadedData={syncStage}
       style={{display:'block',width:'100%',height:'auto',aspectRatio:media.aspectRatio,objectFit:media.fit || 'contain'}} />
-    <span className="case-broadcast-time" aria-label={lang === 'en' ? 'Elapsed waiting time' : '已等待时间'}>{labels[stage]}</span>
+    <ol ref={timeline} className="case-broadcast-timeline" aria-label={lang === 'en' ? 'Elapsed waiting time' : '已等待时间'}>
+      {labels.map((label, index) => <li key={label} aria-current={index === stage ? 'step' : undefined}>
+        <span>{label}</span>
+      </li>)}
+    </ol>
   </>;
 }
 
@@ -321,10 +328,24 @@ function CaseWeatherTabs({ media, lang }) {
   const english = lang === 'en';
   const labels = english ? { snow: 'Snow', rain: 'Rain', dust: 'Dust' } : { snow: '下雪', rain: '下雨', dust: '沙尘' };
   const choose = id => setSelected(id);
+  const tabs = React.useRef(null);
+  React.useLayoutEffect(() => {
+    const list = tabs.current;
+    const update = () => {
+      const button = list.querySelector('[aria-selected="true"]');
+      if (!button) return;
+      list.style.setProperty('--weather-tab-offset', `${button.offsetLeft}px`);
+      list.style.setProperty('--weather-tab-width', `${button.offsetWidth}px`);
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(list);
+    return () => observer.disconnect();
+  }, [active?.id, lang]);
   return <figure className="case-scroll-item case-weather" style={{margin:0}}>
     <div className={`case-weather-stage${media.copy ? ' case-weather-stage--with-copy' : ''}`}>
       {media.copy && <div className="case-weather-copy"><h2>{media.copy.title}</h2>{media.copy.body && <p>{media.copy.body}</p>}</div>}
-      <div className="case-weather-tabs" role="tablist" aria-label={english ? 'Weather conditions' : '天气场景'} aria-orientation="horizontal" style={{ '--weather-tab-index': Math.max(0, options.indexOf(active)), '--weather-tab-count': options.length }}>
+      <div className="case-weather-tabs" role="tablist" aria-label={english ? 'Weather conditions' : '天气场景'} aria-orientation="horizontal" ref={tabs}>
         <span className="case-weather-indicator" aria-hidden="true" />
         {options.map((option,index) => <button key={option.id} type="button" role="tab" id={`weather-tab-${option.id}`} aria-label={labels[option.id] || option.label} title={labels[option.id] || option.label} aria-selected={active?.id === option.id} aria-controls="weather-panel" tabIndex={active?.id === option.id ? 0 : -1} onClick={() => choose(option.id)} onKeyDown={event => {
           let next;
@@ -1191,16 +1212,13 @@ function WorkHarborPage() {
               <a key={direction} className={'pimax-footer-arrow pimax-footer-arrow--' + direction}
                 href={destination?.href || '/'}
                 aria-label={destination ? (direction === 'prev' ? (lang === 'zh' ? '上一个案例' : 'Previous case') : (lang === 'zh' ? '下一个案例' : 'Next case')) : (lang === 'zh' ? '返回首页' : 'Back to home')}>
-                {destination ? <svg className="pimax-footer-dots" viewBox="0 0 72 56" aria-hidden="true">
-                  {Array.from({ length: 8 }, (_, column) => <circle key={column} cx={8 + column * 8} cy="28" r="2.7" />)}
-                  {[1, 2, 3].flatMap(step => [-1, 1].map(side => (
-                    <circle key={step + ':' + side} cx={64 - step * 8} cy={28 + side * step * 7} r="2.7" />
-                  )))}
-                </svg> : <svg className="pimax-footer-home" viewBox="0 0 28 28" aria-hidden="true">
-                  {['0001000', '0010100', '0100010', '1100011', '0101010', '0101010', '0110110'].flatMap((row, y) =>
-                    Array.from(row, (dot, x) => dot === '1' && <circle key={x + ':' + y} cx={2 + x * 4} cy={2 + y * 4} r="1.2" />)
-                  )}
-                </svg>}
+                <svg className={destination ? 'pimax-footer-dots' : 'pimax-footer-home'} viewBox="0 0 56 56" aria-hidden="true">
+                  {(destination
+                    ? [[0,3],[1,3],[2,3],[3,3],[4,3],[4,1],[5,2],[6,3],[5,4],[4,5]]
+                    : ['0001000', '0010100', '0100010', '1100011', '1001001', '1001001', '1110111'].flatMap((row, y) =>
+                        Array.from(row).flatMap((dot, x) => dot === '1' ? [[x, y]] : []))
+                  ).map(([x, y]) => <circle key={x + ':' + y} cx={4 + x * 8} cy={4 + y * 8} r="2.08" />)}
+                </svg>
               </a>
             ))}
             {footerCard && <a className="pimax-home-card" href={footerCard.href} {...linkProbe}>

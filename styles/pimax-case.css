@@ -181,3 +181,12 @@
   .pimax-footer-arrow svg { transition: none; }
   .pimax-footer-arrow:is(:hover, :focus-visible) circle { animation: none; }
 }
+
+.pimax-case-end {
+  padding-top: clamp(96px, 12vw, 160px);
+  padding-bottom: 122px;
+  row-gap: clamp(56px, 8vw, 96px);
+}
+.pimax-footer-copyright { position: static; justify-self: start; }
+.pimax-footer-arrow .pimax-footer-home,
+.pimax-footer-arrow .pimax-footer-dots { width: clamp(32px, 6vw, 56px); }
