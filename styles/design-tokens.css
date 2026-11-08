@@ -120,3 +120,23 @@ body {
     --duration-slow: 0ms;
   }
 }
+
+/* Theme snapshots crossfade while the new theme comes into focus. */
+@keyframes site-theme-blur-out {
+  from { filter: blur(0); opacity: 1; }
+  to { filter: blur(16px); opacity: 0; }
+}
+@keyframes site-theme-blur-in {
+  from { filter: blur(16px); opacity: 0; }
+  to { filter: blur(0); opacity: 1; }
+}
+:root[data-theme-transition]::view-transition-old(root),
+:root[data-theme-transition]::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+:root[data-theme-transition]::view-transition-old(root) {
+  animation: site-theme-blur-out 500ms ease-in-out both;
+}
+:root[data-theme-transition]::view-transition-new(root) {
+  animation: site-theme-blur-in 500ms ease-in-out both;
+}

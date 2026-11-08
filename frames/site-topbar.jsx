@@ -58,6 +58,30 @@ function GlassSurface({ children, style, controlCount, className = '', borderRad
  * 修改此处即可同步首页与各作品详情页。
  */
 
+function changeSiteTheme(nextTheme, setTheme) {
+  const root = document.documentElement;
+  if (root.hasAttribute('data-theme-transition')) return;
+  const applyTheme = () => {
+    window.markAsciiThemeManual?.();
+    root.dataset.theme = nextTheme;
+    setTheme(nextTheme);
+  };
+  if (!document.startViewTransition || !window.ReactDOM?.flushSync ||
+      matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    applyTheme();
+    return;
+  }
+  root.setAttribute('data-theme-transition', '');
+  const cleanup = () => root.removeAttribute('data-theme-transition');
+  try {
+    const transition = document.startViewTransition(() => window.ReactDOM.flushSync(applyTheme));
+    transition.finished.then(cleanup, cleanup);
+  } catch {
+    cleanup();
+    applyTheme();
+  }
+}
+
 function getAsciiThemePalette(dark) {
   return {
     bg: 'var(--color-bg)', fg: 'var(--color-fg)', dim: 'var(--color-dim)',
@@ -304,10 +328,7 @@ function SiteTopbar({
           className="site-liquid-button"
           {...linkProbe}
           type="button"
-          onClick={() => {
-            if (window.markAsciiThemeManual) window.markAsciiThemeManual();
-            setTheme(dark ? 'light' : 'dark');
-          }}
+          onClick={() => changeSiteTheme(dark ? 'light' : 'dark', setTheme)}
           style={{
             color: C.mute,
             padding: '0 9px',
