@@ -1,0 +1,17 @@
+/* Blur the viewport edges without fading the artwork into the page. */
+.case-scroll-diffusion {
+  position: fixed;
+  inset-inline: 0;
+  height: clamp(54px, 12vh, 112px);
+  z-index: 8;
+  pointer-events: none;
+}
+.case-scroll-diffusion--top { top: 0; --diffusion-direction: to top; }
+.case-scroll-diffusion--bottom { bottom: 0; --diffusion-direction: to bottom; }
+.case-scroll-diffusion span {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(var(--diffusion-radius));
+  mask-image: linear-gradient(var(--diffusion-direction), transparent var(--diffusion-start), #000 var(--diffusion-end));
+}
+

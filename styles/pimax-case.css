@@ -12,8 +12,6 @@
 .pimax-case .case-meta-grid > div > div:last-child {color:var(--pimax-heading) !important;}
 :root[data-theme='light'] .pimax-case .case-meta-grid > div > div:first-child {color:#777 !important;}
 .pimax-case #gallery > div {gap:var(--pimax-gallery-gap) !important;}
-/* Preserve media dimensions during scroll, matching the reference case. */
-.pimax-case .case-scroll-item {transform:translate3d(0,var(--case-scroll-y,0px),0);}
 .pimax-case .case-editorial-copy {
   width:min(100%,640px);
   max-width:640px;
@@ -48,24 +46,6 @@
   .pimax-case .case-editorial-copy {width:min(100%,640px);}
   .pimax-case .case-editorial-copy h2 {font-size:22px; margin-bottom:18px;}
   .pimax-case .case-editorial-copy p {font-size:16px;}
-}
-
-/* Blur the viewport edges without fading the artwork into the page. */
-.pimax-case .case-scroll-item { opacity: 1; }
-.pimax-scroll-diffusion {
-  position: fixed;
-  inset-inline: 0;
-  height: clamp(54px, 12vh, 112px);
-  z-index: 8;
-  pointer-events: none;
-}
-.pimax-scroll-diffusion--top { top: 0; --diffusion-direction: to top; }
-.pimax-scroll-diffusion--bottom { bottom: 0; --diffusion-direction: to bottom; }
-.pimax-scroll-diffusion span {
-  position: absolute;
-  inset: 0;
-  backdrop-filter: blur(var(--diffusion-radius));
-  mask-image: linear-gradient(var(--diffusion-direction), transparent var(--diffusion-start), #000 var(--diffusion-end));
 }
 
 .pimax-case .case-inline-artwork > svg {

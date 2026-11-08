@@ -331,7 +331,6 @@
 }
 
 /* The opening copy appears immediately; scrolling never scales the case. */
-.huolala-case .case-scroll-item { transform: translate3d(0, var(--case-scroll-y, 0px), 0); }
 .huolala-case .case-detail-grid.case-detail-arrival { animation: none; }
 
 /* Weather copy shares the interactive card with its controls and phone. */

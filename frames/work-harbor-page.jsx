@@ -465,7 +465,7 @@ function CaseComparison({ media, lang }) {
   </figure>;
 }
 
-function PimaxFooterReveal({ children }) {
+function CaseFooterReveal({ children }) {
   const footer = React.useRef(null);
   React.useEffect(() => {
     const node = footer.current;
@@ -702,22 +702,14 @@ function WorkHarborPage() {
       let needsAnotherFrame = false;
       const viewport = Math.max(window.innerHeight || 0, 1);
       root.querySelectorAll('.case-scroll-item').forEach((node) => {
-        const state = motion.get(node) || { y: 18, scale: .96, opacity: .42 };
+        const currentY = motion.get(node) ?? 18;
         const rect = node.getBoundingClientRect();
-        // A row resolves as it travels through the lower half of the viewport.
-        // The transform is visual only, so the document's grid and gaps never move.
         const progress = Math.max(0, Math.min(1, (viewport * .93 - rect.top) / (viewport * .62)));
         const targetY = (1 - progress) * 20;
-        const targetScale = work.className === 'huolala-case' ? 1 : .96 + progress * .04;
-        const targetOpacity = .42 + progress * .58;
-        state.y += (targetY - state.y) * .115;
-        state.scale += (targetScale - state.scale) * .115;
-        state.opacity += (targetOpacity - state.opacity) * .115;
-        motion.set(node, state);
-        node.style.setProperty('--case-scroll-y', `${state.y.toFixed(2)}px`);
-        node.style.setProperty('--case-scroll-scale', state.scale.toFixed(4));
-        node.style.setProperty('--case-scroll-opacity', `${state.opacity.toFixed(3)}`);
-        if (Math.abs(targetY - state.y) > .04 || Math.abs(targetScale - state.scale) > .0004 || Math.abs(targetOpacity - state.opacity) > .004) needsAnotherFrame = true;
+        const nextY = currentY + (targetY - currentY) * .115;
+        motion.set(node, nextY);
+        node.style.setProperty('--case-scroll-y', `${nextY.toFixed(2)}px`);
+        if (Math.abs(targetY - nextY) > .04) needsAnotherFrame = true;
       });
       if (needsAnotherFrame) frame = window.requestAnimationFrame(animateScrollMotion);
     };
@@ -1107,10 +1099,10 @@ function WorkHarborPage() {
         }
         .case-return-veil.is-visible { opacity: 1; }
         .case-scroll-item {
-          opacity: var(--case-scroll-opacity, 1);
-          transform: translate3d(0, var(--case-scroll-y, 0px), 0) scale(var(--case-scroll-scale, 1));
+          opacity: 1;
+          transform: translate3d(0, var(--case-scroll-y, 0px), 0);
           transform-origin: center center;
-          will-change: transform, opacity;
+          will-change: transform;
           transition: none;
         }
         .case-media-frame {
@@ -1206,7 +1198,7 @@ function WorkHarborPage() {
       })}
 
       {isPortfolioCase && (
-        <PimaxFooterReveal>
+        <CaseFooterReveal>
           <nav className="pimax-footer-cards" aria-label={lang === 'zh' ? '案例导航' : 'Case navigation'}>
             {[['prev', previousCase], ['next', nextCase]].map(([direction, destination]) => (
               <a key={direction} className={'pimax-footer-arrow pimax-footer-arrow--' + direction}
@@ -1230,7 +1222,7 @@ function WorkHarborPage() {
             </a>}
           </nav>
           <small className="pimax-footer-copyright">@ 2026 · super lee</small>
-        </PimaxFooterReveal>
+        </CaseFooterReveal>
       )}
 
       {!isPortfolioCase && !work.hideNextNav && <div className="case-scroll-item" style={s.nextNav}>
@@ -1255,8 +1247,8 @@ function WorkHarborPage() {
 
       </main>
       </div>
-      {work.className === 'pimax-case' && ['top', 'bottom'].map(edge => (
-        <div key={edge} className={'pimax-scroll-diffusion pimax-scroll-diffusion--' + edge} aria-hidden="true">
+      {['top', 'bottom'].map(edge => (
+        <div key={edge} className={'case-scroll-diffusion case-scroll-diffusion--' + edge} aria-hidden="true">
           {Array.from({ length: 6 }, (_, index) => {
             const progress = (index + 1) / 6;
             return <span key={index} style={{
