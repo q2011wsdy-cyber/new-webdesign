@@ -129,7 +129,7 @@
 }
 
 .pimax-case, .huolala-case { padding-bottom: 0 !important; }
-.pimax-case-end { position: relative; }
+.pimax-case-end { position: relative; margin-block-start: 80px; }
 .pimax-footer-cards { width: 100%; }
 .pimax-footer-arrow {
   place-items: center;
