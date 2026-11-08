@@ -564,15 +564,15 @@
   transition: transform 280ms cubic-bezier(.2,.65,.25,1), width 280ms cubic-bezier(.2,.65,.25,1);
 }
 .case-weather-phone { width: 54%; left: 23%; height: 160.6%; top: 17%; }
-.huolala-case #broadcast-motion .case-media-frame { padding-top: clamp(66px, 8vw, 92px); }
+.huolala-case #broadcast-motion .case-media-frame { padding-top: clamp(22px, calc(62px - 3vw), 46px); }
 .case-broadcast-timeline {
   --broadcast-progress: 0%;
   position: absolute;
   z-index: 3;
-  inset: 12px 0 auto;
+  inset: 30px 0 auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  width: min(86%, 440px);
+  width: min(84%, 260px);
   margin: 0 auto;
   padding: 0;
   list-style: none;

@@ -287,8 +287,8 @@ function CaseBroadcastVideo({ media, lang }) {
   const [stage, setStage] = React.useState(0);
   const timeline = React.useRef(null);
   const labels = lang === 'en'
-    ? ['Within 1 minute', 'After 5 minutes', 'After 10 minutes']
-    : ['1 分钟内', '5 分钟后', '10分钟之后'];
+    ? ['≤1 min', '5 min', '10 min']
+    : ['≤1 分钟', '5 分钟', '10 分钟'];
   const syncStage = event => {
     const time = event.currentTarget.currentTime;
     setStage(time >= 2.64 ? 2 : time >= 2 ? 1 : 0);
