@@ -784,8 +784,14 @@ function WorkHarborPage() {
       content = <CaseDotGallery />;
     } else if (type === 'inline-artwork') {
       const artwork = document.getElementById(media.templateId);
-      content = <div className="case-inline-artwork" role="img" aria-label={media.alt}
-        dangerouslySetInnerHTML={{ __html: artwork.innerHTML }} />;
+      const svg = artwork.innerHTML.trim();
+      content = <>
+        <div className="case-inline-artwork" role="img" aria-label={media.alt}
+          dangerouslySetInnerHTML={{ __html: svg }} />
+        <img data-inline-lens-source alt="" aria-hidden="true"
+          src={`data:image/svg+xml,${encodeURIComponent(svg)}#opening-animated.svg`}
+          style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none' }} />
+      </>;
     } else if (type === 'iframe') {
       content = <CaseInteractiveDemo media={media} lang={lang} />;
     } else if (type === 'placeholder') {
@@ -845,6 +851,7 @@ function WorkHarborPage() {
           ? { overflow: 'hidden', background: 'transparent', border: 'none', borderRadius: radius, '--case-media-radius': `${radius}px` }
           : { ...s.mediaFrame, borderRadius: radius, '--case-media-radius': `${radius}px` }}>
           {content}
+          {type === 'inline-artwork' && <window.WorkGlassLens fit="contain" sourceSelector="[data-inline-lens-source]" />}
           {type === 'dot-gallery' && <window.WorkGlassLens fit="contain" sourceType="canvas" />}
           {(type === 'image' || type === 'video' || type === 'iframe') && <window.WorkGlassLens key={media.src} fit={media.fit || 'contain'} sourceType={type === 'iframe' ? 'video' : type} compositeBackground={work.className === 'huolala-case' && type === 'image'} />}
         </div>
