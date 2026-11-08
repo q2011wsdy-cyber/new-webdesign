@@ -798,6 +798,9 @@ function WorkHarborPage() {
           className="case-media-content"
           src={media.src}
           poster={media.poster}
+          onError={media.fallbackSrc ? (event) => {
+            event.currentTarget.poster = media.fallbackSrc;
+          } : undefined}
           controls={media.controls !== false}
           autoPlay={Boolean(media.autoplay)}
           loop={Boolean(media.loop)}
