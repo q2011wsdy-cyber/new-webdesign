@@ -443,6 +443,33 @@ function CaseComparison({ media, lang }) {
   </figure>;
 }
 
+function PimaxFooterReveal({ children }) {
+  const footer = React.useRef(null);
+  React.useEffect(() => {
+    const node = footer.current;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const height = window.innerHeight;
+      const remaining = Math.max(0, Math.min(1, node.getBoundingClientRect().top / height));
+      node.style.setProperty('--footer-card-offset', reduced.matches ? '0px' : `${-height * .3 * remaining ** 3}px`);
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    reduced.addEventListener('change', schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      reduced.removeEventListener('change', schedule);
+    };
+  }, []);
+  return <div ref={footer} className="pimax-case-end">{children}</div>;
+}
+
 function ViewportCaseLens(props) {
   const marker = React.useRef(null);
   const [nearViewport, setNearViewport] = React.useState(false);
@@ -1146,7 +1173,7 @@ function WorkHarborPage() {
       })}
 
       {work.className === 'pimax-case' && !work.hideNextNav && (
-        <div className="pimax-case-end">
+        <PimaxFooterReveal>
           <nav className="pimax-footer-cards" aria-label={lang === 'zh' ? '案例导航' : 'Case navigation'}>
             {['prev', 'next'].map(direction => (
               <a key={direction} className={'pimax-footer-arrow pimax-footer-arrow--' + direction}
@@ -1168,7 +1195,7 @@ function WorkHarborPage() {
               </div>
             </a>
           </nav>
-        </div>
+        </PimaxFooterReveal>
       )}
 
       {work.className !== 'pimax-case' && !work.hideNextNav && <div className="case-scroll-item" style={s.nextNav}>

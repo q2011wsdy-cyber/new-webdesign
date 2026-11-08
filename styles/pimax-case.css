@@ -83,9 +83,11 @@
   background: #050505 radial-gradient(circle, #444 1px, transparent 1.3px) 0 0 / 84px 84px;
   box-shadow: 0 0 0 100vmax #050505;
   clip-path: inset(0 -100vmax);
+  background-attachment: fixed;
 }
 
 .pimax-footer-cards {
+  translate: 0 var(--footer-card-offset, 0px);
   display: grid;
   grid-template-columns: 1fr minmax(0, min(521px, 45vw)) 1fr;
   align-items: center;
