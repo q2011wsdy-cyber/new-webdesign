@@ -540,7 +540,9 @@ function WorkHarborPage() {
     try { return localStorage.getItem('ascii-lang') || 'en'; } catch { return 'en'; }
   });
   const [savedCase, setSavedCase] = React.useState(null);
-  const [footerCard, setFooterCard] = React.useState(null);
+  const [orderedWorks, setOrderedWorks] = React.useState([
+    { id: '02', href: 'work-pimax.html' }, { id: '01', href: 'work-huolala.html' },
+  ]);
   React.useEffect(() => {
     const caseClass = window.__workCaseData?.zh?.className;
     if (!['huolala-case', 'pimax-case'].includes(caseClass)) return undefined;
@@ -550,7 +552,7 @@ function WorkHarborPage() {
       .then(data => {
         if (!active) return;
         if (caseClass === 'huolala-case') setSavedCase(data.cases || null);
-        else setFooterCard(data.works?.find(item => item.id === '01') || null);
+        if (Array.isArray(data.works)) setOrderedWorks(data.works.filter(item => item.href && item.href !== '#'));
       })
       .catch(() => {});
     load();
@@ -565,8 +567,17 @@ function WorkHarborPage() {
   const ui = lang === 'zh'
     ? { overview: '概览', client: '客户', year: '年份', role: '角色', team: '团队', context: '背景', process: '过程', gallery: '画廊', outcome: '成果', credits: '鸣谢', back: '← 返回', allWork: '全部案例' }
     : { overview: 'overview', client: 'Client', year: 'Year', role: 'Role', team: 'Team', context: 'context', process: 'process', gallery: 'gallery', outcome: 'outcome', credits: 'credits', back: '← back', allWork: 'all work' };
-  const footerTitle = footerCard?.title || (lang === 'zh' ? '货拉拉' : 'Huolala');
-  const footerDescription = footerCard?.description || (lang === 'zh' ? '让货运出行更简单的产品设计' : 'A simpler way to move goods.');
+  const currentCaseId = rawWork.className === 'pimax-case' ? '02' : '01';
+  const currentCaseIndex = orderedWorks.findIndex(item => item.id === currentCaseId);
+  const previousCase = currentCaseIndex > 0 ? orderedWorks[currentCaseIndex - 1] : null;
+  const nextCase = currentCaseIndex >= 0 ? orderedWorks[currentCaseIndex + 1] : null;
+  const footerCard = nextCase || previousCase;
+  const isPortfolioCase = ['pimax-case', 'huolala-case'].includes(rawWork.className);
+  const footerIsPimax = footerCard?.id === '02';
+  const footerTitle = footerCard?.title || (footerIsPimax ? 'Pimax' : lang === 'zh' ? '货拉拉' : 'Huolala');
+  const footerDescription = footerCard?.description || (footerIsPimax
+    ? (lang === 'zh' ? '智能灯串的数字体验设计' : 'A smart light string experience.')
+    : (lang === 'zh' ? '让货运出行更简单的产品设计' : 'A simpler way to move goods.'));
   const legacySections = [
     rawWork.context && { id: 'context', title: ui.context, blocks: [{ type: 'text', body: rawWork.context }] },
     (rawWork.processIntro || rawWork.steps) && { id: 'process', title: ui.process, blocks: [{ type: 'steps', intro: rawWork.processIntro, command: rawWork.showHistory === false ? '' : '$ history | tail', items: rawWork.steps || [], specs: rawWork.showSpecs === false ? [] : (rawWork.specs || []) }] },
@@ -1172,33 +1183,36 @@ function WorkHarborPage() {
         </section>;
       })}
 
-      {work.className === 'pimax-case' && !work.hideNextNav && (
+      {isPortfolioCase && (
         <PimaxFooterReveal>
           <nav className="pimax-footer-cards" aria-label={lang === 'zh' ? '案例导航' : 'Case navigation'}>
-            {['prev', 'next'].map(direction => (
+            {[['prev', previousCase], ['next', nextCase]].map(([direction, destination]) => (
               <a key={direction} className={'pimax-footer-arrow pimax-footer-arrow--' + direction}
-                href={direction === 'prev' ? 'work-huolala.html' : '/#works'}
-                aria-label={direction === 'prev' ? (lang === 'zh' ? '上一个案例' : 'Previous case') : (lang === 'zh' ? '全部案例' : 'All cases')}>
-                <svg viewBox="0 0 72 56" aria-hidden="true">
+                href={destination?.href || '/'}
+                aria-label={destination ? (direction === 'prev' ? (lang === 'zh' ? '上一个案例' : 'Previous case') : (lang === 'zh' ? '下一个案例' : 'Next case')) : (lang === 'zh' ? '返回首页' : 'Back to home')}>
+                {destination ? <svg className="pimax-footer-dots" viewBox="0 0 72 56" aria-hidden="true">
                   {Array.from({ length: 8 }, (_, column) => <circle key={column} cx={8 + column * 8} cy="28" r="2.7" />)}
                   {[1, 2, 3].flatMap(step => [-1, 1].map(side => (
                     <circle key={step + ':' + side} cx={64 - step * 8} cy={28 + side * step * 7} r="2.7" />
                   )))}
-                </svg>
+                </svg> : <svg className="pimax-footer-home" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 11 12 3l9 8M5.5 9v11h13V9M10 20v-6h4v6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>}
               </a>
             ))}
-            <a className="pimax-home-card" href={footerCard?.href || 'work-huolala.html'} {...linkProbe}>
-              <window.AsciiTile n="01" t={footerTitle} pat={{ bg: '#151515' }}
-                img="assets/home/huolala.webp" cover={footerCard?.cover} />
+            {footerCard && <a className="pimax-home-card" href={footerCard.href} {...linkProbe}>
+              <window.AsciiTile n={footerCard.id} t={footerTitle} pat={{ bg: '#151515' }}
+                img="assets/home/huolala.webp" cover={footerCard.cover} />
               <div className="work-caption">
                 <h3>{footerTitle}</h3><p>{footerDescription}</p>
               </div>
-            </a>
+            </a>}
           </nav>
+          <small className="pimax-footer-copyright">@ 2026 · super lee</small>
         </PimaxFooterReveal>
       )}
 
-      {work.className !== 'pimax-case' && !work.hideNextNav && <div className="case-scroll-item" style={s.nextNav}>
+      {!isPortfolioCase && !work.hideNextNav && <div className="case-scroll-item" style={s.nextNav}>
         <a href="/" {...linkProbe} style={{ textDecoration: 'none', color: C.fg }}>
           <div style={s.nextBlock}>
             <span style={s.nextSmall}>{ui.back}</span>
@@ -1213,7 +1227,7 @@ function WorkHarborPage() {
         </a>
       </div>}
 
-      {work.className !== 'pimax-case' && !work.hideFooter && <div className="case-scroll-item" style={s.footer}>
+      {!isPortfolioCase && !work.hideFooter && <div className="case-scroll-item" style={s.footer}>
         <span>© 2025 · handmade, kept simple</span>
         <span>v1.0 · last updated 2025.03</span>
       </div>}
