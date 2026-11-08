@@ -443,6 +443,22 @@ function CaseComparison({ media, lang }) {
   </figure>;
 }
 
+function ViewportCaseLens(props) {
+  const marker = React.useRef(null);
+  const [nearViewport, setNearViewport] = React.useState(false);
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      setNearViewport(entry.isIntersecting);
+    }, { rootMargin: '160px' });
+    observer.observe(marker.current.parentElement);
+    return () => observer.disconnect();
+  }, []);
+  return <>
+    <span ref={marker} hidden />
+    {nearViewport && <window.WorkGlassLens {...props} />}
+  </>;
+}
+
 function WorkHarborPage() {
   const SiteTopbar = window.SiteTopbar;
   const defaultWork = {
@@ -774,6 +790,8 @@ function WorkHarborPage() {
     main: { minWidth: 0 },
   };
 
+  const CaseLens = work.className === 'pimax-case' ? ViewportCaseLens : window.WorkGlassLens;
+
   const renderMedia = (rawMedia, key) => {
     const media = typeof rawMedia === 'string' ? { type: 'image', src: rawMedia } : (rawMedia || {});
     const type = media.type || 'image';
@@ -851,9 +869,9 @@ function WorkHarborPage() {
           ? { overflow: 'hidden', background: 'transparent', border: 'none', borderRadius: radius, '--case-media-radius': `${radius}px` }
           : { ...s.mediaFrame, borderRadius: radius, '--case-media-radius': `${radius}px` }}>
           {content}
-          {type === 'inline-artwork' && <window.WorkGlassLens fit="contain" sourceSelector="[data-inline-lens-source]" />}
-          {type === 'dot-gallery' && <window.WorkGlassLens fit="contain" sourceType="canvas" />}
-          {(type === 'image' || type === 'video' || type === 'iframe') && <window.WorkGlassLens key={media.src} fit={media.fit || 'contain'} sourceType={type === 'iframe' ? 'video' : type} compositeBackground={work.className === 'huolala-case' && type === 'image'} />}
+          {type === 'inline-artwork' && <CaseLens fit="contain" sourceSelector="[data-inline-lens-source]" />}
+          {type === 'dot-gallery' && <CaseLens fit="contain" sourceType="canvas" />}
+          {(type === 'image' || type === 'video' || type === 'iframe') && <CaseLens key={media.src} fit={media.fit || 'contain'} sourceType={type === 'iframe' ? 'video' : type} compositeBackground={work.className === 'huolala-case' && type === 'image'} />}
         </div>
         {media.caption && <figcaption className="case-media-caption" {...textProbe} style={{ ...s.caption, margin: '10px 0 0' }}>{media.caption}</figcaption>}
       </figure>
