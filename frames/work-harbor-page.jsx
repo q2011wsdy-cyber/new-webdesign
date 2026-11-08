@@ -1195,8 +1195,10 @@ function WorkHarborPage() {
                   {[1, 2, 3].flatMap(step => [-1, 1].map(side => (
                     <circle key={step + ':' + side} cx={64 - step * 8} cy={28 + side * step * 7} r="2.7" />
                   )))}
-                </svg> : <svg className="pimax-footer-home" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M3 11 12 3l9 8M5.5 9v11h13V9M10 20v-6h4v6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg> : <svg className="pimax-footer-home" viewBox="0 0 28 28" aria-hidden="true">
+                  {['0001000', '0010100', '0100010', '1100011', '0101010', '0101010', '0110110'].flatMap((row, y) =>
+                    Array.from(row, (dot, x) => dot === '1' && <circle key={x + ':' + y} cx={2 + x * 4} cy={2 + y * 4} r="1.2" />)
+                  )}
                 </svg>}
               </a>
             ))}

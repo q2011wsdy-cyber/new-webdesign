@@ -153,3 +153,31 @@
   color: #aaa;
   font-size: 12px;
 }
+
+.pimax-case-end {
+  min-height: calc(100svh + 48px);
+  padding-bottom: 168px;
+}
+.pimax-footer-copyright { bottom: 122px; }
+.pimax-footer-arrow:is(:hover, :focus-visible) {
+  background-color: rgb(255 255 255 / 6%);
+  box-shadow: none;
+}
+.pimax-footer-arrow svg {
+  scale: 1;
+  transition: scale 240ms cubic-bezier(.2,.7,.3,1);
+}
+.pimax-footer-arrow:is(:hover, :focus-visible) svg { scale: 1.28 1.12; }
+.pimax-footer-arrow:is(:hover, :focus-visible) circle {
+  animation: pimax-footer-dot-pulse 720ms ease-in-out 2;
+}
+.pimax-footer-arrow circle:nth-child(3n + 1) { animation-delay: 55ms; }
+.pimax-footer-arrow circle:nth-child(3n + 2) { animation-delay: 110ms; }
+@keyframes pimax-footer-dot-pulse {
+  0%, 100% { opacity: 1; }
+  45% { opacity: .35; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pimax-footer-arrow svg { transition: none; }
+  .pimax-footer-arrow:is(:hover, :focus-visible) circle { animation: none; }
+}
