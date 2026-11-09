@@ -276,6 +276,14 @@
           "title": "等待体验：让找车进展持续可见"
         },
         {
+          "type": "image",
+          "id": "waiting-flow-overview",
+          "src": "assets/works/huolala-weather/waiting-flow.webp",
+          "alt": "等待找车流程",
+          "frame": false,
+          "radius": 20
+        },
+        {
           "type": "video",
           "id": "09-waiting-experience",
           "label": "等待找车的交互转场",
@@ -572,6 +580,14 @@
           "body": "I designed connected transitions and status updates for each stage of the wait. These signals show that the platform is actively looking for a vehicle, help users understand what to expect, and encourage them to keep waiting.",
           "variant": "feature",
           "title": "Setting expectations while users wait: keeping search progress visible"
+        },
+        {
+          "type": "image",
+          "id": "waiting-flow-overview",
+          "src": "assets/works/huolala-weather/waiting-flow.webp",
+          "alt": "Vehicle search flow",
+          "frame": false,
+          "radius": 20
         },
         {
           "type": "video",
