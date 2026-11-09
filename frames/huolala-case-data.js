@@ -302,7 +302,7 @@
         {
           "type": "text",
           "id": "waiting-experience-summary",
-          "body": "我从司机和货主的心理预期出发，把时间与空间纳入找车体验设计。通过关键节点的连续反馈，缩短体感等待，让货主看得见搜索范围的扩大，也清楚下一步能做什么，从而改善等待体验并带动业务指标提升。",
+          "body": "我从司机和货主的心理预期出发，把时间与空间纳入找车体验设计。\n通过关键节点的连续反馈，缩短体感等待，让货主看得见搜索范围的扩大，也清楚下一步能做什么，从而改善等待体验并带动业务指标提升。",
           "maxWidth": 940,
           "style": {
             "fontSize": "clamp(22px, 3vw, 30px)",
@@ -623,7 +623,7 @@
         {
           "type": "text",
           "id": "waiting-experience-summary",
-          "body": "I designed the vehicle search around drivers’ and shippers’ expectations of time and distance. Continuous feedback at key moments made the wait feel shorter, showed shippers how far the search had expanded, and clarified what they could do next. These changes improved the waiting experience and helped lift business metrics.",
+          "body": "I designed the vehicle search around drivers’ and shippers’ expectations of time and distance.\nContinuous feedback at key moments made the wait feel shorter, showed shippers how far the search had expanded, and clarified what they could do next. These changes improved the waiting experience and helped lift business metrics.",
           "maxWidth": 940,
           "style": {
             "fontSize": "clamp(22px, 3vw, 30px)",
