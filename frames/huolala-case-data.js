@@ -276,11 +276,20 @@
           "title": "等待体验：让找车进展持续可见"
         },
         {
-          "type": "placeholder",
+          "type": "video",
           "id": "09-waiting-experience",
           "label": "等待找车的交互转场",
-          "aspectRatio": "1200/1099",
-          "nodeId": "410:54440"
+          "aspectRatio": "16 / 9",
+          "nodeId": "410:54440",
+          "src": "assets/works/huolala-weather/waiting-experience.mp4",
+          "autoplay": true,
+          "muted": true,
+          "loop": true,
+          "controls": false,
+          "preload": "metadata",
+          "frame": false,
+          "radius": 20,
+          "fallbackSrc": "assets/works/huolala-weather/waiting-experience.webp"
         }
       ]
     }
@@ -565,12 +574,21 @@
           "title": "Setting expectations while users wait: keeping search progress visible"
         },
         {
-          "type": "placeholder",
+          "type": "video",
           "id": "09-waiting-experience",
           "label": "Vehicle search waiting transitions",
-          "aspectRatio": "1200/1099",
+          "aspectRatio": "16 / 9",
           "nodeId": "410:54440",
-          "alt": "Vehicle search waiting transitions"
+          "alt": "Vehicle search waiting transitions",
+          "src": "assets/works/huolala-weather/waiting-experience.mp4",
+          "autoplay": true,
+          "muted": true,
+          "loop": true,
+          "controls": false,
+          "preload": "metadata",
+          "frame": false,
+          "radius": 20,
+          "fallbackSrc": "assets/works/huolala-weather/waiting-experience.webp"
         }
       ]
     }
