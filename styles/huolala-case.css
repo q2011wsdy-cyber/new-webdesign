@@ -605,3 +605,19 @@
 @media (prefers-reduced-motion: reduce) {
   .case-weather-indicator { transition: none; }
 }
+
+.huolala-case .case-weather-intensity > * {
+  display: grid;
+  align-content: center;
+  min-width: 0;
+  padding: clamp(20px, 4vw, 40px);
+  border-radius: 20px;
+  background: #f2f2f2;
+  color: #454545;
+}
+.huolala-case .case-weather-intensity figure {
+  justify-items: center;
+}
+.huolala-case .case-weather-intensity .case-media-frame {
+  width: min(100%, 216px);
+}

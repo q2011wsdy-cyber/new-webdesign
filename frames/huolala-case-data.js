@@ -239,6 +239,29 @@
           "label": "天气粒子与天气场景",
           "aspectRatio": "1200/1099",
           "nodeId": "410:55204"
+        },
+        {
+          "type": "media-text",
+          "variant": "weather-intensity",
+          "columns": "repeat(2, minmax(0, 1fr))",
+          "gap": 20,
+          "align": "stretch",
+          "media": {
+            "type": "video",
+            "src": "assets/works/huolala-weather/particle-intensity.mp4",
+            "alt": "天气粒子强度演示",
+            "aspectRatio": "540 / 1168",
+            "autoplay": true,
+            "loop": true,
+            "muted": true,
+            "controls": false,
+            "preload": "metadata",
+            "frame": false,
+            "radius": 20
+          },
+          "text": {
+            "body": "根据天气强度，我预设了小、中、大三档，分别调节粒子参数，让不同强度的天气效果更接近真实感受。"
+          }
         }
       ]
     },
@@ -559,6 +582,29 @@
           "aspectRatio": "1200/1099",
           "nodeId": "410:55204",
           "alt": "Weather particles and scenarios"
+        },
+        {
+          "type": "media-text",
+          "variant": "weather-intensity",
+          "columns": "repeat(2, minmax(0, 1fr))",
+          "gap": 20,
+          "align": "stretch",
+          "media": {
+            "type": "video",
+            "src": "assets/works/huolala-weather/particle-intensity.mp4",
+            "alt": "Weather particle intensity demo",
+            "aspectRatio": "540 / 1168",
+            "autoplay": true,
+            "loop": true,
+            "muted": true,
+            "controls": false,
+            "preload": "metadata",
+            "frame": false,
+            "radius": 20
+          },
+          "text": {
+            "body": "I set up three intensity presets—light, moderate, and heavy—that tune the weather particle parameters to make each condition feel more realistic."
+          }
         }
       ]
     },

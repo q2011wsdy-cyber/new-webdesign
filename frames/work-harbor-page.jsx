@@ -992,7 +992,7 @@ function WorkHarborPage() {
       const textNode = renderText(block.text || { title: block.title, subtitle: block.subtitle, body: block.body }, `${key}-text`);
       const mediaNode = renderMedia(block.media, `${key}-media`);
       const nodes = type === 'media-text' ? [mediaNode, textNode] : [textNode, mediaNode];
-      return <div key={key} className="case-content-split" style={{ display: 'grid', gridTemplateColumns: block.columns || 'minmax(0,.85fr) minmax(0,1.15fr)', gap: block.gap || 32, alignItems: block.align || 'center' }}>{nodes}</div>;
+      return <div key={key} className={block.variant === 'weather-intensity' ? 'case-content-split case-weather-intensity' : 'case-content-split'} style={{ display: 'grid', gridTemplateColumns: block.columns || 'minmax(0,.85fr) minmax(0,1.15fr)', gap: block.gap || 32, alignItems: block.align || 'center' }}>{nodes}</div>;
     }
 
     if (type === 'gallery') {
