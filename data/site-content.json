@@ -373,7 +373,7 @@
                 "radius": 20
               },
               "text": {
-                "body": "根据天气强度，我预设了小、中、大三档，分别调节粒子参数，让不同强度的天气效果更接近真实感受。"
+                "body": "根据天气的不同强度，预设了低、中、高的 3 种强度来调节天气中的粒子参数，用于呈现更真实的天气渲染感知。"
               }
             }
           ]
@@ -754,7 +754,7 @@
                   "radius": 20
                 },
                 "text": {
-                  "body": "I set up three intensity presets—light, moderate, and heavy—that tune the weather particle parameters to make each condition feel more realistic."
+                  "body": "I set up three intensity presets—low, medium, and high—that tune the weather particle parameters to make each condition feel more realistic."
                 }
               }
             ]
