@@ -19,7 +19,9 @@
         "src": "assets/uploads/1789839484996-06489eae.png",
         "type": "image"
       }
-    }
+    },
+    {"id": "freight-ai", "title": "Freight AI Paradigm", "titleZh": "货运 AI 范式", "placeholder": true},
+    {"id": "uv-print", "title": "UV Printing Creation Tool", "titleZh": "UV 打印创作工具", "placeholder": true}
   ],
   "play": [
     {

@@ -714,7 +714,7 @@ function AsciiTerminal() {
   const text = copy[lang] || copy.en;
   const managedWorks = cmsContent && Array.isArray(cmsContent.works)
     ? cmsContent.works
-    : ['02', '01'].map(id => ({ id }));
+    : [{ id: '02' }, { id: '01' }, ...[{"id": "freight-ai", "title": "Freight AI Paradigm", "titleZh": "货运 AI 范式", "placeholder": true}, {"id": "uv-print", "title": "UV Printing Creation Tool", "titleZh": "UV 打印创作工具", "placeholder": true}]];
   const selectedWorks = managedWorks.map((managed, index) => {
     const id = managed.id;
     const work = text.works.find(item => item.n === id) || {};
@@ -722,7 +722,8 @@ function AsciiTerminal() {
       ...work,
       n: id,
       pat: work.pat || PATTERNS[index % PATTERNS.length],
-      t: managed.title || work.t || 'New case',
+      t: (lang === 'zh' && managed.titleZh) || managed.title || work.t || 'New case',
+      placeholder: managed.placeholder && !managed.href,
       href: managed.href || work.href || '#',
       cover: managed.cover || null,
       img: `assets/home/${id === '02' ? 'pimax-screen' : 'huolala'}.webp`,
@@ -1077,7 +1078,14 @@ function AsciiTerminal() {
         </svg>
       </div>
       <div className={`work-bento${leavingCase ? ' is-transitioning' : ''}${returnedFromCase ? ' is-returning' : ''}`}>
-        {selectedWorks.map(w => (
+        {selectedWorks.map(w => w.placeholder ? (
+          <article key={w.n} className="work-card home-scroll-item">
+            <div className="generic-work-cover" style={{ position: 'relative', aspectRatio: '521 / 605', borderRadius: 30 }}>
+              <span aria-hidden="true">{w.n === 'freight-ai' ? 'AI' : 'UV'}</span>
+            </div>
+            <div className="work-caption"><h3>{w.t}</h3><p>{lang === 'zh' ? '即将更新' : 'Coming soon'}</p></div>
+          </article>
+        ) : (
           <a
             key={w.n}
             className={`work-card home-scroll-item${leavingCase === w.href ? ' is-leaving' : ''}`}
