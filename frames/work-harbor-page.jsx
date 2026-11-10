@@ -1223,7 +1223,7 @@ function WorkHarborPage() {
               </div>
             </a>}
           </nav>
-          <small className="pimax-footer-copyright">@ 2026 · super lee</small>
+          <window.SiteCopyright className="pimax-footer-copyright" />
         </CaseFooterReveal>
       )}
 

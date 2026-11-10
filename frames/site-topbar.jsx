@@ -383,3 +383,7 @@ window.SITE_NAV_ROUTES = SITE_NAV_ROUTES;
 window.SiteTopbar = SiteTopbar;
 
 window.GlassSurface = GlassSurface;
+
+window.SiteCopyright = function SiteCopyright({ className, style }) {
+  return <footer className={className} style={{ ...style, textAlign: 'center', justifyContent: 'center' }}>@ 2026 · super lee</footer>;
+};

@@ -682,7 +682,6 @@ function AsciiTerminal() {
       writingTitle: 'writing',
       labTitle: 'lab',
       labBody: 'a place for half-baked ideas, generative toys, and tiny tools.',
-      footerLeft: '@ 2026 · super lee',
       works: [
         { n: '01', t: 'Huolala', y: '2025', k: 'product', pat: PATTERNS[0], img: 'assets/works/01-harbor.jpg', href: 'work-huolala.html' },
         { n: '02', t: 'Pimax', y: '2025', k: 'product', pat: PATTERNS[1], img: 'assets/works/02-spatial.jpg', href: 'work-pimax.html' },
@@ -704,7 +703,6 @@ function AsciiTerminal() {
       writingTitle: 'writing',
       labTitle: 'lab',
       labBody: '一个放半成品想法、生成式玩具和微型工具的地方。',
-      footerLeft: '@ 2026 · super lee',
       works: [
         { n: '01', t: '货拉拉', y: '2025', k: 'product', pat: PATTERNS[0], img: 'assets/works/01-harbor.jpg', href: 'work-huolala.html' },
         { n: '02', t: 'Pimax', y: '2025', k: 'product', pat: PATTERNS[1], img: 'assets/works/02-spatial.jpg', href: 'work-pimax.html' },
@@ -1108,9 +1106,7 @@ function AsciiTerminal() {
       </section>
       <div className={`case-transition-veil${leavingCase ? ' is-visible' : ''}`} aria-hidden="true" />
 
-      <div style={s.footer}>
-        <span>{text.footerLeft}</span>
-      </div>
+      <window.SiteCopyright style={s.footer} />
 
       {/* 底部正中：简化图标，点击打开对话 */}
       {showChatEntry && <button
