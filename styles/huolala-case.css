@@ -317,6 +317,7 @@
   font-weight:400; margin-bottom:24px; text-wrap:pretty;
 }
 .huolala-case .case-editorial-copy--feature p,
+.huolala-case .case-weather-intensity > .case-scroll-item:not(figure),
 .huolala-case .case-editorial-copy--closing p {
   font-size:18px !important; line-height:1.6 !important;
   margin:0; color:var(--case-copy);
@@ -327,6 +328,7 @@
   .huolala-case .case-editorial-copy--feature h2,
   .huolala-case .case-editorial-copy--closing h2 { font-size:22px !important; margin-bottom:18px; }
   .huolala-case .case-editorial-copy--feature p,
+  .huolala-case .case-weather-intensity > .case-scroll-item:not(figure),
   .huolala-case .case-editorial-copy--closing p { font-size:16px !important; }
 }
 
