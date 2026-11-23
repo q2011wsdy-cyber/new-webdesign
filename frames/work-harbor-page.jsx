@@ -954,8 +954,8 @@ function WorkHarborPage() {
 
     if (type === 'phone-loop') return <CasePhoneLoop key={key} media={block} lang={lang} />;
     if (type === 'image-carousel') return <CaseImageCarousel key={key} media={block} lang={lang} />;
-    if (type === 'embedded-demo') return <div key={key} style={{ display: 'grid', placeItems: 'center', background: '#f2f2f2', padding: '32px 12px', borderRadius: 20 }}>
-      <iframe src={block.src} title={block.alt} style={{ width: 'min(100%, 375px)', height: 812, border: 0, borderRadius: 24 }} loading="lazy" />
+    if (type === 'embedded-demo') return <div key={key} className="case-embedded-demo">
+      <iframe src={block.src} title={block.alt} loading="lazy" />
     </div>;
     if (type === 'weather-tabs') return <CaseWeatherTabs key={key} media={block} lang={lang} />;
     if (type === 'comparison') return <CaseComparison key={key} media={block} lang={lang} />;
