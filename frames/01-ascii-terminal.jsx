@@ -723,8 +723,8 @@ function AsciiTerminal() {
       n: id,
       pat: work.pat || PATTERNS[index % PATTERNS.length],
       t: (lang === 'zh' && managed.titleZh) || managed.title || work.t || 'New case',
-      placeholder: managed.placeholder && !managed.href,
-      href: managed.href || work.href || '#',
+      placeholder: managed.placeholder && !managed.href && id !== 'freight-ai',
+      href: managed.href || (id === 'freight-ai' ? 'work-freight-ai.html' : work.href) || '#',
       cover: managed.cover || null,
       img: `assets/home/${id === '02' ? 'pimax-screen' : 'huolala'}.webp`,
       description: managed.description || (id === '02'
