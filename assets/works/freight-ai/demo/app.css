@@ -380,7 +380,7 @@
   background-size: calc(100% + 48px) auto;
   background-repeat: no-repeat;
   border: 0;
-  box-shadow: none;
+  box-shadow: 0 -6px 24px rgba(18, 28, 52, 0.05);
   transition:
     border-radius 0.42s ease,
     box-shadow 0.8s ease;
@@ -473,7 +473,7 @@
 }
 
 .is-complete .content-panel {
-  box-shadow: none;
+  box-shadow: 0 -6px 24px rgba(18, 28, 52, 0.05);
 }
 
 .diagnosis-flow {
