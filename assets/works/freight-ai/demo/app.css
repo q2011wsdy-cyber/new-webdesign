@@ -375,12 +375,12 @@
   padding: 12px 12px 28px;
   border-radius: var(--panel-radius) var(--panel-radius) 0 0;
   background-color: #f3f4f5;
-  background-image: url("./assets/c7482.svg");
+  background-image: url("./assets/c7482.svg?v=clean-2");
   background-position: center -30px;
   background-size: calc(100% + 48px) auto;
   background-repeat: no-repeat;
   border: 0;
-  box-shadow: 0 -8px 28px rgba(18, 28, 52, 0.12);
+  box-shadow: none;
   transition:
     border-radius 0.42s ease,
     box-shadow 0.8s ease;
@@ -441,7 +441,7 @@
   opacity: 0;
   pointer-events: none;
   background-color: #f3f4f5;
-  background-image: url("./assets/3b747.svg");
+  background-image: url("./assets/3b747.svg?v=clean-2");
   background-position: center -30px;
   background-size: calc(100% + 48px) auto;
   background-repeat: no-repeat;
@@ -473,7 +473,7 @@
 }
 
 .is-complete .content-panel {
-  box-shadow: 0 -8px 28px rgba(57, 65, 83, 0.12);
+  box-shadow: none;
 }
 
 .diagnosis-flow {
