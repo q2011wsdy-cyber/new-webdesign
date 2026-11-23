@@ -635,11 +635,15 @@
   display: block;
   width: min(46%, 420px);
   min-width: 280px;
-  height: 920px;
-  margin: 5% auto 0;
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  transform: translateX(-50%);
+  height: 95%;
+  margin: 0;
   border: 0;
   border-radius: 24px;
 }
 @media (max-width: 600px) {
-  .case-embedded-demo iframe { width: 60%; min-width: 0; height: 812px; }
+  .case-embedded-demo iframe { width: 60%; min-width: 0; height: 95%; }
 }
