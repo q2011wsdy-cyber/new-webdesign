@@ -1,0 +1,15 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Component 1">
+<g id="Rectangle 40039">
+</g>
+<g id="Ellipse 2364">
+<mask id="stroke0_0_47">
+<circle cx="9" cy="9" r="5.78571" stroke-width="1.28571" stroke="white"/>
+</mask>
+<g clip-path="url(#paint0_angular_0_47_clip_path)" data-figma-skip-parse="true" mask="url(#stroke0_0_47)"><g transform="matrix(-1.91583e-10 0.00642857 -0.00642857 -1.91583e-10 9 9)"><foreignObject x="-2000" y="-2000" width="4000" height="4000"><div xmlns="http://www.w3.org/1999/xhtml" style="background:conic-gradient(from 90deg,rgba(136, 136, 136, 1) 0deg,rgba(255, 255, 255, 1) 360deg);height:100%;width:100%;opacity:1"></div></foreignObject></g></g><circle cx="9" cy="9" r="5.78571" stroke-width="1.28571" stroke="black" stroke-opacity="0" data-figma-gradient-stroke="{&#34;type&#34;:&#34;GRADIENT_ANGULAR&#34;,&#34;stops&#34;:[{&#34;color&#34;:{&#34;r&#34;:0.53333336114883423,&#34;g&#34;:0.53333336114883423,&#34;b&#34;:0.53333336114883423,&#34;a&#34;:1.0},&#34;position&#34;:0.0},{&#34;color&#34;:{&#34;r&#34;:1.0,&#34;g&#34;:1.0,&#34;b&#34;:1.0,&#34;a&#34;:1.0},&#34;position&#34;:1.0}],&#34;transform&#34;:{&#34;m00&#34;:-3.8316676409522188e-07,&#34;m01&#34;:-12.857141494750977,&#34;m02&#34;:15.428569793701172,&#34;m10&#34;:12.857141494750977,&#34;m11&#34;:-3.8316633776958042e-07,&#34;m12&#34;:2.5714285373687744},&#34;opacity&#34;:1.0,&#34;blendMode&#34;:&#34;NORMAL&#34;,&#34;stopsVar&#34;:[{&#34;color&#34;:{&#34;r&#34;:0.53333336114883423,&#34;g&#34;:0.53333336114883423,&#34;b&#34;:0.53333336114883423,&#34;a&#34;:1.0},&#34;position&#34;:0.0},{&#34;color&#34;:{&#34;r&#34;:1.0,&#34;g&#34;:1.0,&#34;b&#34;:1.0,&#34;a&#34;:1.0},&#34;position&#34;:1.0}],&#34;visible&#34;:true}"/>
+</g>
+<circle id="Ellipse 2365" cx="9" cy="14.7857" r="0.642857" fill="#888888"/>
+</g>
+<defs>
+<clipPath id="paint0_angular_0_47_clip_path"><rect x="-3.85714" y="-3.85714" width="25.7143" height="25.7143"/></clipPath></defs>
+</svg>

@@ -1,0 +1,27 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="375" height="221" viewBox="0 0 375 221" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Mask group">
+<mask id="mask0_0_460" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="375" height="221">
+<path id="&#232;&#131;&#140;&#230;&#153;&#175;" d="M0 12C0 5.37258 5.37258 0 12 0H363C369.627 0 375 5.37258 375 12V209C375 215.627 369.627 221 363 221H12C5.37259 221 0 215.627 0 209V12Z" fill="url(#paint0_linear_0_460)"/>
+</mask>
+<g mask="url(#mask0_0_460)">
+<g id="Subtract" filter="url(#filter0_f_0_460)">
+<path d="M346 0C362.016 0 375 12.9837 375 29V144C375 145.597 374.871 147.165 374.623 148.692C373.151 157.737 363.363 154.164 363.363 145C363.363 117.386 340.978 95.0001 313.363 95H53.3234C25.7092 95 3.32345 117.386 3.32344 145C3.32344 148.221 0.209078 148.757 0.0404663 145.54C0.0137353 145.03 0.000200283 144.517 0.000200272 144V29C0.000202011 12.9837 12.9839 0 29.0002 0H346Z" fill="url(#paint1_linear_0_460)" fill-opacity="0.6"/>
+</g>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_0_460" x="-23.9998" y="-24" width="423" height="201.939" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="12" result="effect1_foregroundBlur_0_460"/>
+</filter>
+<linearGradient id="paint0_linear_0_460" x1="188" y1="-2.25349e-06" x2="209.934" y2="204.767" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_460" x1="18.1179" y1="16.4957" x2="340.337" y2="148.456" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FF753E"/>
+<stop offset="1" stop-color="#4E5AFF"/>
+</linearGradient>
+</defs>
+</svg>

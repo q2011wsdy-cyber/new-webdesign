@@ -1,0 +1,15 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Component 1">
+<g id="Rectangle 40039">
+</g>
+<g id="Ellipse 2364">
+<mask id="stroke0_0_31">
+<circle cx="14" cy="14" r="9" stroke-width="2" stroke="white"/>
+</mask>
+<g clip-path="url(#paint0_angular_0_31_clip_path)" data-figma-skip-parse="true" mask="url(#stroke0_0_31)"><g transform="matrix(-2.98019e-10 0.01 -0.01 -2.98018e-10 14 14)"><foreignObject x="-2000" y="-2000" width="4000" height="4000"><div xmlns="http://www.w3.org/1999/xhtml" style="background:conic-gradient(from 90deg,rgba(136, 136, 136, 1) 0deg,rgba(255, 255, 255, 1) 360deg);height:100%;width:100%;opacity:1"></div></foreignObject></g></g><circle cx="14" cy="14" r="9" stroke-width="2" stroke="black" stroke-opacity="0" data-figma-gradient-stroke="{&#34;type&#34;:&#34;GRADIENT_ANGULAR&#34;,&#34;stops&#34;:[{&#34;color&#34;:{&#34;r&#34;:0.53333336114883423,&#34;g&#34;:0.53333336114883423,&#34;b&#34;:0.53333336114883423,&#34;a&#34;:1.0},&#34;position&#34;:0.0},{&#34;color&#34;:{&#34;r&#34;:1.0,&#34;g&#34;:1.0,&#34;b&#34;:1.0,&#34;a&#34;:1.0},&#34;position&#34;:1.0}],&#34;transform&#34;:{&#34;m00&#34;:-5.9603723912005080e-07,&#34;m01&#34;:-20.0,&#34;m02&#34;:24.0,&#34;m10&#34;:20.0,&#34;m11&#34;:-5.9603661384244333e-07,&#34;m12&#34;:4.0000004768371582},&#34;opacity&#34;:1.0,&#34;blendMode&#34;:&#34;NORMAL&#34;,&#34;stopsVar&#34;:[{&#34;color&#34;:{&#34;r&#34;:0.53333336114883423,&#34;g&#34;:0.53333336114883423,&#34;b&#34;:0.53333336114883423,&#34;a&#34;:1.0},&#34;position&#34;:0.0},{&#34;color&#34;:{&#34;r&#34;:1.0,&#34;g&#34;:1.0,&#34;b&#34;:1.0,&#34;a&#34;:1.0},&#34;position&#34;:1.0}],&#34;visible&#34;:true}"/>
+</g>
+<circle id="Ellipse 2365" cx="14" cy="23" r="1" fill="#888888"/>
+</g>
+<defs>
+<clipPath id="paint0_angular_0_31_clip_path"><rect x="-6" y="-6" width="40" height="40"/></clipPath></defs>
+</svg>

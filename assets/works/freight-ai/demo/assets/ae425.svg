@@ -1,0 +1,32 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="&#230;&#137;&#147;&#229;&#139;&#190;">
+<g id="icon&#231;&#187;&#152;&#229;&#136;&#182;&#231;&#189;&#145;&#230;&#160;&#188;" opacity="0">
+<g clip-path="url(#clip0_0_154)">
+<rect width="24" height="24" rx="2.05051" fill="black" fill-opacity="0.05"/>
+<rect id="Rectangle 8" width="24" height="24" rx="2.05051" stroke-width="0.0361854" stroke="black" stroke-opacity="0.3"/>
+<path id="Vector 2" d="M0 0L24 24" stroke-width="0.0108556" stroke="black" stroke-opacity="0.3"/>
+<path id="Vector 6" d="M0 24L24 8.58275e-07" stroke-width="0.0108556" stroke="black" stroke-opacity="0.3"/>
+<path id="Vector 4" d="M12 3.8147e-07V24" stroke-width="0.0108556" stroke="black" stroke-opacity="0.3"/>
+<path id="Vector 5" d="M0 12H24" stroke-width="0.0108556" stroke="black" stroke-opacity="0.3"/>
+<path id="Rectangle 9" d="M3.05051 21H20.9495C22.082 21 23 20.082 23 18.9495V5.05051C23 3.91804 22.082 3 20.9495 3H3.05051C1.91804 3 1 3.91804 1 5.05051V18.9495C1 20.082 1.91804 21 3.05051 21Z" stroke-width="0.0361854" stroke="black" stroke-opacity="0.3"/>
+<path id="Rectangle 12" d="M21 20.9495L21 3.05051C21 1.91804 20.082 0.999999 18.9495 0.999999L5.05051 0.999999C3.91804 0.999999 3 1.91804 3 3.05051L3 20.9495C3 22.082 3.91804 23 5.05051 23L18.9495 23C20.082 23 21 22.082 21 20.9495Z" stroke-width="0.0361854" stroke="black" stroke-opacity="0.3"/>
+<path id="Rectangle 11" d="M4.05051 22H19.9495C21.082 22 22 21.082 22 19.9495V4.05051C22 2.91804 21.082 2 19.9495 2H4.05051C2.91804 2 2 2.91804 2 4.05051V19.9495C2 21.082 2.91804 22 4.05051 22Z" stroke-width="0.0361854" stroke="black" stroke-opacity="0.65"/>
+<path id="Rectangle 13" d="M7.05051 19H16.9495C18.082 19 19 18.082 19 16.9495V7.05051C19 5.91804 18.082 5 16.9495 5H7.05051C5.91804 5 5 5.91804 5 7.05051V16.9495C5 18.082 5.91804 19 7.05051 19Z" stroke-width="0.0361854" stroke="black" stroke-opacity="0.65"/>
+<g id="Ellipse 2">
+<mask id="stroke0_0_154" fill="white">
+<path d="M23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12Z"/>
+</mask>
+<ellipse cx="12" cy="12" rx="11" ry="11" stroke-width="0.0217113" stroke="#E93636" mask="url(#stroke0_0_154)"/>
+<ellipse cx="12" cy="12" rx="11" ry="11" stroke-width="0.0217113" stroke="black" mask="url(#stroke0_0_154)"/>
+</g>
+</g>
+</g>
+<circle id="Ellipse 709" cx="12" cy="12" r="11.5302" fill="#FF6600"/>
+<path id="2" d="M15.7161 18.6267H7.80873L7.93226 16.6632L13.7227 10.6216C14.0881 10.2252 14.2881 9.75318 14.3213 9.22454C14.3879 8.16727 13.5711 7.31767 12.455 7.31767C11.4524 7.31767 10.5087 8.18615 10.3866 9.22454H8.40026L8.40383 9.1679C8.46669 8.46935 8.69506 7.84631 9.09131 7.26103C9.88262 6.10936 11.1586 5.37305 12.5774 5.37305C13.2962 5.37305 13.9476 5.54297 14.5505 5.8828C15.7184 6.56248 16.3967 7.80855 16.3077 9.22454C16.2447 10.2252 15.8046 11.2069 15.0761 11.9621L10.6374 16.6632H15.8396L15.7161 18.6267Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip0_0_154">
+<rect width="24" height="24" rx="2.05051" fill="white"/>
+</clipPath>
+</defs>
+</svg>

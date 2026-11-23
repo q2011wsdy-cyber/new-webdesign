@@ -48,10 +48,9 @@ window.__workCaseData = {
             "body": "介绍核心设计思路、关键流程与交互方案。"
           },
           {
-            "type": "placeholder",
-            "id": "design-visual",
-            "label": "图片或视频展示位",
-            "aspectRatio": "16/9"
+            "type": "embedded-demo",
+            "src": "assets/works/freight-ai/demo/index.html",
+            "alt": "货运 AI 交互演示"
           }
         ]
       },
@@ -118,10 +117,9 @@ window.__workCaseData = {
             "body": "Explain the design approach, key flows, and interactions."
           },
           {
-            "type": "placeholder",
-            "id": "design-visual",
-            "label": "Image or video placeholder",
-            "aspectRatio": "16/9"
+            "type": "embedded-demo",
+            "src": "assets/works/freight-ai/demo/index.html",
+            "alt": "货运 AI 交互演示"
           }
         ]
       },
