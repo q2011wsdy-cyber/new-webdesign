@@ -1809,3 +1809,10 @@ h1 {
   box-shadow: none;
   opacity: 1;
 }
+
+/* The completed diagnosis uses depth rather than an outline. */
+.diagnosis-slot--done {
+  overflow: visible;
+  box-shadow: 0 3px 14px rgb(78 91 149 / 14%), 0 1px 3px rgb(78 91 149 / 8%);
+}
+.diagnosis-slot::after { border: 0; }
