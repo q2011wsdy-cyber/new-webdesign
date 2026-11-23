@@ -374,11 +374,7 @@
   margin-top: 213px;
   padding: 12px 12px 28px;
   border-radius: var(--panel-radius) var(--panel-radius) 0 0;
-  background-color: transparent;
-  background-image: url("./assets/panel-reference.svg");
-  background-position: center -30px;
-  background-size: calc(100% + 48px) auto;
-  background-repeat: no-repeat;
+  background: linear-gradient(to bottom, #fff 18px, #f3f4f5 271px);
   border: 0;
   box-shadow: 0 -6px 24px rgba(18, 28, 52, 0.05);
   transition:
@@ -417,7 +413,7 @@
   opacity: 0;
   pointer-events: none;
   background-color: #fff;
-  background-image: url("./assets/c1e93.svg");
+  background-image: none;
   background-position: top center;
   background-size: 100% 221px;
   background-repeat: no-repeat;
@@ -440,11 +436,7 @@
   border-radius: var(--panel-radius) var(--panel-radius) 0 0;
   opacity: 0;
   pointer-events: none;
-  background-color: transparent;
-  background-image: url("./assets/3b747.svg?v=reference-shadow-3");
-  background-position: center -30px;
-  background-size: calc(100% + 48px) auto;
-  background-repeat: no-repeat;
+  background: linear-gradient(to bottom, #edf8fc 129px, #f3f4f5 194px);
   transition:
     border-radius 0.42s ease,
     opacity 0.8s ease;
@@ -456,11 +448,7 @@
   inset: 0;
   border-radius: inherit;
   opacity: var(--collapse-progress);
-  background-color: #f3f4f5;
-  background-image: url("./assets/f3a58.svg");
-  background-position: center -30px;
-  background-size: calc(100% + 48px) auto;
-  background-repeat: no-repeat;
+  background: #f3f4f5;
   transition: opacity 0.48s ease;
 }
 
