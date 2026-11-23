@@ -11,11 +11,11 @@ window.__workCaseData = {
     "meta": [
       {
         "label": "我的角色",
-        "value": "待补充"
+        "value": "资深产品体验设计师"
       },
       {
         "label": "时间",
-        "value": "待补充"
+        "value": "2026"
       }
     ],
     "sections": [
@@ -80,11 +80,11 @@ window.__workCaseData = {
     "meta": [
       {
         "label": "My role",
-        "value": "To be added"
+        "value": "Senior Product Experience Designer"
       },
       {
         "label": "Timeline",
-        "value": "To be added"
+        "value": "2026"
       }
     ],
     "sections": [
