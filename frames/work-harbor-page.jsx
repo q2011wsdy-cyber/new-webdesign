@@ -575,7 +575,7 @@ function WorkHarborPage() {
       .then(response => response.ok ? response.json() : Promise.reject())
       .then(data => {
         if (!active) return;
-        if (caseClass === 'huolala-case') setSavedCase(data.cases || null);
+        if (caseClass === 'huolala-case' && !window.__workCaseData?.zh?.id) setSavedCase(data.cases || null);
         if (Array.isArray(data.works)) setOrderedWorks(data.works.filter(item => item.href && item.href !== '#'));
       })
       .catch(() => {});
@@ -591,7 +591,7 @@ function WorkHarborPage() {
   const ui = lang === 'zh'
     ? { overview: '概览', client: '客户', year: '年份', role: '角色', team: '团队', context: '背景', process: '过程', gallery: '画廊', outcome: '成果', credits: '鸣谢', back: '← 返回', allWork: '全部案例' }
     : { overview: 'overview', client: 'Client', year: 'Year', role: 'Role', team: 'Team', context: 'context', process: 'process', gallery: 'gallery', outcome: 'outcome', credits: 'credits', back: '← back', allWork: 'all work' };
-  const currentCaseId = rawWork.className === 'pimax-case' ? '02' : '01';
+  const currentCaseId = rawWork.id || (rawWork.className === 'pimax-case' ? '02' : '01');
   const currentCaseIndex = orderedWorks.findIndex(item => item.id === currentCaseId);
   const previousCase = currentCaseIndex > 0 ? orderedWorks[currentCaseIndex - 1] : null;
   const nextCase = currentCaseIndex >= 0 ? orderedWorks[currentCaseIndex + 1] : null;

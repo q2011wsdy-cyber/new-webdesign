@@ -714,7 +714,7 @@ function AsciiTerminal() {
   const text = copy[lang] || copy.en;
   const managedWorks = cmsContent && Array.isArray(cmsContent.works)
     ? cmsContent.works
-    : [{ id: '02' }, { id: '01' }, ...[{"id": "freight-ai", "title": "Freight AI Paradigm", "titleZh": "货运 AI 范式", "placeholder": true}, {"id": "uv-print", "title": "UV Printing Creation Tool", "titleZh": "UV 打印创作工具", "placeholder": true}]];
+    : [{ id: '02' }, { id: '01' }, ...[{"id": "freight-ai", "title": "Freight AI Paradigm", "titleZh": "货运 AI 范式", "href": "work-freight-ai.html"}, {"id": "uv-print", "title": "UV Printing Creation Tool", "titleZh": "UV 打印创作工具", "placeholder": true}]];
   const selectedWorks = managedWorks.map((managed, index) => {
     const id = managed.id;
     const work = text.works.find(item => item.n === id) || {};
